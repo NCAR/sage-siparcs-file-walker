@@ -1,0 +1,16 @@
+<html xmlns:th="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <title>Home Page</title>
+    <style>
+        h1 {text-align:center}
+        p {text-align:center}
+        a {text-align:center; display:block}
+    </style>
+</head>
+ <body>
+    <h1>Hello !</h1>
+    <p>Welcome to <span th:text="${appName}">Our App</span></p>
+    <a href="http://localhost:8080/FileWalker">File Walker</a>
+    <p>The above link will bring you to the FileVisitor page and also run/rerun the walker (Takes a bit).</p>
+</body>
+</html>

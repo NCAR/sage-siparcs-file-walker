@@ -1,0 +1,18 @@
+---
+spring:
+  thymeleaf:
+    enabled: "true "
+    prefix: classpath:/templates/
+    cache: "false"
+    suffix: .html
+  application:
+    name: Working With File Walker
+
+---
+walker:
+  startingPath: /
+
+---
+config:
+  ignoredPaths: >
+    /dev
