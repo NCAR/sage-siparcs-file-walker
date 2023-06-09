@@ -10,7 +10,7 @@
  <body>
     <h1>Hello !</h1>
     <p>Welcome to <span th:text="${appName}">Our App</span></p>
-    <a href="http://localhost:8080/FileWalker">File Walker</a>
+    <a th:href="@{/FileWalker}">File Walker</a>
     <p>The above link will bring you to the FileVisitor page and also run/rerun the walker (Takes a bit).</p>
 </body>
 </html>

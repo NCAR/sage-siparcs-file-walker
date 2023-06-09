@@ -18,6 +18,6 @@
         <b>Total Errored Files/Directories:</b> <span th:text="${totalError}">Data Not Found</span><br>
         <b>Total Run Time:</b> <span th:text="${runTime}">Data Not Found</span> milliseconds
     </p>
-    <a href="http://localhost:8080/HomePage">Back to Home</a>
+    <a th:href="@{/HomePage}">Back to Home</a>
 </body>
 </html>
