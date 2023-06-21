@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.io.IOException;
 
 @Controller
-public class WalkerController implements Runnable{
+public class WalkerController {
    private final FileWalker fileWalker;
 
     @Autowired
@@ -19,7 +19,7 @@ public class WalkerController implements Runnable{
     }
 
     @RequestMapping(value="/FileWalker", method={RequestMethod.GET})
-    public String executeWalker(Model model) throws IOException {
+    public String executeWalker(Model model) {
 
         model.addAttribute("startingPath", this.fileWalker.getStartingPath());
         model.addAttribute("lastStarted", this.fileWalker.getLastAccess());
@@ -34,57 +34,24 @@ public class WalkerController implements Runnable{
         return "walker";
     }
 
-   @Override
-   public void run() {
-       try {
-           this.fileWalker.walkFiles();
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       }
-//       System.out.println("In Run");
-   }
-
-//   if(!this.fileWalker.isRunning()){
-//       Runnable runnable = new Runnable() {
-//           @Override
-//           public void run() {
-//               try {
-//                   executeWalker();
-//               } catch (IOException e) {
-//                   throw new RuntimeException(e);
-//               }
-//           }
-//       };
-//        Thread thread = new Thread(runnable);
-//       thread.start();
-//    }
     @RequestMapping(value="/FileWalker", method={RequestMethod.POST})
-    public String executeWalker() throws IOException{
+    public String executeWalker() {
 
-        if(!this.fileWalker.isRunning()){
-            Runnable runnable = new WalkerController(this.fileWalker);
-            Thread t = new Thread(runnable);
-            t.start();
+        if (!this.fileWalker.isRunning()) {
+
+            Runnable runnable = () -> {
+                try {
+
+                    WalkerController.this.fileWalker.walkFiles();
+
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+            Thread thread = new Thread(runnable);
+            thread.start();
         }
-//        System.out.println("In Execution");
-//        this.fileWalker.walkFiles();
 
         return "redirect:/FileWalker";
     }
 }
-
-//    Nathan's Version
-//    @GetMapping("/FileWalkerModelAndView")
-//    public ModelAndView executeWalker() throws IOException {
-//
-//        this.fileWalker.walkFiles();
-//
-//        ModelAndView modelAndView = new ModelAndView("walker");
-//        modelAndView.addObject("lastAccess", fileWalker.getLastAccess());
-//        modelAndView.addObject("totalFile",fileWalker.getFileCount());
-//        modelAndView.addObject("totalDirectory",fileWalker.getDirectoryCount());
-//        modelAndView.addObject("totalError",fileWalker.getErrorCount());
-//        modelAndView.addObject("runTime",fileWalker.getDuration());
-//
-//        return modelAndView;
-//    }

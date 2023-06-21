@@ -29,6 +29,8 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException{
 
+        // TODO change to stream.
+        // TODO ignore symbolic links?
         for(int i = 0; i < this.ignoredPaths.size(); i++){
             if(dir.toString().contains(this.ignoredPaths.get(i))) {
                 System.out.println("Skipping subtree" + ignoredPaths.get(i));
@@ -42,13 +44,13 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
 
         System.out.println(path);
 
-        if(Files.isDirectory(path)){
+        if (Files.isDirectory(path)) {
             countDirectory++;
         }
-        else if(Files.isRegularFile(path)) {
+        else if (Files.isRegularFile(path)) {
             countFile++;
         }
-        else if(Files.isSymbolicLink(path)){
+        else if (Files.isSymbolicLink(path)) {
             countLink++;
         }
         else {
@@ -68,6 +70,14 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
         return CONTINUE;
     }
 
+    public void reset() {
+        countError = 0;
+        countFile = 0;
+        countDirectory = 0;
+        countLink = 0;
+        countExtra = 0;
+    }
+
     public long getCountFile(){
         return countFile;
     }
@@ -84,15 +94,7 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
         return countLink;
     }
 
-    public long getCountExtra(){
+    public long getCountExtra() {
         return countExtra;
-    }
-
-    public void reset(){
-        countError = 0;
-        countFile = 0;
-        countDirectory = 0;
-        countLink = 0;
-        countExtra = 0;
     }
 }

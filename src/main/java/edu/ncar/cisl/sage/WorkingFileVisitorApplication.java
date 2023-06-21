@@ -12,8 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 @SpringBootApplication
 @Configuration

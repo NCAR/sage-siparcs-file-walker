@@ -50,7 +50,7 @@ public class FileWalker {
         }
     }
 
-    public long getFileCount(){
+    public long getFileCount() {
         return this.fileVisitor.getCountFile();
     }
 
