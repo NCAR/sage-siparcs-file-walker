@@ -12,9 +12,15 @@ public class FileWalker {
     private final LoggingFileVisitor fileVisitor;
     private final Clock clock;
 
+    private boolean Running = false;
+
     private Date lastAccess;
 
-    private long duration;
+    private long duration = 0;
+
+    private long startTime;
+
+    private boolean isFinished = true;
 
     public FileWalker(Path path, LoggingFileVisitor fileVisitor, Clock clock) {
 
@@ -25,22 +31,62 @@ public class FileWalker {
 
     public void walkFiles() throws IOException {
 
-        //Time set up for knowing runtime
-        long startTime = clock.millis();
-        this.lastAccess = Date.from(this.clock.instant());
+        this.Running = true;
+        this.isFinished = false;
+        this.fileVisitor.reset();
 
+        try {
 
-        Files.walkFileTree(this.path, this.fileVisitor);
-        this.duration = clock.millis() - startTime;
+            //Time set up for knowing runtime
+            this.startTime = clock.millis();
+            this.lastAccess = Date.from(this.clock.instant());
+
+            Files.walkFileTree(this.path, this.fileVisitor);
+            this.duration = clock.millis() - startTime;
+
+        } finally {
+            this.Running = false;
+            this.isFinished = true;
+        }
     }
 
-    public long getFileCount(){return this.fileVisitor.getCountFile();}
+    public long getFileCount(){
+        return this.fileVisitor.getCountFile();
+    }
 
-    public long getDirectoryCount(){return this.fileVisitor.getCountDirectory();}
+    public long getDirectoryCount(){
+        return this.fileVisitor.getCountDirectory();
+    }
 
-    public long getErrorCount(){return this.fileVisitor.getCountError();}
+    public long getErrorCount(){
+        return this.fileVisitor.getCountError();
+    }
 
-    public long getDuration(){return duration;}
+    public long getLinkCount(){
+        return this.fileVisitor.getCountLink();
+    }
 
-    public Date getLastAccess(){return lastAccess;}
+    public long getExtraCount(){
+        return this.fileVisitor.getCountExtra();
+    }
+
+    public long getDuration(){
+
+        if(!isFinished){
+            this.duration = clock.millis() - startTime;
+        }
+        return duration;
+    }
+
+    public Date getLastAccess(){
+        return lastAccess;
+    }
+
+    public Path getStartingPath(){
+        return path;
+    }
+
+    public boolean isRunning() {
+        return this.Running;
+    }
 }

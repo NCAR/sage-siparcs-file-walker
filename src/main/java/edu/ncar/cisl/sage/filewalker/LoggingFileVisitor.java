@@ -17,6 +17,10 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
     private long countDirectory = 0;
     private long countError = 0;
 
+    private long countLink = 0;
+
+    private long countExtra = 0;
+
     private final List<String> ignoredPaths;
 
     public LoggingFileVisitor(List<String> ignoredPaths) {
@@ -41,8 +45,16 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
         if(Files.isDirectory(path)){
             countDirectory++;
         }
-        else
+        else if(Files.isRegularFile(path)) {
             countFile++;
+        }
+        else if(Files.isSymbolicLink(path)){
+            countLink++;
+        }
+        else {
+            countExtra++;
+        }
+
         return CONTINUE;
     }
 
@@ -60,9 +72,27 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
         return countFile;
     }
 
-    public long getCountDirectory(){return countDirectory;}
+    public long getCountDirectory(){
+        return countDirectory;
+    }
 
     public long getCountError(){
         return countError;
+    }
+
+    public long getCountLink(){
+        return countLink;
+    }
+
+    public long getCountExtra(){
+        return countExtra;
+    }
+
+    public void reset(){
+        countError = 0;
+        countFile = 0;
+        countDirectory = 0;
+        countLink = 0;
+        countExtra = 0;
     }
 }
