@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.io.IOException;
 
 @Controller
@@ -22,12 +21,12 @@ public class WalkerController {
     public String executeWalker(Model model) {
 
         model.addAttribute("startingPath", this.fileWalker.getStartingPath());
+        model.addAttribute("ignoredPaths", this.fileWalker.getIgnoredPaths());
         model.addAttribute("lastStarted", this.fileWalker.getLastAccess());
         model.addAttribute("totalFile", this.fileWalker.getFileCount());
         model.addAttribute("totalDirectory", this.fileWalker.getDirectoryCount());
-        model.addAttribute("totalError", this.fileWalker.getErrorCount());
-        model.addAttribute("totalLink", this.fileWalker.getLinkCount());
-        model.addAttribute("totalExtra", this.fileWalker.getExtraCount());
+        model.addAttribute("totalOtherError", this.fileWalker.getOtherErrorCount());
+        model.addAttribute("totalDirectoryError", this.fileWalker.getDirectoryErrorCount());
         model.addAttribute("runTime", this.fileWalker.getDuration());
         model.addAttribute("state", this.fileWalker.isRunning());
 

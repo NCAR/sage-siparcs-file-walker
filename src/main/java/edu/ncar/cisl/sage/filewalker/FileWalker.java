@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.util.Date;
+import java.util.List;
 
 public class FileWalker {
 
@@ -54,36 +55,36 @@ public class FileWalker {
         return this.fileVisitor.getCountFile();
     }
 
-    public long getDirectoryCount(){
+    public long getDirectoryCount() {
         return this.fileVisitor.getCountDirectory();
     }
 
-    public long getErrorCount(){
-        return this.fileVisitor.getCountError();
+    public long getDirectoryErrorCount() {
+        return this.fileVisitor.getCountErrorDirectory();
     }
 
-    public long getLinkCount(){
-        return this.fileVisitor.getCountLink();
+    public long getOtherErrorCount() {
+        return this.fileVisitor.getCountErrorOther();
     }
 
-    public long getExtraCount(){
-        return this.fileVisitor.getCountExtra();
-    }
+    public long getDuration() {
 
-    public long getDuration(){
-
-        if(!isFinished){
+        if (!isFinished) {
             this.duration = clock.millis() - startTime;
         }
         return duration;
     }
 
-    public Date getLastAccess(){
+    public Date getLastAccess() {
         return lastAccess;
     }
 
-    public Path getStartingPath(){
+    public Path getStartingPath() {
         return path;
+    }
+
+    public List<String> getIgnoredPaths(){
+        return this.fileVisitor.getIgnoredPaths();
     }
 
     public boolean isRunning() {

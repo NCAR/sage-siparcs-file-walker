@@ -12,12 +12,12 @@
     <h1>Running File Walker</h1>
     <p>
         <b>Starting Directory:</b> <span th:text="${startingPath}">Data Not Found</span><br>
+        <b>Ignored Paths:</b> <span th:text="${ignoredPaths}">Not Ignoring Any Paths</span><br>
         <b>Start Time:</b> <span th:text="${lastStarted}">Data Not Found</span><br>
         <b>Total Files:</b> <span th:text="${totalFile}">Data Not Found</span><br>
         <b>Total Directories:</b> <span th:text="${totalDirectory}">Data Not Found</span><br>
-        <b>Total Symbolic Links:</b> <span th:text="${totalLink}">Data Not Found</span><br>
-        <b>Total Unknown:</b> <span th:text="${totalExtra}">Data Not Found</span><br>
-        <b>Total Errored Files/Directories:</b> <span th:text="${totalError}">Data Not Found</span><br>
+        <b>Total Errored Directories:</b> <span th:text="${totalDirectoryError}">Data Not Found</span><br>
+        <b>Total Other Errors:</b> <span th:text="${totalOtherError}">Data Not Found</span><br>
         <b>Run Time:</b> <span th:text="${runTime}">Data Not Found</span> milliseconds<br><br>
         <b>State:</b> <span th:if="${state == true}">Running</span> <span th:unless="${state == true}">Not Running</span><br>
         <a href="/FileWalker"><button>Refresh</button></a>

@@ -15,11 +15,9 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
     private long countFile = 0;
 
     private long countDirectory = 0;
-    private long countError = 0;
+    private long countErrorOther = 0;
 
-    private long countLink = 0;
-
-    private long countExtra = 0;
+    private long countErrorDirectory = 0;
 
     private final List<String> ignoredPaths;
 
@@ -27,74 +25,77 @@ public class LoggingFileVisitor implements FileVisitor<Path> {
         this.ignoredPaths = ignoredPaths;
     }
 
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException{
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
 
         // TODO change to stream.
-        // TODO ignore symbolic links?
+        if(Files.isSymbolicLink(dir)){
+            //System.out.println("Skipping Symbolic Link: " + dir);
+            return SKIP_SUBTREE;
+        }
         for(int i = 0; i < this.ignoredPaths.size(); i++){
             if(dir.toString().contains(this.ignoredPaths.get(i))) {
-                System.out.println("Skipping subtree" + ignoredPaths.get(i));
+                //System.out.println("Skipping subtree: " + ignoredPaths.get(i));
                 return SKIP_SUBTREE;
             }
         }
-        return CONTINUE;
-    }
-
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attr) throws IOException{
-
-        System.out.println(path);
-
-        if (Files.isDirectory(path)) {
+        if (Files.isDirectory(dir)){
             countDirectory++;
         }
-        else if (Files.isRegularFile(path)) {
+        return CONTINUE;
+    }
+
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
+
+        if (Files.isRegularFile(path)) {
             countFile++;
+            //System.out.println(path);
         }
-        else if (Files.isSymbolicLink(path)) {
-            countLink++;
+        return CONTINUE;
+    }
+
+    public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+        return CONTINUE;
+    }
+
+    public FileVisitResult visitFileFailed(Path path, IOException e) {
+
+        if (Files.isDirectory(path)) {
+            countErrorDirectory++;
+            System.out.println("Exception: " + e.getMessage());
+            e.printStackTrace();
         }
         else {
-            countExtra++;
+            countErrorOther++;
+            System.out.println("Failed to access: " + e.getMessage());
         }
 
-        return CONTINUE;
-    }
-
-    public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException{
-        return CONTINUE;
-    }
-
-    public FileVisitResult visitFileFailed(Path file, IOException e) throws IOException{
-        System.out.println("Failed to access file: " + file);
-        countError++;
         return CONTINUE;
     }
 
     public void reset() {
-        countError = 0;
+        countErrorOther = 0;
+        countErrorDirectory = 0;
         countFile = 0;
         countDirectory = 0;
-        countLink = 0;
-        countExtra = 0;
     }
 
-    public long getCountFile(){
+    public long getCountFile() {
         return countFile;
     }
 
-    public long getCountDirectory(){
+    public long getCountDirectory() {
         return countDirectory;
     }
 
-    public long getCountError(){
-        return countError;
+    public long getCountErrorOther() {
+        return countErrorOther;
     }
 
-    public long getCountLink(){
-        return countLink;
+    public long getCountErrorDirectory() {
+        return countErrorDirectory;
     }
 
-    public long getCountExtra() {
-        return countExtra;
+    public List<String> getIgnoredPaths() {
+        return ignoredPaths;
     }
 }
