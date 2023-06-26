@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirm File Walker</title>
+  <style>
+    h2 {text-align:center}
+    form, a {text-align:left; display:flex; flex-direction:column; align-items:center}
+    button {font-size: 16px}
+  </style>
+<body>
+  <h2>Are you sure you want to run/rerun the file walker?</h2>
+  <form action="/FileWalker" method = "POST">
+    <input type="hidden" name="confirm" value="true">
+    <button type="submit">Run File Walker</button>
+  </form><br>
+  <a href="/FileWalker"><button>Cancel</button></a>
+</body>
+</html>

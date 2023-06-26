@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import java.io.IOException;
 
 @Controller
@@ -34,9 +36,9 @@ public class WalkerController {
     }
 
     @RequestMapping(value="/FileWalker", method={RequestMethod.POST})
-    public String executeWalker() {
+    public String executeWalker(@RequestParam(name = "confirm") String confirm) {
 
-        if (!this.fileWalker.isRunning()) {
+        if (confirm.equals("true") && !this.fileWalker.isRunning()) {
 
             Runnable runnable = () -> {
                 try {
@@ -52,5 +54,11 @@ public class WalkerController {
         }
 
         return "redirect:/FileWalker";
+    }
+
+    @RequestMapping(value="/ConfirmFileWalker", method={RequestMethod.POST})
+    public String confirmFileWalker(){
+
+        return "confirm";
     }
 }

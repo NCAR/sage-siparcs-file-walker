@@ -22,8 +22,8 @@
         <b>State:</b> <span th:if="${state == true}">Running</span> <span th:unless="${state == true}">Not Running</span><br>
         <a href="/FileWalker"><button>Refresh</button></a>
     </p>
-    <form action="/FileWalker" method="POST">
-        <br><button id='runButton' type="submit">Run FileWalker</button>
+    <form action="/ConfirmFileWalker" method="POST">
+        <br><button type="submit">Run FileWalker</button>
     </form>
 </body>
 </html>
