@@ -36,9 +36,9 @@ public class WalkerController {
     }
 
     @RequestMapping(value="/FileWalker", method={RequestMethod.POST})
-    public String executeWalker(@RequestParam(name = "confirm") String confirm) {
+    public String executeWalker(@RequestParam(name = "confirm") boolean confirm) {
 
-        if (confirm.equals("true") && !this.fileWalker.isRunning()) {
+        if (confirm && !this.fileWalker.isRunning()) {
 
             Runnable runnable = () -> {
                 try {
