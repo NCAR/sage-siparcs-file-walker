@@ -17,6 +17,7 @@
         <b>Total Files:</b> <span th:text="${totalFile}">Data Not Found</span><br>
         <b>Total Directories:</b> <span th:text="${totalDirectory}">Data Not Found</span><br>
         <b>Total Errored Directories:</b> <span th:text="${totalDirectoryError}">Data Not Found</span><br>
+        <b>Total Errored Files:</b> <span th:text="${totalFileError}">Data Not Found</span><br>
         <b>Total Other Errors:</b> <span th:text="${totalOtherError}">Data Not Found</span><br>
         <b>Run Time:</b> <span th:text="${runTime}">Data Not Found</span> milliseconds<br><br>
         <b>State:</b> <span th:if="${state == true}">Running</span> <span th:unless="${state == true}">Not Running</span><br>

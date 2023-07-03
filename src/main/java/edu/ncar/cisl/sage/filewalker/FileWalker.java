@@ -67,6 +67,10 @@ public class FileWalker {
         return this.fileVisitor.getCountErrorOther();
     }
 
+    public long getFileErrorCount() {
+        return this.fileVisitor.getCountErrorFile();
+    }
+
     public long getDuration() {
 
         if (!isFinished) {

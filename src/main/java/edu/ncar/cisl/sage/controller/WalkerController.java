@@ -27,6 +27,7 @@ public class WalkerController {
         model.addAttribute("lastStarted", this.fileWalker.getLastAccess());
         model.addAttribute("totalFile", this.fileWalker.getFileCount());
         model.addAttribute("totalDirectory", this.fileWalker.getDirectoryCount());
+        model.addAttribute("totalFileError", this.fileWalker.getFileErrorCount());
         model.addAttribute("totalOtherError", this.fileWalker.getOtherErrorCount());
         model.addAttribute("totalDirectoryError", this.fileWalker.getDirectoryErrorCount());
         model.addAttribute("runTime", this.fileWalker.getDuration());
