@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 
 public interface DirectoryFoundEvent {
 
+    String getId();
     String getFileIdentifier();
 
     String getFileName();

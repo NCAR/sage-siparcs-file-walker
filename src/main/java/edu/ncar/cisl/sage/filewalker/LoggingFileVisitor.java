@@ -4,6 +4,7 @@ import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
+import edu.ncar.cisl.sage.identification.IdCalculator;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
@@ -32,13 +33,16 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
     private long countErrorDirectory = 0;
 
     private final List<String> ignoredPaths;
+
+    private final IdCalculator idCalculator;
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public LoggingFileVisitor(List<String> ignoredPaths) {
+    public LoggingFileVisitor(List<String> ignoredPaths, IdCalculator idCalculator) {
         this.ignoredPaths = ignoredPaths;
+        this.idCalculator = idCalculator;
     }
 
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
 
         // TODO change to stream.
         if(Files.isSymbolicLink(dir)){
@@ -58,7 +62,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
 
         if (Files.isRegularFile(path)) {
             countFile++;
-
             //Makes event of type FileFound and publishes it
             this.fireFileFoundEvent(path, attr);
         }
@@ -70,6 +73,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate FileFoundEvent
         FileFoundEventImpl fileFoundEventImpl = new FileFoundEventImpl(this);
 
+        fileFoundEventImpl.setId(calculateId(idCalculator, path.toString()));
         fileFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
         fileFoundEventImpl.setFileName(path.getFileName().toString());
         fileFoundEventImpl.setPath(path);
@@ -102,6 +106,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate DirectoryFoundEvent
         DirectoryFoundEventImpl directoryFoundEventImpl = new DirectoryFoundEventImpl(this);
 
+        directoryFoundEventImpl.setId(calculateId(idCalculator, path.toString()));
         directoryFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
         directoryFoundEventImpl.setFileName(path.getFileName().toString());
         directoryFoundEventImpl.setPath(path);
@@ -138,6 +143,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate FileErrorEvent
         FileErrorEventImpl fileErrorEventImpl = new FileErrorEventImpl(this);
 
+        fileErrorEventImpl.setId(calculateId(idCalculator, path.toString()));
         fileErrorEventImpl.setFileIdentifier(null);
         fileErrorEventImpl.setFileName(path.getFileName().toString());
         fileErrorEventImpl.setPath(path);
@@ -154,6 +160,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate DirectoryErrorEvent
         DirectoryErrorEventImpl directoryErrorEventImpl = new DirectoryErrorEventImpl(this);
 
+        directoryErrorEventImpl.setId(calculateId(idCalculator, path.toString()));
         directoryErrorEventImpl.setFileIdentifier(null);
         directoryErrorEventImpl.setFileName(path.getFileName().toString());
         directoryErrorEventImpl.setPath(path);
@@ -200,5 +207,10 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
 
         this.applicationEventPublisher = applicationEventPublisher;
+    }
+
+    public String calculateId(IdCalculator idCalculator, String path) {
+
+        return (idCalculator.calculateId(path));
     }
 }

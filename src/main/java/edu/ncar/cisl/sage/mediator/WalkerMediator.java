@@ -27,6 +27,7 @@ public class WalkerMediator {
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
 
+        esFile.setId(event.getId());
         esFile.setFileIdentifier(event.getFileIdentifier());
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
@@ -57,6 +58,7 @@ public class WalkerMediator {
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
 
+        esFile.setId(event.getId());
         esFile.setFileIdentifier(event.getFileIdentifier());
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
@@ -86,6 +88,7 @@ public class WalkerMediator {
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
 
+        esFile.setId(event.getId());
         esFile.setFileIdentifier(event.getFileIdentifier());
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
@@ -115,6 +118,7 @@ public class WalkerMediator {
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
 
+        esFile.setId(event.getId());
         esFile.setFileIdentifier(event.getFileIdentifier());
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());

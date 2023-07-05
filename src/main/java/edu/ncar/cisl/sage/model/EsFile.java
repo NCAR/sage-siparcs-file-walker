@@ -5,6 +5,7 @@ import java.time.ZonedDateTime;
 
 public class EsFile {
 
+    private String id;
     private String fileIdentifier;
     private String fileName;
     private Path path;
@@ -20,6 +21,8 @@ public class EsFile {
     private Boolean isError;
 
     private String errorMessage;
+
+    public String getId() { return this.id; }
 
     public String getFileIdentifier() {
         return this.fileIdentifier;
@@ -67,6 +70,7 @@ public class EsFile {
 
     //Setters
 
+    public void setId(String id) {this.id = id; }
     public void setFileIdentifier(String fileIdentifier) {
         this.fileIdentifier = fileIdentifier;
     }

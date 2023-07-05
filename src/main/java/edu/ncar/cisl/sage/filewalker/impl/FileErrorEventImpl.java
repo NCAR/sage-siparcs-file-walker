@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 
 public class FileErrorEventImpl extends ApplicationEvent implements FileErrorEvent {
 
+    private String id;
     private String fileIdentifier;
     private String fileName;
     private Path path;
@@ -18,6 +19,15 @@ public class FileErrorEventImpl extends ApplicationEvent implements FileErrorEve
     public FileErrorEventImpl(Object source) {
 
         super(source);
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

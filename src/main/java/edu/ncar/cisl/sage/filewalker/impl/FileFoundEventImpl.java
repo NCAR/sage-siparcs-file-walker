@@ -8,6 +8,7 @@ import java.time.ZonedDateTime;
 
 public class FileFoundEventImpl extends ApplicationEvent implements FileFoundEvent {
 
+    private String id;
     private String fileIdentifier;
     private String fileName;
     private Path path;
@@ -24,6 +25,10 @@ public class FileFoundEventImpl extends ApplicationEvent implements FileFoundEve
         super(source);
     }
 
+    @Override
+    public String getId() { return id; }
+
+    public void setId(String id) { this.id = id; }
     @Override
     public String getFileIdentifier() {
         return fileIdentifier;
