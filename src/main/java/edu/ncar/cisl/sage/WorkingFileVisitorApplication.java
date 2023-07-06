@@ -8,8 +8,7 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.filewalker.FileWalker;
 import edu.ncar.cisl.sage.filewalker.LoggingFileVisitor;
-import edu.ncar.cisl.sage.identification.IdCalculator;
-import edu.ncar.cisl.sage.identification.md5Calculator;
+import edu.ncar.cisl.sage.identification.IdCalculatorFactory;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,13 +38,15 @@ public class WorkingFileVisitorApplication  {
     private List<String> ignoredPaths;
 
     public static void main(String[] args) {
-        SpringApplication.run(WorkingFileVisitorApplication.class, args);
+            SpringApplication.run(WorkingFileVisitorApplication.class, args);
     }
 
     @Bean
     public LoggingFileVisitor loggingFileVisitor() {
 
-        return new LoggingFileVisitor(ignoredPaths, new md5Calculator());
+        IdCalculatorFactory factory = new IdCalculatorFactory();
+
+        return new LoggingFileVisitor(ignoredPaths, factory);
     }
 
     @Bean
@@ -64,7 +65,7 @@ public class WorkingFileVisitorApplication  {
 
         ElasticsearchTransport transport = new RestClientTransport(restClient, mapper);
 
-        return(new ElasticsearchClient(transport));
+        return (new ElasticsearchClient(transport));
     }
 
     @Bean
