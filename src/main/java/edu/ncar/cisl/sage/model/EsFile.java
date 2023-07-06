@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 
 public class EsFile {
 
-    private String id;
     private String fileIdentifier;
     private String fileName;
     private Path path;
@@ -22,96 +21,88 @@ public class EsFile {
 
     private String errorMessage;
 
-    public String getId() { return this.id; }
-
     public String getFileIdentifier() {
-        return this.fileIdentifier;
+        return fileIdentifier;
+    }
+
+    public void setFileIdentifier(String fileIdentifier) {
+        this.fileIdentifier = fileIdentifier;
     }
 
     public String getFileName() {
-        return this.fileName;
-    }
-
-    public Path getPath() {
-        return this.path;
-    }
-
-    public Boolean isDirectory() {
-        return this.isDirectory;
-    }
-
-    public Long getSize() {
-        return this.size;
-    }
-
-    public ZonedDateTime getDateCreated() {
-        return this.dateCreated;
-    }
-
-    public ZonedDateTime getDateModified() {
-        return this.dateModified;
-    }
-
-    public ZonedDateTime getDateLastIndexed() {
-        return this.dateLastIndexed;
-    }
-
-    public String getOwner() {
-        return this.owner;
-    }
-
-    public String getGroup() {
-        return this.group;
-    }
-
-    public String getPermissions() {
-        return this.permissions;
-    }
-
-    //Setters
-
-    public void setId(String id) {this.id = id; }
-    public void setFileIdentifier(String fileIdentifier) {
-        this.fileIdentifier = fileIdentifier;
+        return fileName;
     }
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
+    public Path getPath() {
+        return path;
+    }
+
     public void setPath(Path path) {
         this.path = path;
     }
 
-    public void setDirectory(Boolean isDirectory) {
-        this.isDirectory = isDirectory;
+    public Boolean getDirectory() {
+        return isDirectory;
+    }
+
+    public void setDirectory(Boolean directory) {
+        isDirectory = directory;
+    }
+
+    public Long getSize() {
+        return size;
     }
 
     public void setSize(Long size) {
         this.size = size;
     }
 
-    public void setDateCreated(ZonedDateTime dateCreated) {
+    public ZonedDateTime getDateCreated() {
+        return dateCreated;
+    }
 
-            this.dateCreated = dateCreated;
+    public void setDateCreated(ZonedDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public ZonedDateTime getDateModified() {
+        return dateModified;
     }
 
     public void setDateModified(ZonedDateTime dateModified) {
-
         this.dateModified = dateModified;
     }
 
-    public void setDateLastIndexed(ZonedDateTime dateLastIndexed) {
+    public ZonedDateTime getDateLastIndexed() {
+        return dateLastIndexed;
+    }
 
-            this.dateLastIndexed = dateLastIndexed;
+    public void setDateLastIndexed(ZonedDateTime dateLastIndexed) {
+        this.dateLastIndexed = dateLastIndexed;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
+    public String getGroup() {
+        return group;
+    }
+
     public void setGroup(String group) {
         this.group = group;
+    }
+
+    public String getPermissions() {
+        return permissions;
     }
 
     public void setPermissions(String permissions) {
