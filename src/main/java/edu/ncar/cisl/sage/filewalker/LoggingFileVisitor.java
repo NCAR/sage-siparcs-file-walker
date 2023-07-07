@@ -4,7 +4,6 @@ import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
-import edu.ncar.cisl.sage.identification.IdCalculatorFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
@@ -34,12 +33,10 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
 
     private final List<String> ignoredPaths;
 
-    private final IdCalculatorFactory idCalculatorFactory;
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public LoggingFileVisitor(List<String> ignoredPaths, IdCalculatorFactory idCalculatorFactory) {
+    public LoggingFileVisitor(List<String> ignoredPaths) {
         this.ignoredPaths = ignoredPaths;
-        this.idCalculatorFactory = idCalculatorFactory;
     }
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
@@ -56,8 +53,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         return CONTINUE;
     }
 
-
-
     public FileVisitResult visitFile(Path path, BasicFileAttributes attr) throws IOException {
 
         if (Files.isRegularFile(path)) {
@@ -73,7 +68,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate FileFoundEvent
         FileFoundEventImpl fileFoundEventImpl = new FileFoundEventImpl(this);
 
-        fileFoundEventImpl.setId(idCalculatorFactory.createCalculator("md5").calculateId(path.toString()));
         fileFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
         fileFoundEventImpl.setFileName(path.getFileName().toString());
         fileFoundEventImpl.setPath(path);
@@ -106,11 +100,9 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate DirectoryFoundEvent
         DirectoryFoundEventImpl directoryFoundEventImpl = new DirectoryFoundEventImpl(this);
 
-        directoryFoundEventImpl.setId(idCalculatorFactory.createCalculator("md5").calculateId(path.toString()));
         directoryFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
         directoryFoundEventImpl.setFileName(path.getFileName().toString());
         directoryFoundEventImpl.setPath(path);
-        directoryFoundEventImpl.setSize(Files.size(path));
         directoryFoundEventImpl.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
         directoryFoundEventImpl.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
         directoryFoundEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
@@ -143,7 +135,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate FileErrorEvent
         FileErrorEventImpl fileErrorEventImpl = new FileErrorEventImpl(this);
 
-        fileErrorEventImpl.setId(idCalculatorFactory.createCalculator("md5").calculateId(path.toString()));
         fileErrorEventImpl.setFileIdentifier(null);
         fileErrorEventImpl.setFileName(path.getFileName().toString());
         fileErrorEventImpl.setPath(path);
@@ -160,7 +151,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Create and Populate DirectoryErrorEvent
         DirectoryErrorEventImpl directoryErrorEventImpl = new DirectoryErrorEventImpl(this);
 
-        directoryErrorEventImpl.setId(idCalculatorFactory.createCalculator("md5").calculateId(path.toString()));
         directoryErrorEventImpl.setFileIdentifier(null);
         directoryErrorEventImpl.setFileName(path.getFileName().toString());
         directoryErrorEventImpl.setPath(path);

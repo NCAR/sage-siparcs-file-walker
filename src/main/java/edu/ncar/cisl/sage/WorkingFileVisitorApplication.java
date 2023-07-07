@@ -8,8 +8,13 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.filewalker.FileWalker;
 import edu.ncar.cisl.sage.filewalker.LoggingFileVisitor;
-import edu.ncar.cisl.sage.identification.IdCalculatorFactory;
+import edu.ncar.cisl.sage.identification.IdStrategy;
+import edu.ncar.cisl.sage.identification.md5Calculator;
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -26,46 +31,55 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WorkingFileVisitorApplication  {
 
-    @Value("${walker.startingPath}")
-    private String startingPath;
-
-//	Create Interface for FileVisitor so that multiple can be made and passed in to be used??
-//	Needs to be updated so that it supports FileVisitor<Path> throughout the program ??
-//	@Value("${walker.fileVisitor})
-//	private FileVisitor<Path> fileVisitor
-
-    @Value("${config.ignoredPaths}")
-    private List<String> ignoredPaths;
-
     public static void main(String[] args) {
             SpringApplication.run(WorkingFileVisitorApplication.class, args);
     }
 
     @Bean
-    public LoggingFileVisitor loggingFileVisitor() {
+    public LoggingFileVisitor loggingFileVisitor(@Value("${config.ignoredPaths}") List<String> ignoredPaths) {
 
-        IdCalculatorFactory factory = new IdCalculatorFactory();
-
-        return new LoggingFileVisitor(ignoredPaths, factory);
+        return new LoggingFileVisitor(ignoredPaths);
     }
 
     @Bean
-    public FileWalker fileWalker(LoggingFileVisitor visitor) {
+    public FileWalker fileWalker(@Value("${walker.startingPath}") String startingPath, LoggingFileVisitor visitor) {
 
         return new FileWalker(Path.of(startingPath), visitor, Clock.systemDefaultZone());
     }
-
     @Bean
-    public ElasticsearchClient createClient() {
+    public ElasticsearchClient createClient(@Value("${xpack.security.enabled}") boolean isSecurityEnabled,
+                                            @Value("${http.host}") String hostname,
+                                            @Value("${http.port}") int port,
+                                            @Value("${elastic.username}") String username,
+                                            @Value("${elastic.password}") String password) {
 
-        RestClient restClient = RestClient.builder(new HttpHost("localhost", 9200)).build();
+        if (isSecurityEnabled) {
 
-        JacksonJsonpMapper mapper = new JacksonJsonpMapper();
-        mapper.objectMapper().registerModule(new JavaTimeModule());
+            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 
-        ElasticsearchTransport transport = new RestClientTransport(restClient, mapper);
+            RestClient restClient = RestClient.builder(new HttpHost(hostname, port, "HTTPS"))
+                    .setHttpClientConfigCallback(httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider))
+                    .build();
 
-        return (new ElasticsearchClient(transport));
+            JacksonJsonpMapper mapper = new JacksonJsonpMapper();
+            mapper.objectMapper().registerModule(new JavaTimeModule());
+
+            ElasticsearchTransport transport = new RestClientTransport(restClient, mapper);
+
+            return new ElasticsearchClient(transport);
+
+        } else {
+
+            RestClient restClient = RestClient.builder(new HttpHost(hostname, port)).build();
+
+            JacksonJsonpMapper mapper = new JacksonJsonpMapper();
+            mapper.objectMapper().registerModule(new JavaTimeModule());
+
+            ElasticsearchTransport transport = new RestClientTransport(restClient, mapper);
+
+            return new ElasticsearchClient(transport);
+        }
     }
 
     @Bean
@@ -78,6 +92,12 @@ public class WorkingFileVisitorApplication  {
         );
 
         return ingester;
+    }
+
+    @Bean
+    public IdStrategy createIdStrategy() {
+
+        return new md5Calculator();
     }
 
 }
