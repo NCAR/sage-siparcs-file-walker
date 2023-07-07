@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 
 public interface DirectoryErrorEvent {
 
-    String getId();
     String getFileIdentifier();
 
     String getFileName();

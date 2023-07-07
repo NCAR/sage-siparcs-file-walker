@@ -5,6 +5,7 @@ import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
+import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.model.EsFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -16,9 +17,13 @@ public class WalkerMediator {
 
     private final BulkIngester<Void> ingester;
 
+    private final IdStrategy idStrategy;
+
     @Autowired
-    public WalkerMediator(BulkIngester<Void> ingester) {
+    public WalkerMediator(BulkIngester<Void> ingester, IdStrategy idStrategy) {
+
         this.ingester = ingester;
+        this.idStrategy = idStrategy;
     }
 
     @EventListener
@@ -31,7 +36,7 @@ public class WalkerMediator {
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
         esFile.setDirectory(Boolean.valueOf("true"));
-        esFile.setSize(event.getSize());
+        esFile.setSize(null);
         esFile.setDateCreated(event.getDateCreated());
         esFile.setDateModified(event.getDateModified());
         esFile.setDateLastIndexed(event.getDateLastIndexed());
@@ -46,7 +51,7 @@ public class WalkerMediator {
                 .index(idx -> idx
                         .index("files")
                         .document(esFile)
-                        .id(event.getId())
+                        .id(idStrategy.calculateId(event.getPath().toString()))
                 )
         );
 
@@ -62,13 +67,7 @@ public class WalkerMediator {
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
         esFile.setDirectory(Boolean.valueOf("true"));
-        esFile.setSize(null);
-        esFile.setDateCreated(null);
-        esFile.setDateModified(null);
         esFile.setDateLastIndexed(event.getDateLastIndexed());
-        esFile.setOwner(null);
-        esFile.setGroup(null);
-        esFile.setPermissions(null);
         esFile.setError(Boolean.valueOf("true"));
         esFile.setErrorMessage(event.getErrorMessage());
 
@@ -77,7 +76,7 @@ public class WalkerMediator {
                 .index(idx -> idx
                         .index("files")
                         .document(esFile)
-                        .id(event.getId())
+                        .id(idStrategy.calculateId(event.getPath().toString()))
                 )
         );
     }
@@ -107,7 +106,7 @@ public class WalkerMediator {
                 .index(idx -> idx
                         .index("files")
                         .document(esFile)
-                        .id(event.getId())
+                        .id(idStrategy.calculateId(event.getPath().toString()))
                 )
         );
     }
@@ -137,7 +136,7 @@ public class WalkerMediator {
                 .index(idx -> idx
                         .index("files")
                         .document(esFile)
-                        .id(event.getId())
+                        .id(idStrategy.calculateId(event.getPath().toString()))
                 )
         );
     }

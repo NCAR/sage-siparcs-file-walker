@@ -5,14 +5,11 @@ import java.time.ZonedDateTime;
 
 public interface DirectoryFoundEvent {
 
-    String getId();
     String getFileIdentifier();
 
     String getFileName();
 
     Path getPath();
-
-    Long getSize();
 
     ZonedDateTime getDateCreated();
 

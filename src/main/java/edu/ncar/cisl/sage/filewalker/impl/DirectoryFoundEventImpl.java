@@ -8,11 +8,9 @@ import java.time.ZonedDateTime;
 
 public class DirectoryFoundEventImpl extends ApplicationEvent implements DirectoryFoundEvent {
 
-    private String id;
     private String fileIdentifier;
     private String fileName;
     private Path path;
-    private Long size;
     private ZonedDateTime dateCreated;
     private ZonedDateTime dateModified;
     private ZonedDateTime dateLastIndexed;
@@ -21,15 +19,6 @@ public class DirectoryFoundEventImpl extends ApplicationEvent implements Directo
     public DirectoryFoundEventImpl(Object source) {
 
         super(source);
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override
@@ -58,11 +47,6 @@ public class DirectoryFoundEventImpl extends ApplicationEvent implements Directo
     public void setPath(Path path) {
         this.path = path;
     }
-
-    @Override
-    public Long getSize() { return size; }
-
-    public void setSize(Long size) {this.size = size; }
 
     public ZonedDateTime getDateCreated() {
         return dateCreated;

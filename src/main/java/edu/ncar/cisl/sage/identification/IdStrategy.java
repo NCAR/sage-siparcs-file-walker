@@ -1,8 +1,5 @@
 package edu.ncar.cisl.sage.identification;
 
-import java.nio.file.Path;
-
-public interface IdCalculator {
-
+public interface IdStrategy {
     String calculateId(String path);
 }

@@ -5,7 +5,6 @@ import java.time.ZonedDateTime;
 
 public interface FileErrorEvent {
 
-    String getId();
     String getFileIdentifier();
 
     String getFileName();

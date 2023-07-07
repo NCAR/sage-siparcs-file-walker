@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.filewalker.FileWalker;
 import edu.ncar.cisl.sage.filewalker.LoggingFileVisitor;
 import edu.ncar.cisl.sage.identification.IdStrategy;
-import edu.ncar.cisl.sage.identification.md5Calculator;
+import edu.ncar.cisl.sage.identification.Md5Calculator;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -97,7 +97,7 @@ public class WorkingFileVisitorApplication  {
     @Bean
     public IdStrategy createIdStrategy() {
 
-        return new md5Calculator();
+        return new Md5Calculator();
     }
 
 }

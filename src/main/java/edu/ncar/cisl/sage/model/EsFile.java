@@ -21,6 +21,9 @@ public class EsFile {
 
     private String errorMessage;
 
+    public EsFile() {
+    }
+
     public String getFileIdentifier() {
         return fileIdentifier;
     }

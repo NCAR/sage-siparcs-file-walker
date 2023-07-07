@@ -1,45 +1,42 @@
 package edu.ncar.cisl.sage.identification;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
+import org.junit.jupiter.api.*;
 
 public class md5CalculatorTest {
 
-    @Test
-    @DisplayName("DirectoryErrored Checksum Id")
-    public void calculateDirectoryErroredId() {
+    private Md5Calculator calculator;
 
-        md5Calculator calculator = new md5Calculator();
+    @BeforeEach
+    public void setup() {
 
-        String checksum = calculator.calculateId(Path.of("/Users/mcnette/Library/Application Support/CallHistoryTransactions").toString());
-
-        Assertions.assertEquals("a50b27be9f45121b0064e17894edaf90", checksum);
+        this.calculator = new Md5Calculator();
     }
 
     @Test
-    @DisplayName("DirectoryFound Checksum Id")
-    public void calculateDirectoryFoundId() {
+    public void given_string__when_calculateId__then_md5() {
 
-        md5Calculator calculator = new md5Calculator();
-
-        String checksum = calculator.calculateId(Path.of("/Users/mcnette/.config/iterm2").toString());
-
-        Assertions.assertEquals("05cbe896d5cc9c8d4063581a0a9e8499", checksum);
+        assertTrue("a50b27be9f45121b0064e17894edaf90", "/Users/mcnette/Library/Application Support/CallHistoryTransactions");
+        assertTrue("05cbe896d5cc9c8d4063581a0a9e8499", "/Users/mcnette/.config/iterm2");
+        assertTrue("bf7980bef19c008b93b5677875b5aed4", "/Users/mcnette/.config/containers/containers.conf");
+        assertTrue("938c2cc0dcc05f2b68c4287040cfcf71", "frog");
+        assertTrue("d41d8cd98f00b204e9800998ecf8427e", "");
+        assertTrue("7215ee9c7d9dc229d2921a40e899ec5f", " ");
     }
 
-    //FileErrored is not present for testing
+    private void assertTrue(String expectedMd5, String string) {
+
+        String calculatedMd5 = this.calculator.calculateId(string);
+
+        Assertions.assertEquals(expectedMd5, calculatedMd5);
+    }
 
     @Test
-    @DisplayName("FileFound Checksum Id")
-    public void calculateFileFoundId() {
+    public void given_null__when_calculatedId__then_what() {
 
-        md5Calculator calculator = new md5Calculator();
+        Assertions.assertThrows(NullPointerException.class, () -> {
 
-        String checksum = calculator.calculateId(Path.of("/Users/mcnette/.config/containers/containers.conf").toString());
-
-        Assertions.assertEquals("bf7980bef19c008b93b5677875b5aed4", checksum);
+            this.calculator.calculateId(null);
+        });
     }
+
 }

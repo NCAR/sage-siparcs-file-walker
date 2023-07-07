@@ -8,7 +8,6 @@ import java.time.ZonedDateTime;
 
 public class DirectoryErrorEventImpl extends ApplicationEvent implements DirectoryErrorEvent {
 
-    private String id;
     private String fileIdentifier;
     private String fileName;
     private Path path;
@@ -18,15 +17,6 @@ public class DirectoryErrorEventImpl extends ApplicationEvent implements Directo
     public DirectoryErrorEventImpl(Object source) {
 
         super(source);
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     @Override
