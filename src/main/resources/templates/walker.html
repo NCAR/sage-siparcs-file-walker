@@ -21,9 +21,9 @@
         <b>Total Other Errors:</b> <span th:text="${totalOtherError}">Data Not Found</span><br>
         <b>Run Time:</b> <span th:text="${runTime}">Data Not Found</span> milliseconds<br><br>
         <b>State:</b> <span th:if="${state == true}">Running</span> <span th:unless="${state == true}">Not Running</span><br>
-        <a href="/FileWalker"><button>Refresh</button></a>
+        <a href="/file-walker"><button>Refresh</button></a>
     </p>
-    <form action="/ConfirmFileWalker" method="POST">
+    <form action="/confirm-file-walker" method="POST">
         <br><button type="submit">Run FileWalker</button>
     </form>
 </body>

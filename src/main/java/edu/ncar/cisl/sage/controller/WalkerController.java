@@ -19,7 +19,7 @@ public class WalkerController {
         this.fileWalker = fileWalker;
     }
 
-    @RequestMapping(value="/FileWalker", method={RequestMethod.GET})
+    @RequestMapping(value="/file-walker", method={RequestMethod.GET})
     public String executeWalker(Model model) {
 
         model.addAttribute("startingPath", this.fileWalker.getStartingPath());
@@ -36,7 +36,7 @@ public class WalkerController {
         return "walker";
     }
 
-    @RequestMapping(value="/FileWalker", method={RequestMethod.POST})
+    @RequestMapping(value="/file-walker", method={RequestMethod.POST})
     public String executeWalker(@RequestParam(name = "confirm") boolean confirm) {
 
         if (confirm && !this.fileWalker.isRunning()) {
@@ -54,10 +54,10 @@ public class WalkerController {
             thread.start();
         }
 
-        return "redirect:/FileWalker";
+        return "redirect:/file-walker";
     }
 
-    @RequestMapping(value="/ConfirmFileWalker", method={RequestMethod.POST})
+    @RequestMapping(value="/confirm-file-walker", method={RequestMethod.POST})
     public String confirmFileWalker(){
 
         return "confirm";
