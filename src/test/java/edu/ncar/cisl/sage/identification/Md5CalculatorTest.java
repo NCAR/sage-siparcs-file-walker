@@ -2,7 +2,7 @@ package edu.ncar.cisl.sage.identification;
 
 import org.junit.jupiter.api.*;
 
-public class md5CalculatorTest {
+public class Md5CalculatorTest {
 
     private Md5Calculator calculator;
 
