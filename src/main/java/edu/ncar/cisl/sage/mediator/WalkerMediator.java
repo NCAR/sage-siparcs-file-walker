@@ -36,15 +36,11 @@ public class WalkerMediator {
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
         esFile.setDirectory(Boolean.valueOf("true"));
-        esFile.setSize(null);
         esFile.setDateCreated(event.getDateCreated());
         esFile.setDateModified(event.getDateModified());
         esFile.setDateLastIndexed(event.getDateLastIndexed());
         esFile.setOwner(event.getOwner());
-        esFile.setGroup(null);
-        esFile.setPermissions(null);
         esFile.setError(Boolean.valueOf("false"));
-        esFile.setErrorMessage(null);
 
         // Ship to ES.
         ingester.add(op -> op
@@ -90,6 +86,7 @@ public class WalkerMediator {
         esFile.setFileIdentifier(event.getFileIdentifier());
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
+        esFile.setExtension(event.getExtension());
         esFile.setDirectory(Boolean.valueOf("false"));
         esFile.setSize(event.getSize());
         esFile.setDateCreated(event.getDateCreated());
@@ -99,7 +96,6 @@ public class WalkerMediator {
         esFile.setGroup(event.getGroup());
         esFile.setPermissions(event.getPermissions());
         esFile.setError(Boolean.valueOf("false"));
-        esFile.setErrorMessage(null);
 
         // Ship to ES.
         ingester.add(op -> op
@@ -120,14 +116,9 @@ public class WalkerMediator {
         esFile.setFileIdentifier(event.getFileIdentifier());
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
+        esFile.setExtension(event.getExtension());
         esFile.setDirectory(Boolean.valueOf("false"));
-        esFile.setSize(null);
-        esFile.setDateCreated(null);
-        esFile.setDateModified(null);
         esFile.setDateLastIndexed(event.getDateLastIndexed());
-        esFile.setOwner(null);
-        esFile.setGroup(null);
-        esFile.setPermissions(null);
         esFile.setError(Boolean.valueOf("true"));
         esFile.setErrorMessage(event.getErrorMessage());
 

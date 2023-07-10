@@ -11,7 +11,7 @@ public class FileErrorEventImpl extends ApplicationEvent implements FileErrorEve
     private String fileIdentifier;
     private String fileName;
     private Path path;
-
+    private String extension;
     private ZonedDateTime dateLastIndexed;
     private String errorMessage;
 
@@ -45,6 +45,15 @@ public class FileErrorEventImpl extends ApplicationEvent implements FileErrorEve
 
     public void setPath(Path path) {
         this.path = path;
+    }
+
+    @Override
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     @Override

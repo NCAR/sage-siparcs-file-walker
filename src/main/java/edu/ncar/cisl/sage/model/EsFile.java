@@ -8,6 +8,7 @@ public class EsFile {
     private String fileIdentifier;
     private String fileName;
     private Path path;
+    private String extension;
     private Boolean isDirectory;
     private Long size;
     private ZonedDateTime dateCreated;
@@ -46,6 +47,14 @@ public class EsFile {
 
     public void setPath(Path path) {
         this.path = path;
+    }
+
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public Boolean getDirectory() {

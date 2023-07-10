@@ -11,6 +11,8 @@ public interface FileFoundEvent {
 
     Path getPath();
 
+    String getExtension();
+
     long getSize();
 
     ZonedDateTime getDateCreated();

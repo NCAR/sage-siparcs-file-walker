@@ -11,6 +11,8 @@ public interface FileErrorEvent {
 
     Path getPath();
 
+    String getExtension();
+
     ZonedDateTime getDateLastIndexed();
 
     String getErrorMessage();

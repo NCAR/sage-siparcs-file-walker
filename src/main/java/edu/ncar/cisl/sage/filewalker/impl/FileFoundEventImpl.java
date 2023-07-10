@@ -5,12 +5,14 @@ import org.springframework.context.ApplicationEvent;
 
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class FileFoundEventImpl extends ApplicationEvent implements FileFoundEvent {
 
     private String fileIdentifier;
     private String fileName;
     private Path path;
+    private String extension;
     private long size;
     private ZonedDateTime dateCreated;
     private ZonedDateTime dateModified;
@@ -52,6 +54,15 @@ public class FileFoundEventImpl extends ApplicationEvent implements FileFoundEve
     }
 
     @Override
+    public String getExtension() {
+        return extension;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
+    }
+
+    @Override
     public long getSize() {
         return size;
     }
@@ -62,6 +73,7 @@ public class FileFoundEventImpl extends ApplicationEvent implements FileFoundEve
 
     @Override
     public ZonedDateTime getDateCreated() {
+
         return dateCreated;
     }
 

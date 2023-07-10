@@ -71,16 +71,27 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         fileFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
         fileFoundEventImpl.setFileName(path.getFileName().toString());
         fileFoundEventImpl.setPath(path);
+        fileFoundEventImpl.setExtension(getExtension(path.getFileName().toString()));
         fileFoundEventImpl.setSize(Files.size(path));
         fileFoundEventImpl.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
         fileFoundEventImpl.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
         fileFoundEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
         fileFoundEventImpl.setOwner(Files.getOwner(path).toString());
-        fileFoundEventImpl.setGroup(null);
-        fileFoundEventImpl.setPermissions(null);
 
         //Publishes FileFoundEvent
         this.applicationEventPublisher.publishEvent(fileFoundEventImpl);
+    }
+
+    public String getExtension(String pathName) {
+
+        int index = pathName.lastIndexOf('.');
+
+        if  (index > 0) {
+            return pathName.substring(index + 1);
+        }
+        else {
+            return null;
+        }
     }
 
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
@@ -138,6 +149,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         fileErrorEventImpl.setFileIdentifier(null);
         fileErrorEventImpl.setFileName(path.getFileName().toString());
         fileErrorEventImpl.setPath(path);
+        fileErrorEventImpl.setExtension(getExtension(path.getFileName().toString()));
         fileErrorEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
         fileErrorEventImpl.setErrorMessage(e.getMessage());
 
