@@ -151,7 +151,9 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         fileErrorEventImpl.setPath(path);
         fileErrorEventImpl.setExtension(getExtension(path.getFileName().toString()));
         fileErrorEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
-        fileErrorEventImpl.setErrorMessage(e.getMessage());
+        //getMessage() was only returning the path and did not include the error message
+        //The reason for this is unclear. Thus, toString() is being used instead as it is an acceptable message.
+        fileErrorEventImpl.setErrorMessage(e.toString());
 
         //Publishes FileErrorEvent
         this.applicationEventPublisher.publishEvent(fileErrorEventImpl);
@@ -167,7 +169,9 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         directoryErrorEventImpl.setFileName(path.getFileName().toString());
         directoryErrorEventImpl.setPath(path);
         directoryErrorEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
-        directoryErrorEventImpl.setErrorMessage(e.getMessage());
+        //getMessage() was only returning the path and did not include the error message
+        //The reason for this is unclear. Thus, toString() is being used instead as it is an acceptable message.
+        directoryErrorEventImpl.setErrorMessage(e.toString());
 
         //Publishes DirectoryErrorEvent
         this.applicationEventPublisher.publishEvent(directoryErrorEventImpl);
