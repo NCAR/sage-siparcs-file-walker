@@ -21,7 +21,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.nio.file.Path;
 import java.time.Clock;
 import java.util.List;
@@ -46,6 +45,7 @@ public class WorkingFileVisitorApplication  {
 
         return new FileWalker(Path.of(startingPath), visitor, Clock.systemDefaultZone());
     }
+
     @Bean
     public ElasticsearchClient createClient(@Value("${xpack.security.enabled}") boolean isSecurityEnabled,
                                             @Value("${http.host}") String hostname,

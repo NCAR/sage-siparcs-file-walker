@@ -1,9 +1,6 @@
 package edu.ncar.cisl.sage.filewalker;
 
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
+import edu.ncar.cisl.sage.filewalker.impl.*;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 

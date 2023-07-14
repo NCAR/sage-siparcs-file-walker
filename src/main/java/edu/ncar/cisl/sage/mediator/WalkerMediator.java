@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 @Component
 public class WalkerMediator {
@@ -36,9 +39,9 @@ public class WalkerMediator {
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
         esFile.setDirectory(Boolean.valueOf("true"));
-        esFile.setDateCreated(event.getDateCreated());
-        esFile.setDateModified(event.getDateModified());
-        esFile.setDateLastIndexed(event.getDateLastIndexed());
+        esFile.setDateCreated(reformatDate(event.getDateCreated()));
+        esFile.setDateModified(reformatDate(event.getDateModified()));
+        esFile.setDateLastIndexed(reformatDate(event.getDateLastIndexed()));
         esFile.setOwner(event.getOwner());
         esFile.setError(Boolean.valueOf("false"));
 
@@ -63,7 +66,7 @@ public class WalkerMediator {
         esFile.setFileName(event.getFileName());
         esFile.setPath(event.getPath());
         esFile.setDirectory(Boolean.valueOf("true"));
-        esFile.setDateLastIndexed(event.getDateLastIndexed());
+        esFile.setDateLastIndexed(reformatDate(event.getDateLastIndexed()));
         esFile.setError(Boolean.valueOf("true"));
         esFile.setErrorMessage(event.getErrorMessage());
 
@@ -89,9 +92,9 @@ public class WalkerMediator {
         esFile.setExtension(event.getExtension());
         esFile.setDirectory(Boolean.valueOf("false"));
         esFile.setSize(event.getSize());
-        esFile.setDateCreated(event.getDateCreated());
-        esFile.setDateModified(event.getDateModified());
-        esFile.setDateLastIndexed(event.getDateLastIndexed());
+        esFile.setDateCreated(reformatDate(event.getDateCreated()));
+        esFile.setDateModified(reformatDate(event.getDateModified()));
+        esFile.setDateLastIndexed(reformatDate(event.getDateLastIndexed()));
         esFile.setOwner(event.getOwner());
         esFile.setGroup(event.getGroup());
         esFile.setPermissions(event.getPermissions());
@@ -118,7 +121,7 @@ public class WalkerMediator {
         esFile.setPath(event.getPath());
         esFile.setExtension(event.getExtension());
         esFile.setDirectory(Boolean.valueOf("false"));
-        esFile.setDateLastIndexed(event.getDateLastIndexed());
+        esFile.setDateLastIndexed(reformatDate(event.getDateLastIndexed()));
         esFile.setError(Boolean.valueOf("true"));
         esFile.setErrorMessage(event.getErrorMessage());
 
@@ -130,5 +133,12 @@ public class WalkerMediator {
                         .id(idStrategy.calculateId(event.getPath().toString()))
                 )
         );
+    }
+
+    private String reformatDate(ZonedDateTime zonedDateTime) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
+
+        return (zonedDateTime.format((formatter)));
     }
 }

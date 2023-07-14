@@ -1,7 +1,6 @@
 package edu.ncar.cisl.sage.model;
 
 import java.nio.file.Path;
-import java.time.ZonedDateTime;
 
 public class EsFile {
 
@@ -11,9 +10,9 @@ public class EsFile {
     private String extension;
     private Boolean isDirectory;
     private Long size;
-    private ZonedDateTime dateCreated;
-    private ZonedDateTime dateModified;
-    private ZonedDateTime dateLastIndexed;
+    private String dateCreated;
+    private String dateModified;
+    private String dateLastIndexed;
     private String owner;
     private String group; //Adjust if it is an id
     private String permissions; //Files has isReadable(Path path), isExecutable(Path path), and isWritable(Path path) as returning boolean
@@ -73,27 +72,27 @@ public class EsFile {
         this.size = size;
     }
 
-    public ZonedDateTime getDateCreated() {
+    public String getDateCreated() {
         return dateCreated;
     }
 
-    public void setDateCreated(ZonedDateTime dateCreated) {
+    public void setDateCreated(String dateCreated) {
         this.dateCreated = dateCreated;
     }
 
-    public ZonedDateTime getDateModified() {
+    public String getDateModified() {
         return dateModified;
     }
 
-    public void setDateModified(ZonedDateTime dateModified) {
+    public void setDateModified(String dateModified) {
         this.dateModified = dateModified;
     }
 
-    public ZonedDateTime getDateLastIndexed() {
+    public String getDateLastIndexed() {
         return dateLastIndexed;
     }
 
-    public void setDateLastIndexed(ZonedDateTime dateLastIndexed) {
+    public void setDateLastIndexed(String dateLastIndexed) {
         this.dateLastIndexed = dateLastIndexed;
     }
 

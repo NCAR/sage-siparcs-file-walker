@@ -5,7 +5,6 @@ import org.springframework.context.ApplicationEvent;
 
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class FileFoundEventImpl extends ApplicationEvent implements FileFoundEvent {
 
