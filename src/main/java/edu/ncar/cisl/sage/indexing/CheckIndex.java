@@ -18,7 +18,7 @@ public class CheckIndex {
     private final ElasticsearchClient esClient;
 
     @Autowired
-    public CheckIndex (ElasticsearchClient esClient) {
+    public CheckIndex(ElasticsearchClient esClient) {
         this.esClient = esClient;
     }
 
@@ -30,7 +30,7 @@ public class CheckIndex {
         if (!existsResponse.value()) {
 
             Map<String, Property> fields = Collections.singletonMap("keyword", Property.of(p -> p.keyword(k -> k.ignoreAbove(256))));
-            Property date = Property.of(p -> p.date(d -> d.fields(fields).format("basic_date_time")));
+            Property date = Property.of(p -> p.date(d -> d.format("basic_date_time")));
             Property boolean_ = Property.of(p -> p.boolean_(b -> b.fields(fields)));
             Property text = Property.of(p -> p.text(t -> t.fields(fields)));
             Property long_ = Property.of(p -> p.long_(l -> l.fields(fields)));
@@ -52,8 +52,6 @@ public class CheckIndex {
                             .properties("size", long_)
                     )
             );
-
-            //System.out.println("Index Was Created");
         }
     }
 }
