@@ -133,6 +133,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         }
         else {
             countErrorOther++;
+            System.out.println(e.toString());
         }
 
         return CONTINUE;
