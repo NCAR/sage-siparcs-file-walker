@@ -45,6 +45,7 @@ public class CheckIndex {
                             .properties("error", boolean_)
                             .properties("errorMessage", text)
                             .properties("extension", text)
+                            .properties("mediaType", text)
                             .properties("fileIdentifier", text)
                             .properties("fileName", text)
                             .properties("owner", text)

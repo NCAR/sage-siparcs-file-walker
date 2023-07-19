@@ -8,6 +8,7 @@ public class EsFile {
     private String fileName;
     private Path path;
     private String extension;
+    private String mediaType;
     private Boolean isDirectory;
     private Long size;
     private String dateCreated;
@@ -54,6 +55,14 @@ public class EsFile {
 
     public void setExtension(String extension) {
         this.extension = extension;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 
     public Boolean getDirectory() {

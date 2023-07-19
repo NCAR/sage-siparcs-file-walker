@@ -21,6 +21,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
 import java.nio.file.Path;
 import java.time.Clock;
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @Configuration
+@EnableScheduling
 public class WorkingFileVisitorApplication  {
 
     public static void main(String[] args) {
@@ -99,5 +102,11 @@ public class WorkingFileVisitorApplication  {
 
         return new Md5Calculator();
     }
+
+//    @Bean
+//    @QuartzDataSource
+//    public DataSource quartzDataSource() {
+//        return DataSourceBuilder.create().build();
+//    }
 
 }
