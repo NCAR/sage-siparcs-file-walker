@@ -22,6 +22,10 @@ public class EsFile {
 
     private String errorMessage;
 
+    private Boolean isMissing;
+
+    private String dateMissing;
+
     public EsFile() {
     }
 
@@ -143,5 +147,21 @@ public class EsFile {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public Boolean getMissing() {
+        return isMissing;
+    }
+
+    public void setMissing(Boolean missing) {
+        isMissing = missing;
+    }
+
+    public String getDateMissing() {
+        return dateMissing;
+    }
+
+    public void setDateMissing(String dateMissing) {
+        this.dateMissing = dateMissing;
     }
 }

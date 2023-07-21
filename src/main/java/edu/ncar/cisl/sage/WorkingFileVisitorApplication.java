@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit;
 @EnableScheduling
 public class WorkingFileVisitorApplication  {
 
+    public static final String esIndex = "files";
+
     public static void main(String[] args) {
             SpringApplication.run(WorkingFileVisitorApplication.class, args);
     }
@@ -90,8 +92,8 @@ public class WorkingFileVisitorApplication  {
 
         BulkIngester<Void> ingester = BulkIngester.of(b -> b
                 .client(esClient)
-                .maxOperations(1000)
-                .flushInterval(1, TimeUnit.MINUTES)
+                .maxOperations(100) //1000
+                .flushInterval(1, TimeUnit.SECONDS) //MINUTES
         );
 
         return ingester;
@@ -102,11 +104,5 @@ public class WorkingFileVisitorApplication  {
 
         return new Md5Calculator();
     }
-
-//    @Bean
-//    @QuartzDataSource
-//    public DataSource quartzDataSource() {
-//        return DataSourceBuilder.create().build();
-//    }
 
 }

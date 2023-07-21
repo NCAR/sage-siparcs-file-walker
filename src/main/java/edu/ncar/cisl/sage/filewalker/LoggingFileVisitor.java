@@ -1,10 +1,6 @@
 package edu.ncar.cisl.sage.filewalker;
 
 import edu.ncar.cisl.sage.filewalker.impl.*;
-import org.apache.tika.detect.DefaultDetector;
-import org.apache.tika.detect.Detector;
-import org.apache.tika.metadata.Metadata;
-import org.apache.tika.mime.MediaType;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
@@ -73,7 +69,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         fileFoundEventImpl.setFileName(path.getFileName().toString());
         fileFoundEventImpl.setPath(path);
         fileFoundEventImpl.setExtension(getExtension(path.getFileName().toString()));
-//        fileFoundEventImpl.setType(getType(path));
         fileFoundEventImpl.setSize(Files.size(path));
         fileFoundEventImpl.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
         fileFoundEventImpl.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
@@ -94,85 +89,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         else {
             return null;
         }
-    }
-
-//    public String getType(Path path) throws IOException {
-//
-//        InputStream stream = null;
-//        try {
-//            stream = Files.newInputStream(path);
-//        } catch (IOException e) {
-//            //System.out.println(e.toString());
-//            throw new RuntimeException(e);
-//        }
-//
-//        Tika tika = new Tika();
-//
-//        String mediaType = tika.detect(stream);
-//
-//        return Objects.requireNonNullElse(mediaType, "No MediaType Calculated");
-//    }
-
-    public String getType(Path path) throws IOException {
-
-//        InputStream is = null;
-//
-//        try {
-//
-//            is = Files.newInputStream(path);
-//
-//        } catch (Exception e) {
-//
-//        }
-//        finally {
-//
-//            if (is != null) {
-//
-//                try {
-//                    is.close();
-//                } catch (Exception e) {
-//
-//                }
-//
-//            }
-//        }
-
-        //This ONE
-//        try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(path))) {
-//
-//            Detector detector = new DefaultDetector();
-//            Metadata metadata = new Metadata();
-//
-//            MediaType mediaType = detector.detect(inputStream, metadata);
-//
-//            //System.out.println(String.format("%s %s", path, mediaType));
-//
-//        } catch (Exception e) {
-//
-//            System.out.println("Exception: " + e);
-//            e.printStackTrace();
-//        }
-
-//        FileInputStream input = new FileInputStream(path.toFile());
-//        InputStream input = null;
-//        try {
-//            input = Files.newInputStream(path);
-//        } finally {
-//            if (input.equals(null)) {
-//                return "No Stream Value Calculated";
-//            }
-//        }
-
-//        System.out.println(input);
-
-//        Detector detector = new DefaultDetector();
-//        Metadata metadata = new Metadata();
-//
-//        MediaType mediaType = detector.detect(input, metadata);
-//
-//        return Objects.requireNonNullElse(mediaType.toString(), "No MediaType Calculated");
-
-        return null;
     }
 
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
@@ -217,7 +133,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         }
         else {
             countErrorOther++;
-           // System.out.println(e.toString());
+            System.out.println(e.toString());
         }
 
         return CONTINUE;

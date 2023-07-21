@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 
+import static edu.ncar.cisl.sage.WorkingFileVisitorApplication.esIndex;
+
 @Component
 public class CheckIndex {
 
@@ -25,7 +27,7 @@ public class CheckIndex {
     @EventListener
     public void checkIndex(ApplicationStartedEvent event) throws IOException {
 
-        BooleanResponse existsResponse = esClient.indices().exists(b -> b.index("files"));
+        BooleanResponse existsResponse = esClient.indices().exists(b -> b.index(esIndex));
 
         if (!existsResponse.value()) {
 
@@ -36,7 +38,7 @@ public class CheckIndex {
             Property long_ = Property.of(p -> p.long_(l -> l.fields(fields)));
 
             esClient.indices().create(c -> c
-                    .index("files")
+                    .index(esIndex)
                     .mappings(m -> m
                             .properties("dateCreated", date)
                             .properties("dateLastIndexed", date)
@@ -44,6 +46,8 @@ public class CheckIndex {
                             .properties("directory", boolean_)
                             .properties("error", boolean_)
                             .properties("errorMessage", text)
+                            .properties("missing", boolean_)
+                            .properties("dateMissing", date)
                             .properties("extension", text)
                             .properties("mediaType", text)
                             .properties("fileIdentifier", text)
