@@ -1,12 +1,12 @@
 package edu.ncar.cisl.sage.mediator;
 
-import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.model.EsFile;
+import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -14,20 +14,17 @@ import org.springframework.stereotype.Component;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static edu.ncar.cisl.sage.WorkingFileVisitorApplication.esIndex;
-
-
 @Component
 public class WalkerMediator {
 
-    private final BulkIngester<Void> ingester;
+    private final EsFileRepository repository;
 
     private final IdStrategy idStrategy;
 
     @Autowired
-    public WalkerMediator(BulkIngester<Void> ingester, IdStrategy idStrategy) {
+    public WalkerMediator(EsFileRepository repository, IdStrategy idStrategy) {
 
-        this.ingester = ingester;
+        this.repository = repository;
         this.idStrategy = idStrategy;
     }
 
@@ -48,15 +45,9 @@ public class WalkerMediator {
         esFile.setError(false);
         esFile.setMissing(false);
 
-        // Ship to ES.
-        ingester.add(op -> op
-                .index(idx -> idx
-                        .index(esIndex)
-                        .document(esFile)
-                        .id(idStrategy.calculateId(event.getPath().toString()))
-                )
-        );
+        String id = idStrategy.calculateId(event.getPath().toString());
 
+        this.repository.addFile(id, esFile);
     }
 
     @EventListener
@@ -74,14 +65,9 @@ public class WalkerMediator {
         esFile.setErrorMessage(event.getErrorMessage());
         esFile.setMissing(false);
 
-        // Ship to ES.
-        ingester.add(op -> op
-                .index(idx -> idx
-                        .index(esIndex)
-                        .document(esFile)
-                        .id(idStrategy.calculateId(event.getPath().toString()))
-                )
-        );
+        String id = idStrategy.calculateId(event.getPath().toString());
+
+        this.repository.addFile(id, esFile);
     }
 
     @EventListener
@@ -105,14 +91,9 @@ public class WalkerMediator {
         esFile.setError(false);
         esFile.setMissing(false);
 
-        // Ship to ES.
-        ingester.add(op -> op
-                .index(idx -> idx
-                        .index(esIndex)
-                        .document(esFile)
-                        .id(idStrategy.calculateId(event.getPath().toString()))
-                )
-        );
+        String id = idStrategy.calculateId(event.getPath().toString());
+
+        this.repository.addFile(id, esFile);
     }
 
     @EventListener
@@ -131,14 +112,9 @@ public class WalkerMediator {
         esFile.setErrorMessage(event.getErrorMessage());
         esFile.setMissing(false);
 
-        // Ship to ES.
-        ingester.add(op -> op
-                .index(idx -> idx
-                        .index(esIndex)
-                        .document(esFile)
-                        .id(idStrategy.calculateId(event.getPath().toString()))
-                )
-        );
+        String id = idStrategy.calculateId(event.getPath().toString());
+
+        this.repository.addFile(id, esFile);
     }
 
     private String reformatDate(ZonedDateTime zonedDateTime) {
