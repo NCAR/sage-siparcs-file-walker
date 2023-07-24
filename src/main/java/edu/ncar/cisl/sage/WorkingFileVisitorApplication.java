@@ -10,11 +10,16 @@ import edu.ncar.cisl.sage.filewalker.FileWalker;
 import edu.ncar.cisl.sage.filewalker.LoggingFileVisitor;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
+import edu.ncar.cisl.sage.metadata.MetadataStrategy;
+import edu.ncar.cisl.sage.metadata.impl.MediaTypeMetadataStrategyImpl;
+import edu.ncar.cisl.sage.repository.EsFileRepository;
+import edu.ncar.cisl.sage.repository.impl.EsFileRepositoryImpl;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.tika.Tika;
 import org.elasticsearch.client.RestClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -88,7 +93,25 @@ public class WorkingFileVisitorApplication  {
     }
 
     @Bean
-    public BulkIngester<Void> createBulkIngester(ElasticsearchClient esClient) {
+    public Tika createTika() {
+
+        return new Tika();
+    }
+
+    @Bean
+    public IdStrategy createIdStrategy() {
+
+        return new Md5Calculator();
+    }
+
+    @Bean
+    public MetadataStrategy createMetadataStrategy(Tika tika) {
+
+        return new MediaTypeMetadataStrategyImpl(tika);
+    }
+
+    @Bean
+    public EsFileRepository createEsFileRepository(ElasticsearchClient esClient) {
 
         BulkIngester<Void> ingester = BulkIngester.of(b -> b
                 .client(esClient)
@@ -96,13 +119,7 @@ public class WorkingFileVisitorApplication  {
                 .flushInterval(1, TimeUnit.SECONDS) //MINUTES
         );
 
-        return ingester;
-    }
-
-    @Bean
-    public IdStrategy createIdStrategy() {
-
-        return new Md5Calculator();
+        return new EsFileRepositoryImpl(esClient, ingester);
     }
 
 }
