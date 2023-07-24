@@ -6,7 +6,6 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import edu.ncar.cisl.sage.config.FileWalkerDto;
 import edu.ncar.cisl.sage.filewalker.FileWalker;
 import edu.ncar.cisl.sage.filewalker.LoggingFileVisitor;
 import edu.ncar.cisl.sage.identification.IdStrategy;
@@ -14,7 +13,6 @@ import edu.ncar.cisl.sage.identification.Md5Calculator;
 import edu.ncar.cisl.sage.metadata.MetadataStrategy;
 import edu.ncar.cisl.sage.metadata.impl.MediaTypeMetadataStrategyImpl;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
-import edu.ncar.cisl.sage.repository.FileWalkerRepository;
 import edu.ncar.cisl.sage.repository.impl.EsFileRepositoryImpl;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
@@ -27,23 +25,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Clock;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @Configuration
 @EnableScheduling
-public class WorkingFileVisitorApplication implements ApplicationEventPublisherAware {
+public class WorkingFileVisitorApplication {
 
     public static final String esIndex = "files";
 
@@ -129,30 +123,5 @@ public class WorkingFileVisitorApplication implements ApplicationEventPublisherA
         );
 
         return new EsFileRepositoryImpl(esClient, ingester);
-    }
-
-    @Bean
-    public FileWalkerRepository createRepository(List<FileWalkerDto> fileWalkerDtoList) {
-
-        Map<String, FileWalker> fileWalkerMap = new HashMap<>();
-
-        fileWalkerDtoList.stream()
-                .forEach(dto -> fileWalkerMap.put(dto.getId(), createFileWalker(dto)));
-
-        return new FileWalkerRepository(fileWalkerMap);
-    }
-
-    private FileWalker createFileWalker(FileWalkerDto dto) {
-
-        LoggingFileVisitor lfv = new LoggingFileVisitor(dto.getIgnoredPaths());
-        lfv.setApplicationEventPublisher(this.applicationEventPublisher);
-
-        return new FileWalker(Paths.get(dto.getStartPath()), lfv, Clock.systemDefaultZone());
-    }
-
-    @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
-
-        this.applicationEventPublisher = applicationEventPublisher;
     }
 }
