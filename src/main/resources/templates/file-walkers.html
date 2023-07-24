@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Running File Walker</title>
+
+    <style>
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 4px;
+        }
+    </style>
+<body>
+<h1>File Walkers State</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Start Directory</th>
+            <th>Ignored Directories</th>
+            <th>Start Time</th>
+            <th>Total Time (ms)</th>
+            <th>Files</th>
+            <th>Errored Files</th>
+            <th>Directories</th>
+            <th>Errored Directories</th>
+            <th>Other Errors</th>
+            <th>Running</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="fileWalker : ${fileWalkers}">
+            <td th:text="${fileWalker.getStartingPath()}"></td>
+            <td th:text="${fileWalker.getIgnoredPaths()}"></td>
+            <td th:text="${fileWalker.getLastAccess()}"></td>
+            <td align="right" th:text="${fileWalker.getDuration()}"></td>
+            <td align="right" th:text="${#numbers.formatInteger(fileWalker.getFileCount(), 0, 'COMMA')}"></td>
+            <td align="right" th:text="${#numbers.formatInteger(fileWalker.getFileErrorCount(), 0, 'COMMA')}"></td>
+            <td align="right" th:text="${#numbers.formatInteger(fileWalker.getDirectoryCount(), 0, 'COMMA')}"></td>
+            <td align="right" th:text="${#numbers.formatInteger(fileWalker.getDirectoryErrorCount(), 0, 'COMMA')}"></td>
+            <td align="right" th:text="${#numbers.formatInteger(fileWalker.getOtherErrorCount(), 0, 'COMMA')}"></td>
+            <td align="center" th:text="${fileWalker.isRunning()}"></td>
+        </tr>
+    </tbody>
+</table>
+<p>
+    <a href="/file-walker-list"><button>Refresh</button></a>
+</p>
+<form action="/file-walker-list-confirm" method="POST">
+    <button type="submit">Run File Walkers</button>
+</form>
+</body>
+</html>
