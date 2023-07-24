@@ -16,8 +16,6 @@ import edu.ncar.cisl.sage.repository.RepositoryException;
 import java.io.IOException;
 import java.util.List;
 
-import static edu.ncar.cisl.sage.WorkingFileVisitorApplication.esIndex;
-
 
 public class EsFileRepositoryImpl implements EsFileRepository {
 

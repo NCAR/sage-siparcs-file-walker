@@ -1,21 +1,24 @@
 package edu.ncar.cisl.sage.filewalker;
 
-import edu.ncar.cisl.sage.filewalker.impl.*;
+import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
+import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
+import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
+import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
-
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.*;
+import java.util.List;
+
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPublisherAware {
 

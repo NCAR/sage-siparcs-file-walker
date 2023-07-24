@@ -1,8 +1,8 @@
 package edu.ncar.cisl.sage.metadata;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.model.EsFile;
+import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
