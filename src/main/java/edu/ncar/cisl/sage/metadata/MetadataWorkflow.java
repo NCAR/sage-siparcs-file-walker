@@ -24,7 +24,7 @@ public class MetadataWorkflow {
         this.metadataStrategy = metadataStrategy;
     }
 
-    @Scheduled(fixedDelay = 50, initialDelay = 10000)
+    //@Scheduled(fixedDelay = 50, initialDelay = 10000)
     private void execute() {
 
         List<Hit<EsFile>> hitList = this.repository.getFilesWithoutMediaType();

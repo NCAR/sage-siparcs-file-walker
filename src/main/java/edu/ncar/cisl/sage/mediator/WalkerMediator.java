@@ -5,12 +5,14 @@ import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
 import edu.ncar.cisl.sage.identification.IdStrategy;
+import edu.ncar.cisl.sage.metadata.MetadataStrategy;
 import edu.ncar.cisl.sage.model.EsFile;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.NoSuchFileException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -21,11 +23,14 @@ public class WalkerMediator {
 
     private final IdStrategy idStrategy;
 
+    private final MetadataStrategy metadataStrategy;
+
     @Autowired
-    public WalkerMediator(EsFileRepository repository, IdStrategy idStrategy) {
+    public WalkerMediator(EsFileRepository repository, IdStrategy idStrategy, MetadataStrategy metadataStrategy) {
 
         this.repository = repository;
         this.idStrategy = idStrategy;
+        this.metadataStrategy = metadataStrategy;
     }
 
     @EventListener
@@ -90,6 +95,21 @@ public class WalkerMediator {
         esFile.setPermissions(event.getPermissions());
         esFile.setError(false);
         esFile.setMissing(false);
+
+        try {
+
+            metadataStrategy.calculateMetadata(esFile);
+
+        } catch (NoSuchFileException e) {
+
+            esFile.setMissing(true);
+
+            ZonedDateTime zonedDateTime = ZonedDateTime.now();
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
+
+            esFile.setDateMissing(zonedDateTime.format(formatter));
+        }
 
         String id = idStrategy.calculateId(event.getPath().toString());
 
