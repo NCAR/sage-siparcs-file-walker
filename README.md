@@ -20,3 +20,8 @@ https://www.elastic.co/guide/en/elasticsearch/client/java-api-client/current/ind
 
 Compare two dates to determine file modified dates:
 https://stackoverflow.com/questions/70665811/how-to-compare-two-date-fields-in-same-document-in-elasticsearch
+
+## Build Image
+```
+$ podman build -t sage-siparcs-file-walker .
+```
