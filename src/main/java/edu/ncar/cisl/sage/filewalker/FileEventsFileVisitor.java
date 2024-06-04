@@ -6,6 +6,7 @@ import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
 import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -15,51 +16,23 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
-public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPublisherAware {
-
-    private long countFile = 0;
-
-    private long countDirectory = 0;
-    private long countErrorOther = 0;
-
-    private long countErrorFile = 0;
-
-    private long countErrorDirectory = 0;
-
-    private final List<String> ignoredPaths;
+public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEventPublisherAware {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public LoggingFileVisitor(List<String> ignoredPaths) {
-        this.ignoredPaths = ignoredPaths;
-    }
+    public FileEventsFileVisitor() {}
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
 
-        // TODO change to stream.
-        if(Files.isSymbolicLink(dir)){
-            return SKIP_SUBTREE;
-        }
-        for(int i = 0; i < this.ignoredPaths.size(); i++){
-            if(dir.toString().contains(this.ignoredPaths.get(i))) {
-                return SKIP_SUBTREE;
-            }
-        }
-        return CONTINUE;
+        return  CONTINUE;
     }
 
     public FileVisitResult visitFile(Path path, BasicFileAttributes attr) throws IOException {
 
-        if (Files.isRegularFile(path)) {
-            countFile++;
-            //Makes event of type FileFound and publishes it
-            this.fireFileFoundEvent(path, attr);
-        }
+        this.fireFileFoundEvent(path, attr);
         return CONTINUE;
     }
 
@@ -96,11 +69,7 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
 
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
-        if (Files.isDirectory(dir)){
-            countDirectory++;
-
-            this.fireDirectoryFoundEvent(dir);
-        }
+        this.fireDirectoryFoundEvent(dir);
         return CONTINUE;
     }
 
@@ -122,24 +91,6 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         //Publishes DirectoryFoundEvent
         this.applicationEventPublisher.publishEvent(directoryFoundEventImpl);
 
-    }
-
-    public FileVisitResult visitFileFailed(Path path, IOException e) {
-
-        if (Files.isDirectory(path)) {
-            countErrorDirectory++;
-            fireDirectoryErrorEvent(path, e);
-        }
-        else if (Files.isRegularFile(path)){
-            countErrorFile++;
-            fireFileErrorEvent(path, e);
-        }
-        else {
-            countErrorOther++;
-            System.out.println(e.toString());
-        }
-
-        return CONTINUE;
     }
 
     public void fireFileErrorEvent(Path path, IOException e) {
@@ -178,36 +129,15 @@ public class LoggingFileVisitor implements FileVisitor<Path>, ApplicationEventPu
         this.applicationEventPublisher.publishEvent(directoryErrorEventImpl);
     }
 
-    public void reset() {
-        countErrorOther = 0;
-        countErrorDirectory = 0;
-        countErrorFile = 0;
-        countFile = 0;
-        countDirectory = 0;
-    }
+    public FileVisitResult visitFileFailed(Path path, IOException e) {
 
-    public long getCountFile() {
-        return countFile;
-    }
-
-    public long getCountDirectory() {
-        return countDirectory;
-    }
-
-    public long getCountErrorOther() {
-        return countErrorOther;
-    }
-
-    public long getCountErrorFile() {
-        return countErrorFile;
-    }
-
-    public long getCountErrorDirectory() {
-        return countErrorDirectory;
-    }
-
-    public List<String> getIgnoredPaths() {
-        return ignoredPaths;
+        if (Files.isDirectory(path)) {
+            fireDirectoryErrorEvent(path, e);
+        }
+        if (Files.isRegularFile(path)){
+            fireFileErrorEvent(path, e);
+        }
+        return CONTINUE;
     }
 
     @Override

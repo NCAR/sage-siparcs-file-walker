@@ -23,7 +23,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
 
     private final BulkIngester<Void> bulkIngester;
 
-    private static final String INDEX = "files";
+    private static final String INDEX = "file-walker-files";
 
     public EsFileRepositoryImpl(ElasticsearchClient esClient, BulkIngester<Void> bulkIngester) {
 

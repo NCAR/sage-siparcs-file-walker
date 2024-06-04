@@ -10,7 +10,7 @@ import java.util.List;
 public class FileWalker {
 
     private final Path path;
-    private final LoggingFileVisitor fileVisitor;
+    private final MetricsFileVisitor fileVisitor;
     private final Clock clock;
 
     private boolean Running = false;
@@ -23,7 +23,7 @@ public class FileWalker {
 
     private boolean isFinished = true;
 
-    public FileWalker(Path path, LoggingFileVisitor fileVisitor, Clock clock) {
+    public FileWalker(Path path, MetricsFileVisitor fileVisitor, Clock clock) {
 
         this.path = path;
         this.fileVisitor = fileVisitor;

@@ -1,7 +1,6 @@
 package edu.ncar.cisl.sage.config;
 
-import edu.ncar.cisl.sage.filewalker.FileWalker;
-import edu.ncar.cisl.sage.filewalker.LoggingFileVisitor;
+import edu.ncar.cisl.sage.filewalker.*;
 import edu.ncar.cisl.sage.repository.FileWalkerRepository;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -9,11 +8,11 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.nio.file.FileVisitor;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Clock;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ConfigurationProperties(prefix = "file-walker-list")
 @Configuration
@@ -24,6 +23,7 @@ public class FileWalkerRepositoryConfig implements ApplicationEventPublisherAwar
     private ApplicationEventPublisher applicationEventPublisher;
 
     public FileWalkerRepositoryConfig(List<FileWalkerDto> fileWalkerDtos) {
+
         this.fileWalkerDtos = fileWalkerDtos;
     }
 
@@ -44,10 +44,20 @@ public class FileWalkerRepositoryConfig implements ApplicationEventPublisherAwar
 
     private FileWalker createFileWalker(FileWalkerDto dto) {
 
-        LoggingFileVisitor lfv = new LoggingFileVisitor(dto.getIgnoredPaths());
-        lfv.setApplicationEventPublisher(this.applicationEventPublisher);
+        List<FileVisitor<Path>> visitors = new ArrayList<>();
+        Set<Path> completed = new HashSet<>();
+        Set<Path> inProgress = new HashSet<>();
 
-        return new FileWalker(Paths.get(dto.getStartPath()), lfv, Clock.systemDefaultZone());
+        FileEventsFileVisitor fileEventsFileVisitor = new FileEventsFileVisitor();
+        DirStateFileVisitor dirStateFileVisitor = new DirStateFileVisitor(completed,inProgress);
+        visitors.add(fileEventsFileVisitor);
+        visitors.add(dirStateFileVisitor);
+
+        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(visitors);
+        MetricsFileVisitor metricsFileVisitor = new MetricsFileVisitor(compositeFileVisitor,dto.getIgnoredPaths());
+        fileEventsFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
+
+        return new FileWalker(Paths.get(dto.getStartPath()), metricsFileVisitor, Clock.systemDefaultZone());
     }
 
     @Override

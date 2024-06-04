@@ -6,8 +6,7 @@ import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import edu.ncar.cisl.sage.filewalker.FileWalker;
-import edu.ncar.cisl.sage.filewalker.LoggingFileVisitor;
+import edu.ncar.cisl.sage.filewalker.*;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
 import edu.ncar.cisl.sage.metadata.MetadataStrategy;
@@ -21,6 +20,7 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.tika.Tika;
 import org.elasticsearch.client.RestClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -29,9 +29,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.nio.file.FileVisitor;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Clock;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
@@ -39,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 @EnableScheduling
 public class WorkingFileVisitorApplication {
 
-    public static final String esIndex = "files";
+    public static final String esIndex = "file-walker-files";
 
     private ApplicationEventPublisher applicationEventPublisher;
 
@@ -48,13 +50,18 @@ public class WorkingFileVisitorApplication {
     }
 
     @Bean
-    public LoggingFileVisitor loggingFileVisitor(@Value("${config.ignoredPaths}") List<String> ignoredPaths) {
+    public MetricsFileVisitor metricsFileVisitor(@Value("${config.ignoredPaths}") List<String> ignoredPaths) {
 
-        return new LoggingFileVisitor(ignoredPaths);
+        List<FileVisitor<Path>> visitors = new ArrayList<>();
+        Set<Path> completed = new HashSet<>();
+        Set<Path> inProgress = new HashSet<>();
+        visitors.add(new FileEventsFileVisitor());
+        visitors.add(new DirStateFileVisitor(completed,inProgress));
+        return new MetricsFileVisitor(new CompositeFileVisitor(visitors), ignoredPaths);
     }
 
     @Bean
-    public FileWalker fileWalker(@Value("${walker.startingPath}") String startingPath, LoggingFileVisitor visitor) {
+    public FileWalker fileWalker(@Value("${walker.startingPath}") String startingPath, MetricsFileVisitor visitor) {
 
         return new FileWalker(Path.of(startingPath), visitor, Clock.systemDefaultZone());
     }
