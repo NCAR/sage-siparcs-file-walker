@@ -1,80 +1,78 @@
 package edu.ncar.cisl.sage.filewalker;
 
+import edu.ncar.cisl.sage.filewalker.impl.DirectoryCompletedEventImpl;
+import edu.ncar.cisl.sage.repository.EsDirStateRepository;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
-public class CompositeFileVisitor implements FileVisitor<Path> {
+public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEventPublisherAware {
 
-    private final List<FileVisitor<Path>> visitors;
+    private final FileVisitor<Path> fileEventsFileVisitor;
+    private final String walkerId;
+    private ApplicationEventPublisher applicationEventPublisher;
+    private EsDirStateRepository repository;
 
-    public CompositeFileVisitor(List<FileVisitor<Path>> visitors) {
+    public CompositeFileVisitor(FileVisitor<Path> fileEventsFileVisitor, EsDirStateRepository repository, String walkerId){
 
-        this.visitors = visitors;
+        this.fileEventsFileVisitor = fileEventsFileVisitor;
+        this.walkerId = walkerId;
+        this.repository = repository;
     }
 
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 
         FileVisitResult result = CONTINUE;
-        boolean check = visitors.stream()
-                .map(v -> {
-                    try {
-                        return v.preVisitDirectory(dir, attrs);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .allMatch(m -> m == CONTINUE);
-        if(!check){
+
+        boolean completed = this.repository.isCompleted(walkerId,dir);
+
+        if(completed) {
+            System.out.println(dir + "   skip");
             result = SKIP_SUBTREE;
+        } else {
+            this.fileEventsFileVisitor.preVisitDirectory(dir,attrs);
         }
 
         return result;
     }
 
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attr) throws IOException {
 
-        visitors.forEach(v -> {
-            try {
-                v.visitFile(path, attr);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        return CONTINUE;
+        return this.fileEventsFileVisitor.visitFile(path,attr);
     }
 
-    public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+    public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
-        visitors.forEach(v -> {
-            try {
-                v.postVisitDirectory(dir, e);
-            } catch (IOException exp) {
-                throw new RuntimeException(exp);
-            }
-        });
-
-        return CONTINUE;
+        fireDirCompletedEvent(dir);
+        return this.fileEventsFileVisitor.postVisitDirectory(dir,e);
     }
 
-    public FileVisitResult visitFileFailed(Path path, IOException e) {
+    public FileVisitResult visitFileFailed(Path path, IOException e) throws IOException {
 
-        visitors.forEach(v -> {
-            try {
-                v.visitFileFailed(path, e);
-            } catch (IOException exp) {
-                throw new RuntimeException(exp);
-            }
-        });
+        return this.fileEventsFileVisitor.visitFileFailed(path,e);
+    }
 
-        return CONTINUE;
+    private void fireDirCompletedEvent(Path dir) {
+
+        DirectoryCompletedEventImpl dirCompletedEventImpl = new DirectoryCompletedEventImpl(this);
+
+        dirCompletedEventImpl.setId(walkerId);
+        dirCompletedEventImpl.setDir(dir);
+
+        this.applicationEventPublisher.publishEvent(dirCompletedEventImpl);
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 }

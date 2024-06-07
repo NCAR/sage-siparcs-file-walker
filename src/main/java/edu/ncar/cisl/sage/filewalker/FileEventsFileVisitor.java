@@ -38,21 +38,26 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
 
     private void fireFileFoundEvent(Path path, BasicFileAttributes attr) throws IOException {
 
-        //Create and Populate FileFoundEvent
-        FileFoundEventImpl fileFoundEventImpl = new FileFoundEventImpl(this);
+        try {
+            //Create and Populate FileFoundEvent
+            FileFoundEventImpl fileFoundEventImpl = new FileFoundEventImpl(this);
 
-        fileFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
-        fileFoundEventImpl.setFileName(path.getFileName().toString());
-        fileFoundEventImpl.setPath(path);
-        fileFoundEventImpl.setExtension(getExtension(path.getFileName().toString()));
-        fileFoundEventImpl.setSize(Files.size(path));
-        fileFoundEventImpl.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
-        fileFoundEventImpl.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
-        fileFoundEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
-        fileFoundEventImpl.setOwner(Files.getOwner(path).toString());
+            fileFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
+            fileFoundEventImpl.setFileName(path.getFileName().toString());
+            fileFoundEventImpl.setPath(path);
+            fileFoundEventImpl.setExtension(getExtension(path.getFileName().toString()));
+            fileFoundEventImpl.setSize(Files.size(path));
+            fileFoundEventImpl.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
+            fileFoundEventImpl.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
+            fileFoundEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
+            fileFoundEventImpl.setOwner(Files.getOwner(path).toString());
 
-        //Publishes FileFoundEvent
-        this.applicationEventPublisher.publishEvent(fileFoundEventImpl);
+            //Publishes FileFoundEvent
+            this.applicationEventPublisher.publishEvent(fileFoundEventImpl);
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public String getExtension(String pathName) {

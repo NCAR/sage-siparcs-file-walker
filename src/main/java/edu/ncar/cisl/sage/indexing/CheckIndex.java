@@ -10,8 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 
+import static co.elastic.clients.elasticsearch.ingest.Processor.Kind.Set;
+import static edu.ncar.cisl.sage.WorkingFileVisitorApplication.esDirStateIndex;
 import static edu.ncar.cisl.sage.WorkingFileVisitorApplication.esIndex;
 
 @Component
@@ -55,6 +58,29 @@ public class CheckIndex {
                             .properties("owner", text)
                             .properties("path", text)
                             .properties("size", long_)
+                    )
+            );
+        }
+    }
+
+    @EventListener
+    public void checkDirStateIndex(ApplicationStartedEvent event) throws IOException {
+
+        BooleanResponse existsResponse = esClient.indices().exists(b -> b.index(esDirStateIndex));
+
+        if (!existsResponse.value()) {
+
+            Map<String, Property> fields = Collections.singletonMap("keyword", Property.of(p -> p.keyword(k -> k.ignoreAbove(256))));
+            Property date = Property.of(p -> p.date(d -> d.format("basic_date_time")));
+            Property text = Property.of(p -> p.text(t -> t.fields(fields)));
+
+            esClient.indices().create(c -> c
+                    .index(esDirStateIndex)
+                    .mappings(m -> m
+                            .properties("id", text)
+                            .properties("completed", text)
+                            .properties("dateCreated", date)
+                            .properties("dateUpdated", date)
                     )
             );
         }

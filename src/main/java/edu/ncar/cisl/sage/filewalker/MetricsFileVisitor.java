@@ -28,7 +28,7 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
         this.ignoredPaths = ignoredPaths;
     }
 
-    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
+    public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 
         FileVisitResult result = visitor.preVisitDirectory(dir, attrs);
         if(Files.isSymbolicLink(dir)){
@@ -43,7 +43,7 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
         return result;
     }
 
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attr) throws IOException {
 
         FileVisitResult result = visitor.visitFile(path, attr);
         if (Files.isRegularFile(path) && result == CONTINUE) {
@@ -52,17 +52,16 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
         return result;
     }
 
-    public FileVisitResult postVisitDirectory(Path dir, IOException e) {
+    public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
         FileVisitResult result = visitor.postVisitDirectory(dir, e);
         if (Files.isDirectory(dir) && result == CONTINUE) {
             countDirectory++;
         }
-        System.out.println(dir.toString() + "  post");
         return result;
     }
 
-    public FileVisitResult visitFileFailed(Path path, IOException e) {
+    public FileVisitResult visitFileFailed(Path path, IOException e) throws IOException {
 
         if (Files.isDirectory(path)) {
             countErrorDirectory++;
