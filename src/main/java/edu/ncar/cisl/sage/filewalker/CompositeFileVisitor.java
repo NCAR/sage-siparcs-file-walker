@@ -51,6 +51,7 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
 
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
+        System.out.println(dir + "   post");
         fireDirCompletedEvent(dir);
         return this.fileEventsFileVisitor.postVisitDirectory(dir,e);
     }

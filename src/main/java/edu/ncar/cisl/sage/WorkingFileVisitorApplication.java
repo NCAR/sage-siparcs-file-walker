@@ -110,6 +110,24 @@ public class WorkingFileVisitorApplication {
                 .client(esClient)
                 .maxOperations(10)
                 .flushInterval(2, TimeUnit.SECONDS)
+                .listener(new BulkListener<Void>() {
+                    @Override
+                    public void beforeBulk(long l, BulkRequest bulkRequest, List<Void> list) {
+
+                    }
+
+                    @Override
+                    public void afterBulk(long l, BulkRequest bulkRequest, List<Void> list, BulkResponse bulkResponse) {
+
+                    }
+
+                    @Override
+                    public void afterBulk(long l, BulkRequest bulkRequest, List<Void> list, Throwable throwable) {
+
+                        System.out.print("BulkIngester Exception: " + throwable);
+                        throwable.printStackTrace();
+                    }
+                })
         );
     }
 

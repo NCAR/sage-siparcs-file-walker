@@ -7,7 +7,7 @@ public class EsDirState {
 
     private String id;
     private Set<Path> completed;
-    private String dateStarted;
+    private String dateCreated;
     private String dateUpdated;
 
     public EsDirState(){}
@@ -20,9 +20,9 @@ public class EsDirState {
 
     public void setCompleted(Set<Path> completed) { this.completed = completed; }
 
-    public String getDateStarted() { return dateStarted; }
+    public String getDateCreated() { return dateCreated; }
 
-    public void setDateStarted(String dateStarted) { this.dateStarted = dateStarted; }
+    public void setDateCreated(String dateCreated) { this.dateCreated = dateCreated; }
 
     public String getDateUpdated() { return dateUpdated; }
 
