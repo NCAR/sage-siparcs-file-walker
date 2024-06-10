@@ -16,5 +16,5 @@ public interface EsDirStateRepository {
 
     boolean isCompleted(String id, Path directory) throws IOException;
 
-    void directoryCompleted(String id, Path directory) throws IOException;
+    void directoryCompleted(String id, Path directory, Path startingPath) throws IOException;
 }

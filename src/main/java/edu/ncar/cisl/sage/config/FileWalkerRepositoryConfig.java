@@ -48,10 +48,9 @@ public class FileWalkerRepositoryConfig implements ApplicationEventPublisherAwar
     private FileWalker createFileWalker(FileWalkerDto dto) {
 
         FileEventsFileVisitor fileEventsFileVisitor = new FileEventsFileVisitor();
-
-        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor,esDirStateRepository,dto.getId());
-
+        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor,esDirStateRepository,dto.getId(),dto.getStartPath());
         MetricsFileVisitor metricsFileVisitor = new MetricsFileVisitor(compositeFileVisitor,dto.getIgnoredPaths());
+
         fileEventsFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
         compositeFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
 

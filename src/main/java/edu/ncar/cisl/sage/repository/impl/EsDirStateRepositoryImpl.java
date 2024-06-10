@@ -94,13 +94,25 @@ public class EsDirStateRepositoryImpl implements EsDirStateRepository {
     }
 
     @Override
-    public void directoryCompleted(String id, Path dir) throws IOException {
+    public void directoryCompleted(String id, Path dir, Path startingPath) throws IOException {
 
         DirectoryState directoryState = this.directoryStateMap.get(id);
         directoryState.completed.add(dir);
         directoryState.completed.removeIf(path -> path.startsWith(dir) && !dir.equals(path));
 
         updateDirState(id);
+
+        // delete document if file walker finished running
+        if(directoryState.completed.contains(startingPath)) {
+            esClient.delete(d -> d.index("file-walker-dir-state").id(id));
+        }
+    }
+
+    private String reformatDate(ZonedDateTime zonedDateTime) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
+
+        return (zonedDateTime.format((formatter)));
     }
 
     private static class DirectoryState {
@@ -111,12 +123,5 @@ public class EsDirStateRepositoryImpl implements EsDirStateRepository {
 
             completed = new HashSet<>();
         }
-    }
-
-    private String reformatDate(ZonedDateTime zonedDateTime) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
-
-        return (zonedDateTime.format((formatter)));
     }
 }

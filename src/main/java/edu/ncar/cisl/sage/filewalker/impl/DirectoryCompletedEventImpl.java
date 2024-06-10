@@ -9,6 +9,7 @@ public class DirectoryCompletedEventImpl extends ApplicationEvent implements Dir
 
     String id;
     Path dir;
+    Path startingPath;
 
     public DirectoryCompletedEventImpl(Object source) {
         super(source);
@@ -28,7 +29,12 @@ public class DirectoryCompletedEventImpl extends ApplicationEvent implements Dir
         return dir;
     }
 
-    public void setDir(Path dir) {
-        this.dir = dir;
+    public void setDir(Path dir) { this.dir = dir; }
+
+    @Override
+    public Path getStartingPath() {
+        return startingPath;
     }
+
+    public void setStartingPath(Path startingPath) { this.startingPath = startingPath; }
 }

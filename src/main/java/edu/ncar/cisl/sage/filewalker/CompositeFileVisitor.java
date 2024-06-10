@@ -18,14 +18,17 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
 
     private final FileVisitor<Path> fileEventsFileVisitor;
     private final String walkerId;
-    private ApplicationEventPublisher applicationEventPublisher;
+    private final String startingPath;
     private EsDirStateRepository repository;
 
-    public CompositeFileVisitor(FileVisitor<Path> fileEventsFileVisitor, EsDirStateRepository repository, String walkerId){
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    public CompositeFileVisitor(FileVisitor<Path> fileEventsFileVisitor, EsDirStateRepository repository, String walkerId, String startingPath){
 
         this.fileEventsFileVisitor = fileEventsFileVisitor;
-        this.walkerId = walkerId;
         this.repository = repository;
+        this.walkerId = walkerId;
+        this.startingPath = startingPath;
     }
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -52,7 +55,7 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
         System.out.println(dir + "   post");
-        fireDirCompletedEvent(dir);
+        fireDirCompletedEvent(dir, Path.of(startingPath));
         return this.fileEventsFileVisitor.postVisitDirectory(dir,e);
     }
 
@@ -61,12 +64,13 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
         return this.fileEventsFileVisitor.visitFileFailed(path,e);
     }
 
-    private void fireDirCompletedEvent(Path dir) {
+    private void fireDirCompletedEvent(Path dir, Path startingPath) {
 
         DirectoryCompletedEventImpl dirCompletedEventImpl = new DirectoryCompletedEventImpl(this);
 
         dirCompletedEventImpl.setId(walkerId);
         dirCompletedEventImpl.setDir(dir);
+        dirCompletedEventImpl.setStartingPath(startingPath);
 
         this.applicationEventPublisher.publishEvent(dirCompletedEventImpl);
     }

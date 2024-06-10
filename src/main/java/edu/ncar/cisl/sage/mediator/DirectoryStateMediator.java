@@ -9,12 +9,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-public class DirStateMediator {
+public class DirectoryStateMediator {
 
     private final EsDirStateRepository repository;
 
     @Autowired
-    public DirStateMediator(EsDirStateRepository repository) {
+    public DirectoryStateMediator(EsDirStateRepository repository) {
 
         this.repository = repository;
     }
@@ -22,6 +22,6 @@ public class DirStateMediator {
     @EventListener
     public void handleDirCompletedEvent(DirectoryCompletedEventImpl event) throws IOException {
 
-        this.repository.directoryCompleted(event.getId(),event.getDir());
+        this.repository.directoryCompleted(event.getId(),event.getDir(),event.getStartingPath());
     }
 }

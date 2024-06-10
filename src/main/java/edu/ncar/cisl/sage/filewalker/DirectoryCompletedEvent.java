@@ -8,4 +8,5 @@ public interface DirectoryCompletedEvent {
 
     Path getDir();
 
+    Path getStartingPath();
 }

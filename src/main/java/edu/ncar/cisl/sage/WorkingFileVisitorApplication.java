@@ -54,10 +54,10 @@ public class WorkingFileVisitorApplication {
     }
 
     @Bean
-    public MetricsFileVisitor metricsFileVisitor(@Value("${config.ignoredPaths}") List<String> ignoredPaths) {
+    public MetricsFileVisitor metricsFileVisitor(@Value("${walker.startingPath}") String startingPath, @Value("${config.ignoredPaths}") List<String> ignoredPaths) {
 
         FileEventsFileVisitor fileEventsFileVisitor = new FileEventsFileVisitor();
-        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor, esDirStateRepository,"single-instance file walker");
+        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor, esDirStateRepository,"single-instance file walker",startingPath);
         return new MetricsFileVisitor(compositeFileVisitor,ignoredPaths);
     }
 
