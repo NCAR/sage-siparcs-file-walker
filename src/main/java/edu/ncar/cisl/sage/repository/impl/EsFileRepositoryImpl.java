@@ -8,6 +8,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.ExistsQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.EsFile;
@@ -96,7 +97,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
 
     }
 
-    public void updateMediaType(String id, EsFile partialDoc) {
+    public void updateMediaType(String id, EsFile partialDoc) throws IOException {
 
         BulkRequest.Builder builder = new BulkRequest.Builder();
         builder.operations(op -> op
@@ -106,6 +107,10 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                         .action(a -> a.doc(partialDoc))
                 )
         );
+        BulkResponse result = esClient.bulk(builder.build());
+        if (result.errors()) {
+            System.out.println("ERROR");
+        }
     }
 }
     //Do all of the indexing and the updating here

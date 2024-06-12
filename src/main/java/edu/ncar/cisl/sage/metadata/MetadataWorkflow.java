@@ -6,6 +6,7 @@ import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,14 +39,15 @@ public class MetadataWorkflow {
                 .forEach(hit -> {
                     EsFile esFile = hit.source();
 
-//                    EsFile partialDoc = new EsFile();
-//                    partialDoc.setPath(esFile.getPath());
-//                    partialDoc.setMediaType("text/plain");
+                    EsFile partialDoc = new EsFile();
+                    partialDoc.setPath(esFile.getPath());
+                    this.updateEsFile(partialDoc);
 
-                    this.updateEsFile(esFile);
-                    //this.repository.updateMediaType(hit.id(), esFile);
-
-                    this.repository.addFile(hit.id(), esFile);
+                    try {
+                        this.repository.updateMediaType(hit.id(), partialDoc);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
         }
     }

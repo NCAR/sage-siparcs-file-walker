@@ -1,11 +1,7 @@
 package edu.ncar.cisl.sage.repository;
 
-import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.model.EsDirState;
-
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.Set;
 
 public interface EsDirStateRepository {
