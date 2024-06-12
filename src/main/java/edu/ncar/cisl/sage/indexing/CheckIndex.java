@@ -34,11 +34,25 @@ public class CheckIndex {
 
         if (!existsResponse.value()) {
 
-            Map<String, Property> fields = Collections.singletonMap("keyword", Property.of(p -> p.keyword(k -> k.ignoreAbove(256))));
+            // We use explicit mapping of our indexes:
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/explicit-mapping.html
+
+            // It is easy to mess this mapping up.  Please read about the different data types in ElasticSearch
+            // before making any changes to these values:
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html
+            //
+            // An explanation of the differences of text, keyword, and wildcard:
+            // https://www.elastic.co/blog/find-strings-within-strings-faster-with-the-new-elasticsearch-wildcard-field
+
+            // Explanation of fields:
+            // https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html
+
             Property date = Property.of(p -> p.date(d -> d.format("basic_date_time")));
-            Property boolean_ = Property.of(p -> p.boolean_(b -> b.fields(fields)));
-            Property text = Property.of(p -> p.text(t -> t.fields(fields)));
-            Property long_ = Property.of(p -> p.long_(l -> l.fields(fields)));
+            Property boolean_ = Property.of(p -> p.boolean_(b -> b));
+            Property text = Property.of(p -> p.text(t -> t));
+            Property long_ = Property.of(p -> p.long_(l -> l));
+            Property keyword = Property.of(p -> p.keyword(k -> k));
+            Property wildcard = Property.of(p -> p.wildcard(w -> w));
 
             esClient.indices().create(c -> c
                     .index(esIndex)
@@ -48,18 +62,45 @@ public class CheckIndex {
                             .properties("dateModified", date)
                             .properties("directory", boolean_)
                             .properties("error", boolean_)
-                            .properties("errorMessage", text)
+                            .properties("errorMessage", keyword)
                             .properties("missing", boolean_)
                             .properties("dateMissing", date)
-                            .properties("extension", text)
-                            .properties("mediaType", text)
-                            .properties("fileIdentifier", text)
+                            .properties("extension", keyword)
+                            .properties("mediaType", keyword)
+                            .properties("fileIdentifier", wildcard)
                             .properties("fileName", text)
                             .properties("owner", text)
-                            .properties("path", text)
+                            .properties("path", keyword)
                             .properties("size", long_)
                     )
             );
+
+//            Map<String, Property> fields = Collections.singletonMap("keyword", Property.of(p -> p.keyword(k -> k.ignoreAbove(256))));
+//            Property date = Property.of(p -> p.date(d -> d.format("basic_date_time")));
+//            Property boolean_ = Property.of(p -> p.boolean_(b -> b.fields(fields)));
+//            Property text = Property.of(p -> p.text(t -> t.fields(fields)));
+//            Property long_ = Property.of(p -> p.long_(l -> l.fields(fields)));
+//
+//            esClient.indices().create(c -> c
+//                    .index(esIndex)
+//                    .mappings(m -> m
+//                            .properties("dateCreated", date)
+//                            .properties("dateLastIndexed", date)
+//                            .properties("dateModified", date)
+//                            .properties("directory", boolean_)
+//                            .properties("error", boolean_)
+//                            .properties("errorMessage", text)
+//                            .properties("missing", boolean_)
+//                            .properties("dateMissing", date)
+//                            .properties("extension", text)
+//                            .properties("mediaType", text)
+//                            .properties("fileIdentifier", text)
+//                            .properties("fileName", text)
+//                            .properties("owner", text)
+//                            .properties("path", text)
+//                            .properties("size", long_)
+//                    )
+//            );
         }
     }
 
