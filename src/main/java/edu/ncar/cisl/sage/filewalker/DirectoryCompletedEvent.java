@@ -7,6 +7,4 @@ public interface DirectoryCompletedEvent {
     String getId();
 
     Path getDir();
-
-    Path getStartingPath();
 }

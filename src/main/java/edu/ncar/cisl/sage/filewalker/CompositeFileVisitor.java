@@ -59,7 +59,7 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
         if(dir.equals(Path.of(this.startingPath))) {
             fireFileWalkerCompletedEvent();
         } else {
-            fireDirectoryCompletedEvent(dir, Path.of(this.startingPath));
+            fireDirectoryCompletedEvent(dir);
         }
         return this.fileEventsFileVisitor.postVisitDirectory(dir,e);
     }
@@ -69,13 +69,12 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
         return this.fileEventsFileVisitor.visitFileFailed(path,e);
     }
 
-    private void fireDirectoryCompletedEvent(Path dir, Path startingPath) {
+    private void fireDirectoryCompletedEvent(Path dir) {
 
         DirectoryCompletedEventImpl dirCompletedEventImpl = new DirectoryCompletedEventImpl(this);
 
         dirCompletedEventImpl.setId(walkerId);
         dirCompletedEventImpl.setDir(dir);
-        dirCompletedEventImpl.setStartingPath(startingPath);
 
         this.applicationEventPublisher.publishEvent(dirCompletedEventImpl);
     }

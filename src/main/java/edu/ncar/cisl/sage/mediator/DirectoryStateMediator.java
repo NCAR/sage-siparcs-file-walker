@@ -23,7 +23,7 @@ public class DirectoryStateMediator {
     @EventListener
     public void handleDirCompletedEvent(DirectoryCompletedEventImpl event) throws IOException {
 
-        this.repository.directoryCompleted(event.getId(),event.getDir(),event.getStartingPath());
+        this.repository.directoryCompleted(event.getId(),event.getDir());
     }
 
     @EventListener

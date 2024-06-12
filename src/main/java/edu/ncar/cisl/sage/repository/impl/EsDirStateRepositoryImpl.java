@@ -106,7 +106,7 @@ public class EsDirStateRepositoryImpl implements EsDirStateRepository {
     }
 
     @Override
-    public void directoryCompleted(String id, Path dir, Path startingPath) throws IOException {
+    public void directoryCompleted(String id, Path dir) throws IOException {
 
         DirectoryState directoryState = this.directoryStateMap.get(id);
         directoryState.completed.add(dir);
