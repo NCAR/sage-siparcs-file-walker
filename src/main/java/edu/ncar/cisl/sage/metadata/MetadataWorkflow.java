@@ -15,7 +15,6 @@ import java.util.List;
 public class MetadataWorkflow {
 
     EsFileRepository repository;
-
     MetadataStrategy metadataStrategy;
 
     public MetadataWorkflow(EsFileRepository repository, MetadataStrategy metadataStrategy) {
@@ -24,7 +23,7 @@ public class MetadataWorkflow {
         this.metadataStrategy = metadataStrategy;
     }
 
-    //@Scheduled(fixedDelay = 50, initialDelay = 10000)
+    @Scheduled(fixedDelay = 50, initialDelay = 10000)
     private void execute() {
 
         List<Hit<EsFile>> hitList = this.repository.getFilesWithoutMediaType();
@@ -39,9 +38,14 @@ public class MetadataWorkflow {
                 .forEach(hit -> {
                     EsFile esFile = hit.source();
 
-                    this.updateEsFile(esFile);
+//                    EsFile partialDoc = new EsFile();
+//                    partialDoc.setPath(esFile.getPath());
+//                    partialDoc.setMediaType("text/plain");
 
-                    this.repository.updateFile(hit.id(), esFile);
+                    this.updateEsFile(esFile);
+                    //this.repository.updateMediaType(hit.id(), esFile);
+
+                    this.repository.addFile(hit.id(), esFile);
                 });
         }
     }

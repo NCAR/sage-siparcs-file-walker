@@ -7,6 +7,7 @@ import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.ExistsQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.EsFile;
@@ -83,26 +84,6 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         return esFileHitList;
     }
 
-    @Override
-    public void updateFile(String id, EsFile esFile) {
-
-        try {
-
-            //esFile.setMediaType(calculateMediaType(esFile.getPath())); >> DO IN STRATEGY/WORKFLOW????
-
-            esClient.update(u -> u
-                            .index(INDEX)
-                            .id(id)
-                            .doc(esFile),
-                    EsFile.class
-            );
-
-        } catch (IOException e) {
-
-            throw new RepositoryException(e);
-        }
-    }
-
     public void addFile(String id, EsFile esFile) {
 
         bulkIngester.add(op -> op
@@ -115,6 +96,17 @@ public class EsFileRepositoryImpl implements EsFileRepository {
 
     }
 
+    public void updateMediaType(String id, EsFile partialDoc) {
+
+        BulkRequest.Builder builder = new BulkRequest.Builder();
+        builder.operations(op -> op
+                .update(idx -> idx
+                        .index(INDEX)
+                        .id(id)
+                        .action(a -> a.doc(partialDoc))
+                )
+        );
+    }
 }
     //Do all of the indexing and the updating here
 

@@ -46,25 +46,8 @@ public class WorkingFileVisitorApplication {
     public static final String esIndex = "file-walker-files";
     public static final String esDirStateIndex = "file-walker-dir-state";
 
-    private ApplicationEventPublisher applicationEventPublisher;
-    private EsDirStateRepository esDirStateRepository;
-
     public static void main(String[] args) {
             SpringApplication.run(WorkingFileVisitorApplication.class, args);
-    }
-
-    @Bean
-    public MetricsFileVisitor metricsFileVisitor(@Value("${walker.startingPath}") String startingPath, @Value("${config.ignoredPaths}") List<String> ignoredPaths) {
-
-        FileEventsFileVisitor fileEventsFileVisitor = new FileEventsFileVisitor();
-        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor, esDirStateRepository,"single-instance file walker",startingPath);
-        return new MetricsFileVisitor(compositeFileVisitor,ignoredPaths);
-    }
-
-    @Bean
-    public FileWalker fileWalker(@Value("${walker.startingPath}") String startingPath, MetricsFileVisitor visitor) {
-
-        return new FileWalker(Path.of(startingPath), visitor, Clock.systemDefaultZone());
     }
 
     @Bean
@@ -110,24 +93,6 @@ public class WorkingFileVisitorApplication {
                 .client(esClient)
                 .maxOperations(10)
                 .flushInterval(2, TimeUnit.SECONDS)
-                .listener(new BulkListener<Void>() {
-                    @Override
-                    public void beforeBulk(long l, BulkRequest bulkRequest, List<Void> list) {
-
-                    }
-
-                    @Override
-                    public void afterBulk(long l, BulkRequest bulkRequest, List<Void> list, BulkResponse bulkResponse) {
-
-                    }
-
-                    @Override
-                    public void afterBulk(long l, BulkRequest bulkRequest, List<Void> list, Throwable throwable) {
-
-                        System.out.print("BulkIngester Exception: " + throwable);
-                        throwable.printStackTrace();
-                    }
-                })
         );
     }
 

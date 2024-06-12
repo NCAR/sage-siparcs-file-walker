@@ -12,7 +12,9 @@ public interface EsDirStateRepository {
 
     Set<Path> getDirectoryState(String id) throws IOException;
 
-    void updateDirState(String id) throws IOException;
+    void updateDirectoryState(String id) throws IOException;
+
+    void deleteDirectoryState(String id);
 
     boolean isCompleted(String id, Path directory) throws IOException;
 

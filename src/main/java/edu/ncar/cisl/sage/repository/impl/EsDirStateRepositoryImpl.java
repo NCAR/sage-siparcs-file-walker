@@ -13,11 +13,15 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class EsDirStateRepositoryImpl implements EsDirStateRepository {
 
     private final Map<String, DirectoryState> directoryStateMap;
     private String dateCreated;
+    private final ScheduledExecutorService executor;
     private final ElasticsearchClient esClient;
     private final BulkIngester<Void> bulkIngester;
     private static final String INDEX = "file-walker-dir-state";
@@ -26,6 +30,7 @@ public class EsDirStateRepositoryImpl implements EsDirStateRepository {
 
         this.directoryStateMap = new HashMap<>();
         this.dateCreated = reformatDate(ZonedDateTime.now(ZoneId.systemDefault()));
+        this.executor = Executors.newSingleThreadScheduledExecutor();
         this.esClient = esClient;
         this.bulkIngester = bulkIngester;
     }
@@ -54,7 +59,7 @@ public class EsDirStateRepositoryImpl implements EsDirStateRepository {
     }
 
     @Override
-    public void updateDirState(String id) throws RuntimeException, IOException {
+    public void updateDirectoryState(String id) throws RuntimeException, IOException {
 
         EsDirState esDirState = createEsDirState(id);
 
@@ -67,7 +72,14 @@ public class EsDirStateRepositoryImpl implements EsDirStateRepository {
         );
     }
 
-    public EsDirState createEsDirState(String id) throws IOException {
+    @Override
+    public void deleteDirectoryState(String id) {
+
+        directoryStateMap.remove(id);
+        executor.schedule(() -> esClient.delete(d -> d.index(INDEX).id(id)), 5, TimeUnit.SECONDS);
+    }
+
+    public EsDirState createEsDirState(String id) {
 
         EsDirState esDirState = new EsDirState();
 
@@ -100,12 +112,7 @@ public class EsDirStateRepositoryImpl implements EsDirStateRepository {
         directoryState.completed.add(dir);
         directoryState.completed.removeIf(path -> path.startsWith(dir) && !dir.equals(path));
 
-        updateDirState(id);
-
-        // delete document if file walker finished running
-        if(directoryState.completed.contains(startingPath)) {
-            esClient.delete(d -> d.index("file-walker-dir-state").id(id));
-        }
+        updateDirectoryState(id);
     }
 
     private String reformatDate(ZonedDateTime zonedDateTime) {

@@ -11,7 +11,7 @@ public interface EsFileRepository {
 
     List<Hit<EsFile>> getFilesWithoutMediaType();
 
-    void updateFile(String id, EsFile esFile);
-
     void addFile(String id, EsFile esFile);
+
+    void updateMediaType(String id, EsFile partialDoc);
 }

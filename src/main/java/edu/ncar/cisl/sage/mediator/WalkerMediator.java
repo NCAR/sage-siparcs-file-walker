@@ -96,21 +96,6 @@ public class WalkerMediator {
         esFile.setError(false);
         esFile.setMissing(false);
 
-        try {
-
-            metadataStrategy.calculateMetadata(esFile);
-
-        } catch (NoSuchFileException e) {
-
-            esFile.setMissing(true);
-
-            ZonedDateTime zonedDateTime = ZonedDateTime.now();
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
-
-            esFile.setDateMissing(zonedDateTime.format(formatter));
-        }
-
         String id = idStrategy.calculateId(event.getPath().toString());
 
         this.repository.addFile(id, esFile);
