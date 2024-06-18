@@ -1,34 +1,32 @@
 package edu.ncar.cisl.sage.mediator;
 
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryCompletedEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileWalkerCompletedEventImpl;
-import edu.ncar.cisl.sage.repository.EsDirStateRepository;
+import edu.ncar.cisl.sage.filewalker.DirectoryCompletedEvent;
+import edu.ncar.cisl.sage.filewalker.FileWalkerCompletedEvent;
+import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 public class DirectoryStateMediator {
 
-    private final EsDirStateRepository repository;
+    private final EsDirectoryStateRepository repository;
 
     @Autowired
-    public DirectoryStateMediator(EsDirStateRepository repository) {
+    public DirectoryStateMediator(EsDirectoryStateRepository repository) {
 
         this.repository = repository;
     }
 
     @EventListener
-    public void handleDirCompletedEvent(DirectoryCompletedEventImpl event) throws IOException {
+    public void handleDirCompletedEvent(DirectoryCompletedEvent event) {
 
         this.repository.directoryCompleted(event.getId(),event.getDir());
     }
 
     @EventListener
-    public void handleFileWalkerCompletedEvent(FileWalkerCompletedEventImpl event) throws IOException {
+    public void handleFileWalkerCompletedEvent(FileWalkerCompletedEvent event) {
 
-        this.repository.deleteDirectoryState(event.getId());
+        this.repository.removeDirectoryState(event.getId());
     }
 }

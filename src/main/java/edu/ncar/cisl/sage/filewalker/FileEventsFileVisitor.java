@@ -1,12 +1,7 @@
 package edu.ncar.cisl.sage.filewalker;
 
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -40,20 +35,20 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
 
         try {
             //Create and Populate FileFoundEvent
-            FileFoundEventImpl fileFoundEventImpl = new FileFoundEventImpl(this);
+            FileFoundEvent fileFoundEvent = new FileFoundEvent(this);
 
-            fileFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
-            fileFoundEventImpl.setFileName(path.getFileName().toString());
-            fileFoundEventImpl.setPath(path);
-            fileFoundEventImpl.setExtension(getExtension(path.getFileName().toString()));
-            fileFoundEventImpl.setSize(Files.size(path));
-            fileFoundEventImpl.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
-            fileFoundEventImpl.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
-            fileFoundEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
-            fileFoundEventImpl.setOwner(Files.getOwner(path).toString());
+            fileFoundEvent.setFileIdentifier(attr.fileKey().toString());
+            fileFoundEvent.setFileName(path.getFileName().toString());
+            fileFoundEvent.setPath(path);
+            fileFoundEvent.setExtension(getExtension(path.getFileName().toString()));
+            fileFoundEvent.setSize(Files.size(path));
+            fileFoundEvent.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
+            fileFoundEvent.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
+            fileFoundEvent.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
+            fileFoundEvent.setOwner(Files.getOwner(path).toString());
 
             //Publishes FileFoundEvent
-            this.applicationEventPublisher.publishEvent(fileFoundEventImpl);
+            this.applicationEventPublisher.publishEvent(fileFoundEvent);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());
@@ -83,55 +78,55 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
         BasicFileAttributes attr = Files.readAttributes(path, BasicFileAttributes.class);
 
         //Create and Populate DirectoryFoundEvent
-        DirectoryFoundEventImpl directoryFoundEventImpl = new DirectoryFoundEventImpl(this);
+        DirectoryFoundEvent directoryFoundEvent = new DirectoryFoundEvent(this);
 
-        directoryFoundEventImpl.setFileIdentifier(attr.fileKey().toString());
-        directoryFoundEventImpl.setFileName(path.getFileName().toString());
-        directoryFoundEventImpl.setPath(path);
-        directoryFoundEventImpl.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
-        directoryFoundEventImpl.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
-        directoryFoundEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
-        directoryFoundEventImpl.setOwner(Files.getOwner(path).toString());
+        directoryFoundEvent.setFileIdentifier(attr.fileKey().toString());
+        directoryFoundEvent.setFileName(path.getFileName().toString());
+        directoryFoundEvent.setPath(path);
+        directoryFoundEvent.setDateCreated(attr.creationTime().toInstant().atZone(ZoneId.systemDefault()));
+        directoryFoundEvent.setDateModified(Files.getLastModifiedTime(path).toInstant().atZone(ZoneId.systemDefault()));
+        directoryFoundEvent.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
+        directoryFoundEvent.setOwner(Files.getOwner(path).toString());
 
         //Publishes DirectoryFoundEvent
-        this.applicationEventPublisher.publishEvent(directoryFoundEventImpl);
+        this.applicationEventPublisher.publishEvent(directoryFoundEvent);
 
     }
 
     public void fireFileErrorEvent(Path path, IOException e) {
 
         //Create and Populate FileErrorEvent
-        FileErrorEventImpl fileErrorEventImpl = new FileErrorEventImpl(this);
+        FileErrorEvent fileErrorEvent = new FileErrorEvent(this);
 
-        fileErrorEventImpl.setFileIdentifier(null);
-        fileErrorEventImpl.setFileName(path.getFileName().toString());
-        fileErrorEventImpl.setPath(path);
-        fileErrorEventImpl.setExtension(getExtension(path.getFileName().toString()));
-        fileErrorEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
+        fileErrorEvent.setFileIdentifier(null);
+        fileErrorEvent.setFileName(path.getFileName().toString());
+        fileErrorEvent.setPath(path);
+        fileErrorEvent.setExtension(getExtension(path.getFileName().toString()));
+        fileErrorEvent.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
         //getMessage() was only returning the path and did not include the error message
         //The reason for this is unclear. Thus, toString() is being used instead as it is an acceptable message.
-        fileErrorEventImpl.setErrorMessage(e.toString());
+        fileErrorEvent.setErrorMessage(e.toString());
 
         //Publishes FileErrorEvent
-        this.applicationEventPublisher.publishEvent(fileErrorEventImpl);
+        this.applicationEventPublisher.publishEvent(fileErrorEvent);
 
     }
 
     public void fireDirectoryErrorEvent(Path path, IOException e) {
 
         //Create and Populate DirectoryErrorEvent
-        DirectoryErrorEventImpl directoryErrorEventImpl = new DirectoryErrorEventImpl(this);
+        DirectoryErrorEvent directoryErrorEvent = new DirectoryErrorEvent(this);
 
-        directoryErrorEventImpl.setFileIdentifier(null);
-        directoryErrorEventImpl.setFileName(path.getFileName().toString());
-        directoryErrorEventImpl.setPath(path);
-        directoryErrorEventImpl.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
+        directoryErrorEvent.setFileIdentifier(null);
+        directoryErrorEvent.setFileName(path.getFileName().toString());
+        directoryErrorEvent.setPath(path);
+        directoryErrorEvent.setDateLastIndexed(ZonedDateTime.now(ZoneId.systemDefault()));
         //getMessage() was only returning the path and did not include the error message
         //The reason for this is unclear. Thus, toString() is being used instead as it is an acceptable message.
-        directoryErrorEventImpl.setErrorMessage(e.toString());
+        directoryErrorEvent.setErrorMessage(e.toString());
 
         //Publishes DirectoryErrorEvent
-        this.applicationEventPublisher.publishEvent(directoryErrorEventImpl);
+        this.applicationEventPublisher.publishEvent(directoryErrorEvent);
     }
 
     public FileVisitResult visitFileFailed(Path path, IOException e) {

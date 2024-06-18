@@ -1,10 +1,29 @@
 package edu.ncar.cisl.sage.filewalker;
 
+import org.springframework.context.ApplicationEvent;
+
 import java.nio.file.Path;
 
-public interface DirectoryCompletedEvent {
+public class DirectoryCompletedEvent extends ApplicationEvent {
 
-    String getId();
+    String id;
+    Path dir;
 
-    Path getDir();
+    public DirectoryCompletedEvent(Object source) {
+        super(source);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id){
+        this.id = id;
+    }
+
+    public Path getDir() {
+        return dir;
+    }
+
+    public void setDir(Path dir) { this.dir = dir; }
 }

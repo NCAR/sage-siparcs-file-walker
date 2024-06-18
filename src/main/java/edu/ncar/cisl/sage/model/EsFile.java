@@ -9,6 +9,7 @@ public class EsFile {
     private Path path;
     private String extension;
     private String mediaType;
+    private String dateMediaTypeUpdated;
     private Boolean isDirectory;
     private Long size;
     private String dateCreated;
@@ -72,6 +73,10 @@ public class EsFile {
     public Boolean getDirectory() {
         return isDirectory;
     }
+
+    public String getDateMediaTypeUpdated() { return this.dateMediaTypeUpdated; }
+
+    public void setDateMediaTypeUpdated(String dateMediaTypeUpdated) { this.dateMediaTypeUpdated = dateMediaTypeUpdated; }
 
     public void setDirectory(Boolean directory) {
         isDirectory = directory;

@@ -1,8 +1,6 @@
 package edu.ncar.cisl.sage.filewalker;
 
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryCompletedEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileWalkerCompletedEventImpl;
-import edu.ncar.cisl.sage.repository.EsDirStateRepository;
+import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
@@ -19,24 +17,22 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
 
     private final FileVisitor<Path> fileEventsFileVisitor;
     private final String walkerId;
-    private final String startingPath;
-    private EsDirStateRepository repository;
+    private EsDirectoryStateRepository repository;
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public CompositeFileVisitor(FileVisitor<Path> fileEventsFileVisitor, EsDirStateRepository repository, String walkerId, String startingPath){
+    public CompositeFileVisitor(FileVisitor<Path> fileEventsFileVisitor, EsDirectoryStateRepository repository, String walkerId){
 
         this.fileEventsFileVisitor = fileEventsFileVisitor;
         this.repository = repository;
         this.walkerId = walkerId;
-        this.startingPath = startingPath;
     }
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 
         FileVisitResult result = CONTINUE;
 
-        boolean completed = this.repository.isCompleted(walkerId,dir);
+        boolean completed = this.repository.isDirectoryCompleted(walkerId,dir);
 
         if(completed) {
             System.out.println(dir + "   skip");
@@ -56,11 +52,7 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
         System.out.println(dir + "   post");
-        if(dir.equals(Path.of(this.startingPath))) {
-            fireFileWalkerCompletedEvent();
-        } else {
-            fireDirectoryCompletedEvent(dir);
-        }
+        fireDirectoryCompletedEvent(dir);
         return this.fileEventsFileVisitor.postVisitDirectory(dir,e);
     }
 
@@ -71,19 +63,12 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
 
     private void fireDirectoryCompletedEvent(Path dir) {
 
-        DirectoryCompletedEventImpl dirCompletedEventImpl = new DirectoryCompletedEventImpl(this);
+        DirectoryCompletedEvent directoryCompletedEvent = new DirectoryCompletedEvent(this);
 
-        dirCompletedEventImpl.setId(walkerId);
-        dirCompletedEventImpl.setDir(dir);
+        directoryCompletedEvent.setId(walkerId);
+        directoryCompletedEvent.setDir(dir);
 
-        this.applicationEventPublisher.publishEvent(dirCompletedEventImpl);
-    }
-
-    private void fireFileWalkerCompletedEvent() {
-
-        FileWalkerCompletedEventImpl fileWalkerCompletedEventImpl = new FileWalkerCompletedEventImpl(this);
-        fileWalkerCompletedEventImpl.setId(walkerId);
-        this.applicationEventPublisher.publishEvent(fileWalkerCompletedEventImpl);
+        this.applicationEventPublisher.publishEvent(directoryCompletedEvent);
     }
 
     @Override

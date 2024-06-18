@@ -67,6 +67,7 @@ public class CheckIndex {
                             .properties("dateMissing", date)
                             .properties("extension", keyword)
                             .properties("mediaType", keyword)
+                            .properties("dateMediaTypeUpdated", date)
                             .properties("fileIdentifier", wildcard)
                             .properties("fileName", text)
                             .properties("owner", text)

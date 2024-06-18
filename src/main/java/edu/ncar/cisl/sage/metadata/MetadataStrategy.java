@@ -1,10 +1,9 @@
 package edu.ncar.cisl.sage.metadata;
 
-import edu.ncar.cisl.sage.model.EsFile;
-
 import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 public interface MetadataStrategy {
 
-    void calculateMetadata(EsFile esFile) throws NoSuchFileException;
+    String calculateMetadata(Path path) throws NoSuchFileException;
 }

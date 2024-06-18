@@ -12,6 +12,7 @@ import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.EsFile;
+import edu.ncar.cisl.sage.model.MediaType;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
 
@@ -52,7 +53,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         )._toQuery();
 
         Query mediaTypeExists = ExistsQuery.of(q -> q
-                .field("mediaType.keyword"))._toQuery();
+                .field("mediaType"))._toQuery();
 
         SearchResponse<EsFile> response;
 
@@ -88,30 +89,20 @@ public class EsFileRepositoryImpl implements EsFileRepository {
     public void addFile(String id, EsFile esFile) {
 
         bulkIngester.add(op -> op
-                .index(idx -> idx
-                        .index(INDEX)
-                        .document(esFile)
-                        .id(id)
-                )
-        );
-
-    }
-
-    public void updateMediaType(String id, EsFile partialDoc) throws IOException {
-
-        BulkRequest.Builder builder = new BulkRequest.Builder();
-        builder.operations(op -> op
                 .update(idx -> idx
                         .index(INDEX)
                         .id(id)
-                        .action(a -> a.doc(partialDoc))
-                )
-        );
-        BulkResponse result = esClient.bulk(builder.build());
-        if (result.errors()) {
-            System.out.println("ERROR");
-        }
+                        .action(a -> a.doc(esFile).upsert(esFile))
+                ));
+    }
+
+    public void updateMediaType(String id, MediaType mediaType) {
+
+        bulkIngester.add(op -> op
+                .update(idx -> idx
+                        .index(INDEX)
+                        .id(id)
+                        .action(a -> a.doc(mediaType))));
     }
 }
-    //Do all of the indexing and the updating here
 

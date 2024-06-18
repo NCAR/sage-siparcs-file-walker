@@ -1,10 +1,9 @@
 package edu.ncar.cisl.sage.config;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import edu.ncar.cisl.sage.filewalker.*;
-import edu.ncar.cisl.sage.repository.EsDirStateRepository;
+import edu.ncar.cisl.sage.mediator.WalkerMediator;
+import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.FileWalkerRepository;
-import edu.ncar.cisl.sage.repository.impl.EsDirStateRepositoryImpl;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
@@ -19,15 +18,17 @@ import java.util.*;
 @Configuration
 public class FileWalkerRepositoryConfig implements ApplicationEventPublisherAware {
 
+    private final WalkerMediator walkerMediator;
     private List<FileWalkerDto> fileWalkerDtos;
-    private EsDirStateRepository esDirStateRepository;
+    private EsDirectoryStateRepository esDirectoryStateRepository;
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public FileWalkerRepositoryConfig(List<FileWalkerDto> fileWalkerDtos, EsDirStateRepository esDirStateRepository) {
+    public FileWalkerRepositoryConfig(List<FileWalkerDto> fileWalkerDtos, EsDirectoryStateRepository esDirectoryStateRepository, WalkerMediator walkerMediator) {
 
         this.fileWalkerDtos = fileWalkerDtos;
-        this.esDirStateRepository = esDirStateRepository;
+        this.esDirectoryStateRepository = esDirectoryStateRepository;
+        this.walkerMediator = walkerMediator;
     }
 
     public void setFileWalkerDtos(List<FileWalkerDto> fileWalkerDtos) {
@@ -48,13 +49,15 @@ public class FileWalkerRepositoryConfig implements ApplicationEventPublisherAwar
     private FileWalker createFileWalker(FileWalkerDto dto) {
 
         FileEventsFileVisitor fileEventsFileVisitor = new FileEventsFileVisitor();
-        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor,esDirStateRepository,dto.getId(),dto.getStartPath());
+        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor, esDirectoryStateRepository,dto.getId());
         MetricsFileVisitor metricsFileVisitor = new MetricsFileVisitor(compositeFileVisitor,dto.getIgnoredPaths());
+        FileWalker fileWalker = new FileWalker(Paths.get(dto.getStartPath()), metricsFileVisitor, Clock.systemDefaultZone(), dto.getId());
 
         fileEventsFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
         compositeFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
+        fileWalker.setApplicationEventPublisher(this.applicationEventPublisher);
 
-        return new FileWalker(Paths.get(dto.getStartPath()), metricsFileVisitor, Clock.systemDefaultZone());
+        return fileWalker;
     }
 
     @Override

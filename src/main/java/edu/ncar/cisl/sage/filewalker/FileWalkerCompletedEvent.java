@@ -1,8 +1,20 @@
 package edu.ncar.cisl.sage.filewalker;
 
-import java.nio.file.Path;
+import org.springframework.context.ApplicationEvent;
 
-public interface FileWalkerCompletedEvent {
+public class FileWalkerCompletedEvent extends ApplicationEvent {
 
-    String getId();
+    String id;
+
+    public FileWalkerCompletedEvent(Object source) {
+        super(source);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id){
+        this.id = id;
+    }
 }

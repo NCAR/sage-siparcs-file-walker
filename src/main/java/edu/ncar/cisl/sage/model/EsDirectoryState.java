@@ -3,14 +3,14 @@ package edu.ncar.cisl.sage.model;
 import java.nio.file.Path;
 import java.util.Set;
 
-public class EsDirState {
+public class EsDirectoryState {
 
     private String id;
     private Set<Path> completed;
     private String dateCreated;
     private String dateUpdated;
 
-    public EsDirState(){}
+    public EsDirectoryState(){}
 
     public String getId() { return id; }
 

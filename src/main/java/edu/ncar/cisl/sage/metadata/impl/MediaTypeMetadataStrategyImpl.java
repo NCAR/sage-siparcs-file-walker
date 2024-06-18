@@ -20,10 +20,9 @@ public class MediaTypeMetadataStrategyImpl implements MetadataStrategy {
 
         this.tika = tika;
     }
-    @Override
-    public void calculateMetadata(EsFile esFile) throws NoSuchFileException {
 
-        Path path = esFile.getPath();
+    @Override
+    public String calculateMetadata(Path path) throws NoSuchFileException {
 
         String value = MediaType.OCTET_STREAM.toString();
 
@@ -48,6 +47,6 @@ public class MediaTypeMetadataStrategyImpl implements MetadataStrategy {
             e.printStackTrace();
         }
 
-        esFile.setMediaType(value);
+        return value;
     }
 }

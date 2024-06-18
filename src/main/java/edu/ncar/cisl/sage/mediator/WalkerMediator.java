@@ -1,9 +1,9 @@
 package edu.ncar.cisl.sage.mediator;
 
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryErrorEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.DirectoryFoundEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileErrorEventImpl;
-import edu.ncar.cisl.sage.filewalker.impl.FileFoundEventImpl;
+import edu.ncar.cisl.sage.filewalker.DirectoryErrorEvent;
+import edu.ncar.cisl.sage.filewalker.DirectoryFoundEvent;
+import edu.ncar.cisl.sage.filewalker.FileErrorEvent;
+import edu.ncar.cisl.sage.filewalker.FileFoundEvent;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.metadata.MetadataStrategy;
 import edu.ncar.cisl.sage.model.EsFile;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.nio.file.NoSuchFileException;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -34,7 +33,7 @@ public class WalkerMediator {
     }
 
     @EventListener
-    public void handleDirectoryFoundEvent(DirectoryFoundEventImpl event) {
+    public void handleDirectoryFoundEvent(DirectoryFoundEvent event) {
 
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
@@ -56,7 +55,7 @@ public class WalkerMediator {
     }
 
     @EventListener
-    public void handleDirectoryErrorEvent (DirectoryErrorEventImpl event) {
+    public void handleDirectoryErrorEvent (DirectoryErrorEvent event) {
 
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
@@ -76,7 +75,7 @@ public class WalkerMediator {
     }
 
     @EventListener
-    public void handleFileFoundEvent (FileFoundEventImpl event) {
+    public void handleFileFoundEvent (FileFoundEvent event) {
 
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
@@ -102,7 +101,7 @@ public class WalkerMediator {
     }
 
     @EventListener
-    public void handleFileErrorEvent (FileErrorEventImpl event) {
+    public void handleFileErrorEvent (FileErrorEvent event) {
 
         //Create and Populate EsFile
         EsFile esFile = new EsFile();
