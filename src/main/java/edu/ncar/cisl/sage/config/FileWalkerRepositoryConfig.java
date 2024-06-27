@@ -18,17 +18,15 @@ import java.util.*;
 @Configuration
 public class FileWalkerRepositoryConfig implements ApplicationEventPublisherAware {
 
-    private final WalkerMediator walkerMediator;
     private List<FileWalkerDto> fileWalkerDtos;
     private EsDirectoryStateRepository esDirectoryStateRepository;
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public FileWalkerRepositoryConfig(List<FileWalkerDto> fileWalkerDtos, EsDirectoryStateRepository esDirectoryStateRepository, WalkerMediator walkerMediator) {
+    public FileWalkerRepositoryConfig(List<FileWalkerDto> fileWalkerDtos, EsDirectoryStateRepository esDirectoryStateRepository) {
 
         this.fileWalkerDtos = fileWalkerDtos;
         this.esDirectoryStateRepository = esDirectoryStateRepository;
-        this.walkerMediator = walkerMediator;
     }
 
     public void setFileWalkerDtos(List<FileWalkerDto> fileWalkerDtos) {

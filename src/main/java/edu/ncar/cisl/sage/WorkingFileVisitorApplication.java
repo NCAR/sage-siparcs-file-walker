@@ -8,12 +8,18 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
+import edu.ncar.cisl.sage.metadata.MediaTypeService;
 import edu.ncar.cisl.sage.metadata.MetadataStrategy;
-import edu.ncar.cisl.sage.metadata.impl.MediaTypeMetadataStrategyImpl;
+import edu.ncar.cisl.sage.metadata.TikaPooledObjectFactory;
+import edu.ncar.cisl.sage.metadata.impl.MediaTypeWithPoolMetadataStrategyImpl;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.impl.EsDirectoryStateRepositoryImpl;
 import edu.ncar.cisl.sage.repository.impl.EsFileRepositoryImpl;
+import edu.ncar.cisl.sage.metadata.WorkflowMonitor;
+import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPool;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -26,6 +32,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.integration.channel.QueueChannel;
+import org.springframework.jmx.export.annotation.ManagedAttribute;
+import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.concurrent.TimeUnit;
@@ -33,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 @SpringBootApplication
 @Configuration
 @EnableScheduling
-public class WorkingFileVisitorApplication {
+public class WorkingFileVisitorApplication{
 
     public static final String esIndex = "file-walker-files";
     public static final String esDirStateIndex = "file-walker-dir-state";
@@ -79,6 +89,18 @@ public class WorkingFileVisitorApplication {
     }
 
     @Bean
+    public QueueChannel mediaTypeChannel() {
+
+        return new QueueChannel();
+    }
+
+    @Bean
+    public WorkflowMonitor createWorkflowMonitor(QueueChannel mediaTypeChannel) {
+
+        return new WorkflowMonitor(mediaTypeChannel);
+    }
+
+    @Bean
     public BulkIngester<Void> createBulkIngester(ElasticsearchClient esClient) {
 
         return BulkIngester.of(b -> b
@@ -89,9 +111,9 @@ public class WorkingFileVisitorApplication {
     }
 
     @Bean
-    public Tika createTika() {
+    public MediaTypeService createMediaTypeService(EsFileRepository esFileRepository, MetadataStrategy metadataStrategy) {
 
-        return new Tika();
+        return new MediaTypeService(esFileRepository, metadataStrategy);
     }
 
     @Bean
@@ -101,9 +123,20 @@ public class WorkingFileVisitorApplication {
     }
 
     @Bean
-    public MetadataStrategy createMetadataStrategy(Tika tika) {
+    public ObjectPool<Tika> createPool() {
 
-        return new MediaTypeMetadataStrategyImpl(tika);
+        GenericObjectPoolConfig<Tika> config = new GenericObjectPoolConfig<>();
+        config.setJmxEnabled(false);
+
+        GenericObjectPool<Tika> pool = new GenericObjectPool<>(new TikaPooledObjectFactory(),config);
+        pool.setMaxTotal(5);
+        return pool;
+    }
+
+    @Bean
+    public MetadataStrategy createMediaTypeStrategy(ObjectPool<Tika> pool) {
+
+        return new MediaTypeWithPoolMetadataStrategyImpl(pool);
     }
 
     @Bean

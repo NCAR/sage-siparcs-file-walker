@@ -23,7 +23,7 @@ public class EsFile {
 
     private String errorMessage;
 
-    private Boolean isMissing;
+    private Boolean missing;
 
     private String dateMissing;
 
@@ -155,11 +155,11 @@ public class EsFile {
     }
 
     public Boolean getMissing() {
-        return isMissing;
+        return missing;
     }
 
     public void setMissing(Boolean missing) {
-        isMissing = missing;
+        this.missing = missing;
     }
 
     public String getDateMissing() {

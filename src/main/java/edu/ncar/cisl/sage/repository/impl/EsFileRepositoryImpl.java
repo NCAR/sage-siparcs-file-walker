@@ -12,11 +12,14 @@ import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.EsFile;
+import edu.ncar.cisl.sage.model.EsFileMissing;
 import edu.ncar.cisl.sage.model.MediaType;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
 
 import java.io.IOException;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -68,7 +71,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                             .mustNot(mediaTypeExists)
                                     )
                             ).from(0)
-                            .size(50)
+                            .size(1000)
                             .sort(so -> so
                                     .field(FieldSort.of(f -> f
                                             .field("dateLastIndexed")
@@ -103,6 +106,15 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                         .index(INDEX)
                         .id(id)
                         .action(a -> a.doc(mediaType))));
+    }
+
+    public void setFileMissing(String id, EsFileMissing esFileMissing) {
+
+        bulkIngester.add(op -> op
+                .update(idx -> idx
+                        .index(INDEX)
+                        .id(id)
+                        .action(a -> a.doc(esFileMissing))));
     }
 }
 

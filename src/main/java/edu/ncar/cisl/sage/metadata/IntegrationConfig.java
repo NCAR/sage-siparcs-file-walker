@@ -1,0 +1,48 @@
+package edu.ncar.cisl.sage.metadata;
+
+import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.channel.QueueChannel;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.MessageChannels;
+import org.springframework.integration.dsl.Pollers;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+@Configuration
+@IntegrationComponentScan
+public class IntegrationConfig {
+
+    private final QueueChannel mediaTypeChannel;
+    private final MediaTypeService mediaTypeService;
+
+    public IntegrationConfig(QueueChannel mediaTypeChannel, MediaTypeService mediaTypeService) {
+
+        this.mediaTypeChannel = mediaTypeChannel;
+        this.mediaTypeService = mediaTypeService;
+    }
+
+    @Bean
+    public IntegrationFlow mediaTypeFlow() {
+
+        ExecutorService exec = Executors.newFixedThreadPool(5);
+        return IntegrationFlows.fromSupplier(() -> mediaTypeChannel.receive(), c -> c.poller(Pollers
+                        .fixedRate(0)
+                        .maxMessagesPerPoll(1)))
+                .channel(MessageChannels.executor(exec))
+                .handle(this::updateMediaType)
+                .get();
+    }
+
+    private void updateMediaType(org.springframework.messaging.Message<?> message) {
+
+          System.out.println(Thread.currentThread().getName());
+
+          EsFileTaskIdentifier esFileTaskIdentifier = (EsFileTaskIdentifier) message.getPayload();
+          mediaTypeService.updateMediaType(esFileTaskIdentifier);
+    }
+}
