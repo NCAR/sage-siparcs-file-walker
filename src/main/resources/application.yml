@@ -9,12 +9,12 @@ spring:
     name: Working With File Walker
 
 ---
-walker:
-  startingPath: /
-
----
-config:
-  ignoredPaths: >
+file-walker-list:
+  fileWalkerDtos:
+    -
+      id: default
+      startPath: /
+      ignoredPaths:
 
 ---
 http:
@@ -30,3 +30,24 @@ xpack:
 elastic:
   username: ""
   password: ""
+
+---
+bulkIngester:
+  maxOperations: 1000
+  flushInterval: 4
+
+---
+mediaTypeWorkflow:
+  enabled: false
+  esQuerySize: 1000
+  threadCount: 5
+  tikaPoolSize: 5
+
+---
+# spring pool size must be larger than the total number of threads being used inside the application
+spring:
+  task:
+    scheduling:
+      thread-name-prefix: "scheduling-"
+      pool:
+        size: 10

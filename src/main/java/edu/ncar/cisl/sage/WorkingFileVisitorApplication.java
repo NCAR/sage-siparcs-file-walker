@@ -95,18 +95,20 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public WorkflowMonitor createWorkflowMonitor(QueueChannel mediaTypeChannel) {
+    public WorkflowMonitor createWorkflowMonitor(QueueChannel mediaTypeChannel, @Value("${mediaTypeWorkflow.enabled}") boolean enabled) {
 
-        return new WorkflowMonitor(mediaTypeChannel);
+        return new WorkflowMonitor(mediaTypeChannel, enabled);
     }
 
     @Bean
-    public BulkIngester<Void> createBulkIngester(ElasticsearchClient esClient) {
+    public BulkIngester<Void> createBulkIngester(ElasticsearchClient esClient,
+                                                 @Value("${bulkIngester.maxOperations}") int maxOperations,
+                                                 @Value("${bulkIngester.flushInterval}") int flushInterval) {
 
         return BulkIngester.of(b -> b
                 .client(esClient)
-                .maxOperations(10000)
-                .flushInterval(4, TimeUnit.SECONDS)
+                .maxOperations(maxOperations)
+                .flushInterval(flushInterval, TimeUnit.SECONDS)
         );
     }
 
@@ -123,13 +125,13 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public ObjectPool<Tika> createPool() {
+    public ObjectPool<Tika> createPool(@Value("${mediaTypeWorkflow.tikaPoolSize}") int poolSize) {
 
         GenericObjectPoolConfig<Tika> config = new GenericObjectPoolConfig<>();
         config.setJmxEnabled(false);
 
         GenericObjectPool<Tika> pool = new GenericObjectPool<>(new TikaPooledObjectFactory(),config);
-        pool.setMaxTotal(5);
+        pool.setMaxTotal(poolSize);
         return pool;
     }
 
@@ -140,9 +142,11 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public EsFileRepository createEsFileRepository(ElasticsearchClient esClient, BulkIngester<Void> ingester) {
+    public EsFileRepository createEsFileRepository(ElasticsearchClient esClient,
+                                                   BulkIngester<Void> ingester,
+                                                   @Value("${mediaTypeWorkflow.esQuerySize}") int esQuerySize) {
 
-        return new EsFileRepositoryImpl(esClient, ingester);
+        return new EsFileRepositoryImpl(esClient, ingester, esQuerySize);
     }
 
     @Bean

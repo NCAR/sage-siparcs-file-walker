@@ -1,6 +1,7 @@
 package edu.ncar.cisl.sage.metadata;
 
 import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -19,17 +20,19 @@ public class IntegrationConfig {
 
     private final QueueChannel mediaTypeChannel;
     private final MediaTypeService mediaTypeService;
+    private final int threadCount;
 
-    public IntegrationConfig(QueueChannel mediaTypeChannel, MediaTypeService mediaTypeService) {
+    public IntegrationConfig(QueueChannel mediaTypeChannel, MediaTypeService mediaTypeService, @Value("${mediaTypeWorkflow.threadCount}") int threadCount) {
 
         this.mediaTypeChannel = mediaTypeChannel;
         this.mediaTypeService = mediaTypeService;
+        this.threadCount = threadCount;
     }
 
     @Bean
     public IntegrationFlow mediaTypeFlow() {
 
-        ExecutorService exec = Executors.newFixedThreadPool(5);
+        ExecutorService exec = Executors.newFixedThreadPool(threadCount);
         return IntegrationFlows.fromSupplier(() -> mediaTypeChannel.receive(), c -> c.poller(Pollers
                         .fixedRate(0)
                         .maxMessagesPerPoll(1)))

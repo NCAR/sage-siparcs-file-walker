@@ -7,8 +7,6 @@ import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.ExistsQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch.core.BulkRequest;
-import co.elastic.clients.elasticsearch.core.BulkResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.EsFile;
@@ -18,8 +16,6 @@ import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 
@@ -31,10 +27,13 @@ public class EsFileRepositoryImpl implements EsFileRepository {
 
     private static final String INDEX = "file-walker-files";
 
-    public EsFileRepositoryImpl(ElasticsearchClient esClient, BulkIngester<Void> bulkIngester) {
+    private final int esQuerySize;
+
+    public EsFileRepositoryImpl(ElasticsearchClient esClient, BulkIngester<Void> bulkIngester, int esQuerySize) {
 
         this.esClient = esClient;
         this.bulkIngester = bulkIngester;
+        this.esQuerySize = esQuerySize;
     }
 
     @Override
@@ -71,7 +70,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                             .mustNot(mediaTypeExists)
                                     )
                             ).from(0)
-                            .size(1000)
+                            .size(esQuerySize)
                             .sort(so -> so
                                     .field(FieldSort.of(f -> f
                                             .field("dateLastIndexed")
