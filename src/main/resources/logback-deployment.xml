@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+    <property name="LOG_DIR" value="/usr/local/file-walker/logs" />
+    <property name="ES_HTTP_LOG" value="LogFile" />
+
+    <appender name="elastic-search-http" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${ES_HTTP_LOG}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/${${ES_HTTP_LOG}}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.elasticsearch.client.RestClient" level="trace">
+        <appender-ref ref="elastic-search-http" />
+    </logger>
+
+    <logger name="tracer" level="trace" additivity="false">
+        <appender-ref ref="elastic-search-http" />
+    </logger>
+
+</configuration>
