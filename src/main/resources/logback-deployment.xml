@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/file-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+    <property name="LOG_DIR" value="/usr/local/file-walker/logs" />
+    <property name="FW_LOG" value="file-walker" />
+    <property name="ES_HTTP_LOG" value="elastic-search-http" />
+
+Sm    <appender name="default" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${FW_LOG}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/${FW_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="elastic-search-http" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${ES_HTTP_LOG}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/${ES_HTTP_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="default" />
+    </root>
+
+    <!-- File walker loggers -->
+    <logger name="edu.ncar.cisl.sage.logging.BulkIngesterListenerLogger" level="debug">
+        <appender-ref ref="default" />
+    </logger>
+
+    <!-- Elasticsearch HTTP loggers -->
+    <logger name="org.elasticsearch.client.RestClient" level="trace">
+        <appender-ref ref="elastic-search-http" />
+    </logger>
+
+    <logger name="tracer" level="trace" additivity="false">
+        <appender-ref ref="elastic-search-http" />
+    </logger>
+
+</configuration>
