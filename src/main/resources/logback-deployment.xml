@@ -10,8 +10,8 @@
     <property name="FW_LOG" value="file-walker" />
     <property name="ES_HTTP_LOG" value="elastic-search-http" />
 
-    <appender name="file-walker" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR}/${FW_LOG}</file>
+Sm    <appender name="default" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${FW_LOG}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_DIR}/${FW_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -25,7 +25,7 @@
     </appender>
 
     <appender name="elastic-search-http" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_DIR}/${ES_HTTP_LOG}</file>
+        <file>${LOG_DIR}/${ES_HTTP_LOG}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_DIR}/${ES_HTTP_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -38,11 +38,17 @@
         </encoder>
     </appender>
 
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="default" />
+    </root>
+
+    <!-- File walker loggers -->
     <logger name="edu.ncar.cisl.sage.logging.BulkIngesterListenerLogger" level="debug">
-        <appender-ref ref="elastic-search-http" />
+        <appender-ref ref="default" />
     </logger>
 
-    <!-- Logging for Elasticsearch HTTP Client -->
+    <!-- Elasticsearch HTTP loggers -->
     <logger name="org.elasticsearch.client.RestClient" level="trace">
         <appender-ref ref="elastic-search-http" />
     </logger>
