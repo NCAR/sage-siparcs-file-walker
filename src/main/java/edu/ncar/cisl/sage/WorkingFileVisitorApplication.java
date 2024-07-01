@@ -8,6 +8,7 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
+import edu.ncar.cisl.sage.logging.BulkIngesterListenerLogger;
 import edu.ncar.cisl.sage.metadata.MediaTypeService;
 import edu.ncar.cisl.sage.metadata.MetadataStrategy;
 import edu.ncar.cisl.sage.metadata.TikaPooledObjectFactory;
@@ -32,10 +33,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.integration.channel.QueueChannel;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.concurrent.TimeUnit;
@@ -107,6 +105,7 @@ public class WorkingFileVisitorApplication{
                 .client(esClient)
                 .maxOperations(10000)
                 .flushInterval(4, TimeUnit.SECONDS)
+                .listener(new BulkIngesterListenerLogger())
         );
     }
 
