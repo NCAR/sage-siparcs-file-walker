@@ -15,7 +15,6 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_DIR}/${FW_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxFileSize>1G</maxFileSize>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
