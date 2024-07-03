@@ -56,7 +56,7 @@
         <appender-ref ref="elastic-search-http" />
     </logger>
 
-    <logger name="tracer" level="trace" additivity="false">
+    <logger name="tracer" level="warn" additivity="false">
         <appender-ref ref="elastic-search-http" />
     </logger>
 
