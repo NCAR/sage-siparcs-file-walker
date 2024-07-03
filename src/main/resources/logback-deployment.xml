@@ -10,12 +10,12 @@
     <property name="FW_LOG" value="file-walker" />
     <property name="ES_HTTP_LOG" value="elastic-search-http" />
 
-Sm    <appender name="default" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="default" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${FW_LOG}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_DIR}/${FW_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxFileSize>1G</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
@@ -29,7 +29,7 @@ Sm    <appender name="default" class="ch.qos.logback.core.rolling.RollingFileApp
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_DIR}/${ES_HTTP_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- keep 30 days' worth of history capped at 3GB total size -->
+            <maxFileSize>1G</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
