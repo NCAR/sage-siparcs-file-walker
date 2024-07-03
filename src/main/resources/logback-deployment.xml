@@ -56,9 +56,9 @@
     </logger>
 
     <!-- Needs to be last. -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="fw-default" />
-    </root>
+<!--    <root level="INFO">-->
+<!--        <appender-ref ref="CONSOLE" />-->
+<!--        <appender-ref ref="fw-default" />-->
+<!--    </root>-->
 
 </configuration>
