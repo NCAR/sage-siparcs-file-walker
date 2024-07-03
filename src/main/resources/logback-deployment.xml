@@ -47,12 +47,12 @@
     </root>
 
     <!-- File walker loggers -->
-    <logger name="edu.ncar.cisl.sage.logging.BulkIngesterListenerLogger" level="debug">
+    <logger name="edu.ncar.cisl.sage" level="debug">
         <appender-ref ref="default" />
     </logger>
 
     <!-- Elasticsearch HTTP loggers -->
-    <logger name="org.elasticsearch.client.RestClient" level="trace">
+    <logger name="org.elasticsearch.client.RestClient" level="warn">
         <appender-ref ref="elastic-search-http" />
     </logger>
 

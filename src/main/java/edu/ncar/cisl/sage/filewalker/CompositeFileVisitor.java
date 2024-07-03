@@ -35,7 +35,6 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
         boolean completed = this.repository.isDirectoryCompleted(walkerId,dir);
 
         if(completed) {
-            System.out.println(dir + "   skip");
             result = SKIP_SUBTREE;
         } else {
             this.fileEventsFileVisitor.preVisitDirectory(dir,attrs);
@@ -51,7 +50,6 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
 
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
-        System.out.println(dir + "   post");
         fireDirectoryCompletedEvent(dir);
         return this.fileEventsFileVisitor.postVisitDirectory(dir,e);
     }

@@ -17,14 +17,12 @@ public class TikaPooledObjectFactory implements PooledObjectFactory<Tika> {
     @Override
     public void destroyObject(PooledObject p, DestroyMode destroyMode) throws Exception {
 
-        System.out.println("Destroying Tika Object");
         PooledObjectFactory.super.destroyObject(p, destroyMode);
     }
 
     @Override
     public PooledObject makeObject() {
 
-        System.out.println("Creating Tika Object");
         return new DefaultPooledObject<>(new Tika());
     }
 

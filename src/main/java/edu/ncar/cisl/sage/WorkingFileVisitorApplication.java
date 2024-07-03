@@ -103,12 +103,14 @@ public class WorkingFileVisitorApplication{
     @Bean
     public BulkIngester<Void> createBulkIngester(ElasticsearchClient esClient,
                                                  @Value("${bulkIngester.maxOperations}") int maxOperations,
-                                                 @Value("${bulkIngester.flushInterval}") int flushInterval) {
+                                                 @Value("${bulkIngester.flushInterval}") int flushInterval,
+                                                 @Value("${bulkIngester.maxConcurrentRequests}") int maxConcurrentRequests) {
 
         return BulkIngester.of(b -> b
                 .client(esClient)
                 .maxOperations(maxOperations)
                 .flushInterval(flushInterval, TimeUnit.SECONDS)
+                .maxConcurrentRequests(maxConcurrentRequests)
         );
     }
 

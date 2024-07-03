@@ -4,6 +4,8 @@ import edu.ncar.cisl.sage.model.EsFileMissing;
 import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
 import edu.ncar.cisl.sage.model.MediaType;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +15,8 @@ public class MediaTypeService {
     EsFileRepository repository;
     MetadataStrategy metadataStrategy;
 
+    private static final Logger LOG = LoggerFactory.getLogger(MediaTypeService.class);
+
     public MediaTypeService(EsFileRepository repository, MetadataStrategy metadataStrategy) {
 
         this.repository = repository;
@@ -20,6 +24,8 @@ public class MediaTypeService {
     }
 
     public void updateMediaType(EsFileTaskIdentifier esFileTaskIdentifier) {
+
+        LOG.debug("Media type calculation id: {}", esFileTaskIdentifier.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
 

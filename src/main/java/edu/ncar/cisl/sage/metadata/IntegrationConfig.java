@@ -43,8 +43,6 @@ public class IntegrationConfig {
 
     private void updateMediaType(org.springframework.messaging.Message<?> message) {
 
-          System.out.println(Thread.currentThread().getName());
-
           EsFileTaskIdentifier esFileTaskIdentifier = (EsFileTaskIdentifier) message.getPayload();
           mediaTypeService.updateMediaType(esFileTaskIdentifier);
     }

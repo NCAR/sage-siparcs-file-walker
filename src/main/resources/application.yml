@@ -35,6 +35,7 @@ elastic:
 bulkIngester:
   maxOperations: 1000
   flushInterval: 4
+  maxConcurrentRequests: 1
 
 ---
 mediaTypeWorkflow:
