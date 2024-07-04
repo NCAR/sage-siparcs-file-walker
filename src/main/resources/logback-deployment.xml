@@ -42,12 +42,12 @@
     </appender>
 
     <!-- File walker loggers -->
-    <logger name="edu.ncar.cisl.sage" level="debug">
+    <logger name="edu.ncar.cisl.sage" level="debug" additivity="false">
         <appender-ref ref="fw-default" />
     </logger>
 
     <!-- Elasticsearch HTTP loggers -->
-    <logger name="org.elasticsearch.client.RestClient" level="warn">
+    <logger name="org.elasticsearch.client.RestClient" level="warn" additivity="false">
         <appender-ref ref="elastic-search-http" />
     </logger>
 
@@ -56,9 +56,10 @@
     </logger>
 
     <!-- Needs to be last. -->
-<!--    <root level="INFO">-->
-<!--        <appender-ref ref="CONSOLE" />-->
-<!--        <appender-ref ref="fw-default" />-->
-<!--    </root>-->
+    <!-- Adding additivity="false" to above loggers will stop them from also being added to the root logger. -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="fw-default" />
+    </root>
 
 </configuration>
