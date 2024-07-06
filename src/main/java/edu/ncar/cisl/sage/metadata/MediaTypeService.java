@@ -26,7 +26,6 @@ public class MediaTypeService {
     public void updateMediaType(EsFileTaskIdentifier esFileTaskIdentifier) {
 
         LOG.debug("Media type calculation id: {}", esFileTaskIdentifier.getId());
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
 
         try {
