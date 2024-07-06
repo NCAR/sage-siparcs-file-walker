@@ -8,16 +8,14 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
-import edu.ncar.cisl.sage.metadata.MediaTypeService;
-import edu.ncar.cisl.sage.metadata.MetadataStrategy;
-import edu.ncar.cisl.sage.metadata.TikaPooledObjectFactory;
+import edu.ncar.cisl.sage.metadata.*;
 import edu.ncar.cisl.sage.metadata.impl.MediaTypeWithPoolMetadataStrategyImpl;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.impl.EsDirectoryStateRepositoryImpl;
 import edu.ncar.cisl.sage.repository.impl.EsFileRepositoryImpl;
-import edu.ncar.cisl.sage.metadata.WorkflowMonitor;
 import org.apache.commons.pool2.ObjectPool;
+import org.apache.commons.pool2.impl.EvictionPolicy;
 import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.apache.http.HttpHost;
@@ -38,6 +36,8 @@ import org.springframework.jmx.export.annotation.ManagedAttribute;
 import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
@@ -131,6 +131,11 @@ public class WorkingFileVisitorApplication{
 
         GenericObjectPoolConfig<Tika> config = new GenericObjectPoolConfig<>();
         config.setJmxEnabled(false);
+        config.setTestWhileIdle(true);
+
+        EvictionPolicy<Tika> evictionPolicy = new ExpirationEvictionPolicy<>();
+        config.setEvictionPolicy(evictionPolicy);
+        config.setTimeBetweenEvictionRuns(Duration.of(1, ChronoUnit.SECONDS));
 
         GenericObjectPool<Tika> pool = new GenericObjectPool<>(new TikaPooledObjectFactory(),config);
         pool.setMaxTotal(poolSize);

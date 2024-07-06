@@ -31,6 +31,7 @@ public class MediaTypeWithPoolMetadataStrategyImpl implements MetadataStrategy {
         try {
 
             pooledObject = this.pool.borrowObject();
+            System.out.println(pooledObject.getParser());
 
             try (InputStream inputStream = new BufferedInputStream(Files.newInputStream(path))) {
 
