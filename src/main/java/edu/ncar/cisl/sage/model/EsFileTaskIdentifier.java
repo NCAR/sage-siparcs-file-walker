@@ -1,7 +1,10 @@
 package edu.ncar.cisl.sage.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.nio.file.Path;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class EsFileTaskIdentifier {
 
     String id;

@@ -18,7 +18,7 @@ public class WorkflowMonitor implements ApplicationEventPublisherAware {
         this.enabled = enabled;
     }
 
-    @Scheduled(initialDelay = 3000, fixedRate = 120000)
+    @Scheduled(initialDelay = 3000, fixedRateString = "${mediaTypeWorkflow.scheduledTaskFixedRate}")
     public void checkQueueChannel() {
 
         if (enabled && mediaTypeChannel.getQueueSize() == 0) {

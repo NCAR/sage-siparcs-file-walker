@@ -32,6 +32,14 @@ elastic:
   password: ""
 
 ---
+# Elasticsearch documentation about shard sizing:
+# https://www.elastic.co/guide/en/elasticsearch/reference/7.17/size-your-shards.html#:~:text=There%20are%20no%20hard%20limits,your%20network%20and%20use%20case.
+# Important: shard size should be between 10-50GB
+esIndex:
+  numberOfShards: 2
+  numberOfReplicas: 0
+
+---
 bulkIngester:
   maxOperations: 1000
   flushInterval: 4
@@ -40,6 +48,7 @@ bulkIngester:
 ---
 mediaTypeWorkflow:
   enabled: false
+  scheduledTaskFixedRate: 120000
   esQuerySize: 1000
   threadCount: 5
   tikaPoolSize: 5

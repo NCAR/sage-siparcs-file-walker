@@ -11,6 +11,7 @@ import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.EsFile;
 import edu.ncar.cisl.sage.model.EsFileMissing;
+import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
 import edu.ncar.cisl.sage.model.MediaType;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
@@ -37,7 +38,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
     }
 
     @Override
-    public List<Hit<EsFile>> getFilesWithoutMediaType() {
+    public List<Hit<EsFileTaskIdentifier>> getFilesWithoutMediaType() {
 
         Query byError = MatchQuery.of(m -> m
                 .field("error")
@@ -57,7 +58,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         Query mediaTypeExists = ExistsQuery.of(q -> q
                 .field("mediaType"))._toQuery();
 
-        SearchResponse<EsFile> response;
+        SearchResponse<EsFileTaskIdentifier> response;
 
         try {
             response = esClient.search(s -> s
@@ -69,13 +70,14 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                             .must(byMissing)
                                             .mustNot(mediaTypeExists)
                                     )
-                            ).from(0)
+                            )
+                            .from(0)
                             .size(esQuerySize)
                             .sort(so -> so
                                     .field(FieldSort.of(f -> f
                                             .field("dateLastIndexed")
                                             .order(SortOrder.Asc)))),
-                    EsFile.class
+                    EsFileTaskIdentifier.class
             );
 
         } catch (IOException e) {
@@ -83,9 +85,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
             throw new RepositoryException(e);
         }
 
-        List<Hit<EsFile>> esFileHitList = response.hits().hits();
-
-        return esFileHitList;
+        return response.hits().hits();
     }
 
     public void addFile(String id, EsFile esFile) {

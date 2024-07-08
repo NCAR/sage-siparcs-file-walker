@@ -4,6 +4,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.mapping.Property;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -26,6 +27,12 @@ public class CheckIndex {
     public CheckIndex(ElasticsearchClient esClient) {
         this.esClient = esClient;
     }
+
+    @Value("${esIndex.numberOfShards}")
+    private String numberOfShards;
+
+    @Value("${esIndex.numberOfReplicas}")
+    private String numberOfReplicas;
 
     @EventListener
     public void checkIndex(ApplicationStartedEvent event) throws IOException {
@@ -74,34 +81,11 @@ public class CheckIndex {
                             .properties("path", keyword)
                             .properties("size", long_)
                     )
+                    .settings(s -> s
+                            .numberOfShards(numberOfShards)
+                            .numberOfReplicas(numberOfReplicas)
+                    )
             );
-
-//            Map<String, Property> fields = Collections.singletonMap("keyword", Property.of(p -> p.keyword(k -> k.ignoreAbove(256))));
-//            Property date = Property.of(p -> p.date(d -> d.format("basic_date_time")));
-//            Property boolean_ = Property.of(p -> p.boolean_(b -> b.fields(fields)));
-//            Property text = Property.of(p -> p.text(t -> t.fields(fields)));
-//            Property long_ = Property.of(p -> p.long_(l -> l.fields(fields)));
-//
-//            esClient.indices().create(c -> c
-//                    .index(esIndex)
-//                    .mappings(m -> m
-//                            .properties("dateCreated", date)
-//                            .properties("dateLastIndexed", date)
-//                            .properties("dateModified", date)
-//                            .properties("directory", boolean_)
-//                            .properties("error", boolean_)
-//                            .properties("errorMessage", text)
-//                            .properties("missing", boolean_)
-//                            .properties("dateMissing", date)
-//                            .properties("extension", text)
-//                            .properties("mediaType", text)
-//                            .properties("fileIdentifier", text)
-//                            .properties("fileName", text)
-//                            .properties("owner", text)
-//                            .properties("path", text)
-//                            .properties("size", long_)
-//                    )
-//            );
         }
     }
 

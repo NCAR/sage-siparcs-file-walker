@@ -3,7 +3,6 @@ package edu.ncar.cisl.sage.mediator;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.metadata.MediaTypeGateway;
 import edu.ncar.cisl.sage.metadata.QueueRefillNeededEvent;
-import edu.ncar.cisl.sage.model.EsFile;
 import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class MediaTypeMediator {
     @EventListener
     public void handleQueueRefillNeededEvent(QueueRefillNeededEvent event) {
 
-        List<Hit<EsFile>> hitList = this.repository.getFilesWithoutMediaType();
+        List<Hit<EsFileTaskIdentifier>> hitList = this.repository.getFilesWithoutMediaType();
 
         if(hitList.isEmpty()) {
 
@@ -39,12 +38,9 @@ public class MediaTypeMediator {
 
             hitList.stream()
                     .forEach(hit -> {
-                        EsFile esFile = hit.source();
 
-                        EsFileTaskIdentifier esFileTaskIdentifier = new EsFileTaskIdentifier();
+                        EsFileTaskIdentifier esFileTaskIdentifier = hit.source();
                         esFileTaskIdentifier.setId(hit.id());
-                        esFileTaskIdentifier.setPath(esFile.getPath());
-
                         mediaTypeGateway.sendToIntegration(esFileTaskIdentifier);
                     });
         }
