@@ -1,16 +1,15 @@
 package edu.ncar.cisl.sage.repository;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.model.EsFile;
-import edu.ncar.cisl.sage.model.EsFileMissing;
-import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
-import edu.ncar.cisl.sage.model.MediaType;
+import edu.ncar.cisl.sage.model.*;
 
 import java.util.List;
 
 public interface EsFileRepository {
 
-    List<Hit<EsFileTaskIdentifier>> getFilesWithoutMediaType();
+    List<Hit<EsMediaTypeTaskIdentifier>> getFilesWithoutMediaType();
+
+    List<Hit<EsScientificMetadataTaskIdentifier>> getFilesWithoutScientificMetadata();
 
     void addFile(String id, EsFile esFile);
 

@@ -81,8 +81,6 @@ public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepositor
                         .id(id)
                 )
         );
-
-//        executor.schedule(() -> esClient.delete(d -> d.index(INDEX).id(id)), 7, TimeUnit.SECONDS);
     }
 
     public EsDirectoryState createEsDirState(String id) {

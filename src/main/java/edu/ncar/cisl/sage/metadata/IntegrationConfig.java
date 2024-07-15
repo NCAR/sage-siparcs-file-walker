@@ -1,6 +1,6 @@
 package edu.ncar.cisl.sage.metadata;
 
-import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
+import edu.ncar.cisl.sage.model.EsMediaTypeTaskIdentifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +43,7 @@ public class IntegrationConfig {
 
     private void updateMediaType(org.springframework.messaging.Message<?> message) {
 
-          EsFileTaskIdentifier esFileTaskIdentifier = (EsFileTaskIdentifier) message.getPayload();
-          mediaTypeService.updateMediaType(esFileTaskIdentifier);
+          EsMediaTypeTaskIdentifier esMediaTypeTaskIdentifier = (EsMediaTypeTaskIdentifier) message.getPayload();
+          mediaTypeService.updateMediaType(esMediaTypeTaskIdentifier);
     }
 }

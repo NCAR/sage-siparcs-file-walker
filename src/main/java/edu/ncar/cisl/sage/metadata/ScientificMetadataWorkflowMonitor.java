@@ -5,25 +5,25 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.scheduling.annotation.Scheduled;
 
-public class WorkflowMonitor implements ApplicationEventPublisherAware {
+public class ScientificMetadataWorkflowMonitor implements ApplicationEventPublisherAware {
 
-    private final QueueChannel mediaTypeChannel;
+    private final QueueChannel scientificMetadataChannel;
     private final boolean enabled;
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public WorkflowMonitor(QueueChannel mediaTypeChannel, boolean enabled) {
+    public ScientificMetadataWorkflowMonitor(QueueChannel scientificMetadataChannel, boolean enabled) {
 
-        this.mediaTypeChannel = mediaTypeChannel;
+        this.scientificMetadataChannel = scientificMetadataChannel;
         this.enabled = enabled;
     }
 
-    @Scheduled(initialDelay = 3000, fixedRateString = "${mediaTypeWorkflow.scheduledTaskFixedRate}")
+    @Scheduled(initialDelay = 3000, fixedRateString = "${scientificMetadataWorkflow.scheduledTaskFixedRate}")
     public void checkQueueChannel() {
 
-        if (enabled && mediaTypeChannel.getQueueSize() == 0) {
+        if (enabled && scientificMetadataChannel.getQueueSize() == 0) {
 
-            QueueRefillNeededEvent event = new QueueRefillNeededEvent(this);
+            ScientificMetadataQueueEmptyEvent event = new ScientificMetadataQueueEmptyEvent(this);
             applicationEventPublisher.publishEvent(event);
         }
     }

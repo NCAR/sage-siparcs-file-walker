@@ -30,10 +30,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.integration.channel.NullChannel;
 import org.springframework.integration.channel.QueueChannel;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.support.RegistrationPolicy;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.Duration;
@@ -95,9 +94,27 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public WorkflowMonitor createWorkflowMonitor(QueueChannel mediaTypeChannel, @Value("${mediaTypeWorkflow.enabled}") boolean enabled) {
+    public QueueChannel scientificMetadataChannel() {
 
-        return new WorkflowMonitor(mediaTypeChannel, enabled);
+        return new QueueChannel();
+    }
+
+    @Bean
+    public MessageChannel myNullChannel() {
+
+        return new NullChannel();
+    }
+
+    @Bean
+    public MediaTypeWorkflowMonitor createMediaTypeWorkflowMonitor(QueueChannel mediaTypeChannel, @Value("${mediaTypeWorkflow.enabled}") boolean enabled) {
+
+        return new MediaTypeWorkflowMonitor(mediaTypeChannel, enabled);
+    }
+
+    @Bean
+    public ScientificMetadataWorkflowMonitor createScientificMetadataWorkflowMonitor(QueueChannel scientificMetadataChannel, @Value("${scientificMetadataWorkflow.enabled}") boolean enabled) {
+
+        return new ScientificMetadataWorkflowMonitor(scientificMetadataChannel, enabled);
     }
 
     @Bean
@@ -151,9 +168,10 @@ public class WorkingFileVisitorApplication{
     @Bean
     public EsFileRepository createEsFileRepository(ElasticsearchClient esClient,
                                                    BulkIngester<Void> ingester,
-                                                   @Value("${mediaTypeWorkflow.esQuerySize}") int esQuerySize) {
+                                                   @Value("${mediaTypeWorkflow.esQuerySize}") int esMediaTypeQuerySize,
+                                                   @Value("${scientificMetadataWorkflow.esQuerySize}") int esScientificMetadataQuerySize) {
 
-        return new EsFileRepositoryImpl(esClient, ingester, esQuerySize);
+        return new EsFileRepositoryImpl(esClient, ingester, esMediaTypeQuerySize, esScientificMetadataQuerySize);
     }
 
     @Bean

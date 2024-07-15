@@ -2,9 +2,10 @@ package edu.ncar.cisl.sage.metadata;
 
 import org.springframework.context.ApplicationEvent;
 
-public class QueueRefillNeededEvent extends ApplicationEvent {
+public class MediaTypeQueueEmptyEvent extends ApplicationEvent {
 
-    public QueueRefillNeededEvent(Object source) {
+    public MediaTypeQueueEmptyEvent(Object source) {
         super(source);
     }
+
 }

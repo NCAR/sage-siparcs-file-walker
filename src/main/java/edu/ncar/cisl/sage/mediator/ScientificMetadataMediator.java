@@ -1,34 +1,39 @@
 package edu.ncar.cisl.sage.mediator;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.metadata.MediaTypeGateway;
 import edu.ncar.cisl.sage.metadata.MediaTypeQueueEmptyEvent;
-import edu.ncar.cisl.sage.model.EsMediaTypeTaskIdentifier;
+import edu.ncar.cisl.sage.metadata.ScientificMetadataGateway;
+import edu.ncar.cisl.sage.model.EsScientificMetadataTaskIdentifier;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.integration.channel.NullChannel;
+import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public class MediaTypeMediator {
+public class ScientificMetadataMediator {
 
     private final EsFileRepository repository;
 
+    private final NullChannel myNullChannel;
+
     @Autowired
-    public MediaTypeMediator(EsFileRepository repository) {
+    public ScientificMetadataMediator(EsFileRepository repository, NullChannel myNullChannel) {
 
         this.repository = repository;
+        this.myNullChannel = myNullChannel;
     }
 
     @Autowired
-    private MediaTypeGateway mediaTypeGateway;
+    private ScientificMetadataGateway scientificMetadataGateway;
 
     @EventListener
     public void handleQueueRefillNeededEvent(MediaTypeQueueEmptyEvent event) {
 
-        List<Hit<EsMediaTypeTaskIdentifier>> hitList = this.repository.getFilesWithoutMediaType();
+        List<Hit<EsScientificMetadataTaskIdentifier>> hitList = this.repository.getFilesWithoutScientificMetadata();
 
         if(hitList.isEmpty()) {
 
@@ -39,9 +44,10 @@ public class MediaTypeMediator {
             hitList.stream()
                     .forEach(hit -> {
 
-                        EsMediaTypeTaskIdentifier esMediaTypeTaskIdentifier = hit.source();
-                        esMediaTypeTaskIdentifier.setId(hit.id());
-                        mediaTypeGateway.sendToIntegration(esMediaTypeTaskIdentifier);
+                        EsScientificMetadataTaskIdentifier esScientificMetadataTaskIdentifier = hit.source();
+                        esScientificMetadataTaskIdentifier.setId(hit.id());
+
+                        myNullChannel.send((Message<?>) esScientificMetadataTaskIdentifier);
                     });
         }
     }

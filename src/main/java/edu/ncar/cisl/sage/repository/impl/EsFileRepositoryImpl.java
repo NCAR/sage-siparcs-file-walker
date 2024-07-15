@@ -9,10 +9,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.model.EsFile;
-import edu.ncar.cisl.sage.model.EsFileMissing;
-import edu.ncar.cisl.sage.model.EsFileTaskIdentifier;
-import edu.ncar.cisl.sage.model.MediaType;
+import edu.ncar.cisl.sage.model.*;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
 
@@ -28,17 +25,22 @@ public class EsFileRepositoryImpl implements EsFileRepository {
 
     private static final String INDEX = "file-walker-files";
 
-    private final int esQuerySize;
+    private final int esMediaTypeQuerySize;
+    private final int esScientificMetadataQuerySize;
 
-    public EsFileRepositoryImpl(ElasticsearchClient esClient, BulkIngester<Void> bulkIngester, int esQuerySize) {
+    public EsFileRepositoryImpl(ElasticsearchClient esClient,
+                                BulkIngester<Void> bulkIngester,
+                                int esMediaTypeQuerySize,
+                                int esScientificMetadataQuerySize) {
 
         this.esClient = esClient;
         this.bulkIngester = bulkIngester;
-        this.esQuerySize = esQuerySize;
+        this.esMediaTypeQuerySize = esMediaTypeQuerySize;
+        this.esScientificMetadataQuerySize = esScientificMetadataQuerySize;
     }
 
     @Override
-    public List<Hit<EsFileTaskIdentifier>> getFilesWithoutMediaType() {
+    public List<Hit<EsMediaTypeTaskIdentifier>> getFilesWithoutMediaType() {
 
         Query byError = MatchQuery.of(m -> m
                 .field("error")
@@ -58,7 +60,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         Query mediaTypeExists = ExistsQuery.of(q -> q
                 .field("mediaType"))._toQuery();
 
-        SearchResponse<EsFileTaskIdentifier> response;
+        SearchResponse<EsMediaTypeTaskIdentifier> response;
 
         try {
             response = esClient.search(s -> s
@@ -72,12 +74,63 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                     )
                             )
                             .from(0)
-                            .size(esQuerySize)
+                            .size(esMediaTypeQuerySize)
                             .sort(so -> so
                                     .field(FieldSort.of(f -> f
                                             .field("dateLastIndexed")
                                             .order(SortOrder.Asc)))),
-                    EsFileTaskIdentifier.class
+                    EsMediaTypeTaskIdentifier.class
+            );
+
+        } catch (IOException e) {
+
+            throw new RepositoryException(e);
+        }
+
+        return response.hits().hits();
+    }
+
+    @Override
+    public List<Hit<EsScientificMetadataTaskIdentifier>> getFilesWithoutScientificMetadata() {
+
+        Query byError = MatchQuery.of(m -> m
+                .field("error")
+                .query(false)
+        )._toQuery();
+
+        Query byDirectory = MatchQuery.of(ma -> ma
+                .field("directory")
+                .query(false)
+        )._toQuery();
+
+        Query byMissing = MatchQuery.of(mat -> mat
+                .field("missing")
+                .query(false)
+        )._toQuery();
+
+        Query scientificMetadataExists = ExistsQuery.of(q -> q
+                .field("scientificMetadata"))._toQuery();
+
+        SearchResponse<EsScientificMetadataTaskIdentifier> response;
+
+        try {
+            response = esClient.search(s -> s
+                            .index(INDEX)
+                            .query(q -> q
+                                    .bool(b -> b
+                                            .must(byError)
+                                            .must(byDirectory)
+                                            .must(byMissing)
+                                            .mustNot(scientificMetadataExists)
+                                    )
+                            )
+                            .from(0)
+                            .size(esScientificMetadataQuerySize)
+                            .sort(so -> so
+                                    .field(FieldSort.of(f -> f
+                                            .field("dateLastIndexed")
+                                            .order(SortOrder.Asc)))),
+                    EsScientificMetadataTaskIdentifier.class
             );
 
         } catch (IOException e) {
