@@ -2,6 +2,7 @@ package edu.ncar.cisl.sage.indexing;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.mapping.Property;
+import co.elastic.clients.elasticsearch.indices.GetFieldMappingResponse;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,6 +88,18 @@ public class CheckIndex {
                     )
             );
         }
+
+        Property object = Property.of(p -> p.object(o -> o));
+        if(!fieldMappingExists("scientificMetadata")) {
+
+            esClient.indices().putMapping(m -> m.index(esIndex).properties("scientificMetadata",object));
+        }
+    }
+
+    private boolean fieldMappingExists(String field) throws IOException {
+
+        GetFieldMappingResponse response = esClient.indices().getFieldMapping(m -> m.index(esIndex).fields(field));
+        return !response.result().get(esIndex).mappings().isEmpty();
     }
 
     @EventListener
