@@ -58,6 +58,7 @@ scientificMetadataWorkflow:
   enabled: false
   scheduledTaskFixedRate: 120000
   esQuerySize: 1000
+  threadCount: 3
 
 ---
 # spring pool size must be larger than the total number of threads being used inside the application

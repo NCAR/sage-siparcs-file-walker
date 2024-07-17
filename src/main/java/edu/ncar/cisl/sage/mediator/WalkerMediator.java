@@ -5,7 +5,6 @@ import edu.ncar.cisl.sage.filewalker.DirectoryFoundEvent;
 import edu.ncar.cisl.sage.filewalker.FileErrorEvent;
 import edu.ncar.cisl.sage.filewalker.FileFoundEvent;
 import edu.ncar.cisl.sage.identification.IdStrategy;
-import edu.ncar.cisl.sage.metadata.MetadataStrategy;
 import edu.ncar.cisl.sage.model.EsFile;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,11 @@ public class WalkerMediator {
 
     private final IdStrategy idStrategy;
 
-    private final MetadataStrategy metadataStrategy;
-
     @Autowired
-    public WalkerMediator(EsFileRepository repository, IdStrategy idStrategy, MetadataStrategy metadataStrategy) {
+    public WalkerMediator(EsFileRepository repository, IdStrategy idStrategy) {
 
         this.repository = repository;
         this.idStrategy = idStrategy;
-        this.metadataStrategy = metadataStrategy;
     }
 
     @EventListener

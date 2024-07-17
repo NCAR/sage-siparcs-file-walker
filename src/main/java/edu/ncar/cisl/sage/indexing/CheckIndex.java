@@ -40,6 +40,9 @@ public class CheckIndex {
 
         BooleanResponse existsResponse = esClient.indices().exists(b -> b.index(esIndex));
 
+        Property date = Property.of(p -> p.date(d -> d.format("basic_date_time")));
+        Property object = Property.of(p -> p.object(o -> o));
+
         if (!existsResponse.value()) {
 
             // We use explicit mapping of our indexes:
@@ -55,7 +58,6 @@ public class CheckIndex {
             // Explanation of fields:
             // https://www.elastic.co/guide/en/elasticsearch/reference/current/multi-fields.html
 
-            Property date = Property.of(p -> p.date(d -> d.format("basic_date_time")));
             Property boolean_ = Property.of(p -> p.boolean_(b -> b));
             Property text = Property.of(p -> p.text(t -> t));
             Property long_ = Property.of(p -> p.long_(l -> l));
@@ -89,10 +91,10 @@ public class CheckIndex {
             );
         }
 
-        Property object = Property.of(p -> p.object(o -> o));
         if(!fieldMappingExists("scientificMetadata")) {
 
             esClient.indices().putMapping(m -> m.index(esIndex).properties("scientificMetadata",object));
+            esClient.indices().putMapping(m -> m.index(esIndex).properties("dateScientificMetadataUpdated", date));
         }
     }
 

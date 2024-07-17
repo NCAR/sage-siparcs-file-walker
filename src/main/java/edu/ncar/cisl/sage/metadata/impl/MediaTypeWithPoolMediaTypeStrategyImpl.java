@@ -1,6 +1,6 @@
 package edu.ncar.cisl.sage.metadata.impl;
 
-import edu.ncar.cisl.sage.metadata.MetadataStrategy;
+import edu.ncar.cisl.sage.metadata.MediaTypeStrategy;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.tika.Tika;
 import org.apache.tika.mime.MediaType;
@@ -12,11 +12,11 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-public class MediaTypeWithPoolMetadataStrategyImpl implements MetadataStrategy {
+public class MediaTypeWithPoolMediaTypeStrategyImpl implements MediaTypeStrategy {
 
     private final ObjectPool<Tika> pool;
 
-    public MediaTypeWithPoolMetadataStrategyImpl(ObjectPool<Tika> pool) {
+    public MediaTypeWithPoolMediaTypeStrategyImpl(ObjectPool<Tika> pool) {
 
         this.pool = pool;
     }

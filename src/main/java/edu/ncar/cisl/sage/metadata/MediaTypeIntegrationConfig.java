@@ -15,14 +15,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Configuration
-@IntegrationComponentScan
-public class IntegrationConfig {
+public class MediaTypeIntegrationConfig {
 
     private final QueueChannel mediaTypeChannel;
     private final MediaTypeService mediaTypeService;
     private final int threadCount;
 
-    public IntegrationConfig(QueueChannel mediaTypeChannel, MediaTypeService mediaTypeService, @Value("${mediaTypeWorkflow.threadCount}") int threadCount) {
+    public MediaTypeIntegrationConfig(QueueChannel mediaTypeChannel, MediaTypeService mediaTypeService, @Value("${mediaTypeWorkflow.threadCount}") int threadCount) {
 
         this.mediaTypeChannel = mediaTypeChannel;
         this.mediaTypeService = mediaTypeService;

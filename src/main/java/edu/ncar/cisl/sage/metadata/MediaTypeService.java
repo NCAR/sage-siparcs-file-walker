@@ -13,14 +13,14 @@ import java.time.format.DateTimeFormatter;
 public class MediaTypeService {
 
     EsFileRepository repository;
-    MetadataStrategy metadataStrategy;
+    MediaTypeStrategy mediaTypeStrategy;
 
     private static final Logger LOG = LoggerFactory.getLogger(MediaTypeService.class);
 
-    public MediaTypeService(EsFileRepository repository, MetadataStrategy metadataStrategy) {
+    public MediaTypeService(EsFileRepository repository, MediaTypeStrategy mediaTypeStrategy) {
 
         this.repository = repository;
-        this.metadataStrategy = metadataStrategy;
+        this.mediaTypeStrategy = mediaTypeStrategy;
     }
 
     public void updateMediaType(EsMediaTypeTaskIdentifier esMediaTypeTaskIdentifier) {
@@ -31,7 +31,7 @@ public class MediaTypeService {
         try {
 
             MediaType mediaType = new MediaType();
-            String value = this.metadataStrategy.calculateMetadata(esMediaTypeTaskIdentifier.getPath());
+            String value = this.mediaTypeStrategy.calculateMetadata(esMediaTypeTaskIdentifier.getPath());
             mediaType.setMediaType(value);
             mediaType.setDateMediaTypeUpdated(ZonedDateTime.now().format((formatter)));
 

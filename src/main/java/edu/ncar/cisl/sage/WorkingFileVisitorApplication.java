@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
 import edu.ncar.cisl.sage.metadata.*;
-import edu.ncar.cisl.sage.metadata.impl.MediaTypeWithPoolMetadataStrategyImpl;
+import edu.ncar.cisl.sage.metadata.impl.MediaTypeWithPoolMediaTypeStrategyImpl;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.impl.EsDirectoryStateRepositoryImpl;
@@ -30,6 +30,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.annotation.IntegrationComponentScan;
 import org.springframework.integration.channel.NullChannel;
 import org.springframework.integration.channel.QueueChannel;
 import org.springframework.messaging.MessageChannel;
@@ -42,6 +43,7 @@ import java.util.concurrent.TimeUnit;
 @SpringBootApplication
 @Configuration
 @EnableScheduling
+@IntegrationComponentScan
 public class WorkingFileVisitorApplication{
 
     public static final String esIndex = "file-walker-files";
@@ -132,15 +134,33 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public MediaTypeService createMediaTypeService(EsFileRepository esFileRepository, MetadataStrategy metadataStrategy) {
-
-        return new MediaTypeService(esFileRepository, metadataStrategy);
-    }
-
-    @Bean
     public IdStrategy createIdStrategy() {
 
         return new Md5Calculator();
+    }
+
+    @Bean
+    public ScientificMetadataService createScientificMetadataService(EsFileRepository esFileRepository, StandardNamesFacade standardNamesFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
+
+        return new ScientificMetadataService(esFileRepository, standardNamesFacade, scientificFilesMetadataFacade);
+    }
+
+    @Bean
+    public StandardNamesFacade createStandardNamesFacade() {
+
+        return new StandardNamesFacade();
+    }
+
+    @Bean
+    public ScientificFilesMetadataFacade createScientificFilesMetadataFacade() {
+
+        return new ScientificFilesMetadataFacade();
+    }
+
+    @Bean
+    public MediaTypeService createMediaTypeService(EsFileRepository esFileRepository, MediaTypeStrategy mediaTypeStrategy) {
+
+        return new MediaTypeService(esFileRepository, mediaTypeStrategy);
     }
 
     @Bean
@@ -160,9 +180,9 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public MetadataStrategy createMediaTypeStrategy(ObjectPool<Tika> pool) {
+    public MediaTypeStrategy createMediaTypeStrategy(ObjectPool<Tika> pool) {
 
-        return new MediaTypeWithPoolMetadataStrategyImpl(pool);
+        return new MediaTypeWithPoolMediaTypeStrategyImpl(pool);
     }
 
     @Bean

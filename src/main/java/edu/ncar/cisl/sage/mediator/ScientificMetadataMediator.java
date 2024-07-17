@@ -1,14 +1,12 @@
 package edu.ncar.cisl.sage.mediator;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.metadata.MediaTypeQueueEmptyEvent;
 import edu.ncar.cisl.sage.metadata.ScientificMetadataGateway;
+import edu.ncar.cisl.sage.metadata.ScientificMetadataQueueEmptyEvent;
 import edu.ncar.cisl.sage.model.EsScientificMetadataTaskIdentifier;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
-import org.springframework.integration.channel.NullChannel;
-import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -18,20 +16,17 @@ public class ScientificMetadataMediator {
 
     private final EsFileRepository repository;
 
-    private final NullChannel myNullChannel;
-
     @Autowired
-    public ScientificMetadataMediator(EsFileRepository repository, NullChannel myNullChannel) {
+    public ScientificMetadataMediator(EsFileRepository repository) {
 
         this.repository = repository;
-        this.myNullChannel = myNullChannel;
     }
 
     @Autowired
     private ScientificMetadataGateway scientificMetadataGateway;
 
     @EventListener
-    public void handleQueueRefillNeededEvent(MediaTypeQueueEmptyEvent event) {
+    public void handleQueueRefillNeededEvent(ScientificMetadataQueueEmptyEvent event) {
 
         List<Hit<EsScientificMetadataTaskIdentifier>> hitList = this.repository.getFilesWithoutScientificMetadata();
 
@@ -46,8 +41,7 @@ public class ScientificMetadataMediator {
 
                         EsScientificMetadataTaskIdentifier esScientificMetadataTaskIdentifier = hit.source();
                         esScientificMetadataTaskIdentifier.setId(hit.id());
-
-                        myNullChannel.send((Message<?>) esScientificMetadataTaskIdentifier);
+                        scientificMetadataGateway.sendToIntegration(esScientificMetadataTaskIdentifier);
                     });
         }
     }

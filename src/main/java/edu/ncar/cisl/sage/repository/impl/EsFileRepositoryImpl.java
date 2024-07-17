@@ -4,9 +4,7 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import co.elastic.clients.elasticsearch._types.FieldSort;
 import co.elastic.clients.elasticsearch._types.SortOrder;
-import co.elastic.clients.elasticsearch._types.query_dsl.ExistsQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
-import co.elastic.clients.elasticsearch._types.query_dsl.Query;
+import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.*;
@@ -14,8 +12,8 @@ import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
-
 
 public class EsFileRepositoryImpl implements EsFileRepository {
 
@@ -108,6 +106,12 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                 .query(false)
         )._toQuery();
 
+        Query shouldBeMediaType = shouldQuery(
+                matchQuery("mediaType", "application/x-netcdf"),
+                matchQuery("mediaType", "application/x-hdf"),
+                matchQuery("mediaType", "application/x-grib")
+        );
+
         Query scientificMetadataExists = ExistsQuery.of(q -> q
                 .field("scientificMetadata"))._toQuery();
 
@@ -122,6 +126,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                             .must(byDirectory)
                                             .must(byMissing)
                                             .mustNot(scientificMetadataExists)
+                                            .must(shouldBeMediaType)
                                     )
                             )
                             .from(0)
@@ -139,6 +144,21 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         }
 
         return response.hits().hits();
+    }
+
+    private Query matchQuery(String field, String value) {
+
+        return MatchQuery.of(ma -> ma
+                .field(field)
+                .query(value)
+        )._toQuery();
+    }
+
+    private Query shouldQuery(Query... queries) {
+
+        return BoolQuery.of(b -> b
+                .should(Arrays.asList(queries))
+        )._toQuery();
     }
 
     public void addFile(String id, EsFile esFile) {
@@ -159,6 +179,17 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                         .id(id)
                         .action(a -> a.doc(mediaType))));
     }
+
+    @Override
+    public void updateScientificMetadata(String id, EsScientificMetadata esScientificMetadata) {
+
+        bulkIngester.add(op -> op
+                .update(idx -> idx
+                        .index(INDEX)
+                        .id(id)
+                        .action(a -> a.doc(esScientificMetadata))));
+    }
+
 
     public void setFileMissing(String id, EsFileMissing esFileMissing) {
 

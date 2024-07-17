@@ -15,5 +15,7 @@ public interface EsFileRepository {
 
     void updateMediaType(String id, MediaType mediaType);
 
+    void updateScientificMetadata(String id, EsScientificMetadata esScientificMetadata);
+
     void setFileMissing(String id, EsFileMissing esFileMissing);
 }
