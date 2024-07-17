@@ -91,7 +91,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         );
 
         Query scientificMetadataExists = ExistsQuery.of(q -> q
-                .field("scientificMetadata"))._toQuery();
+                .field("dateScientificMetadataUpdated"))._toQuery();
 
         SearchResponse<EsScientificMetadataTaskIdentifier> response;
 

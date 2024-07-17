@@ -2,6 +2,8 @@ package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
 import edu.ncar.cisl.sage.model.*;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,6 +14,8 @@ public class ScientificMetadataService {
     EsFileRepository repository;
     StandardNamesFacade standardNamesFacade;
     ScientificFilesMetadataFacade scientificFilesMetadataFacade;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ScientificMetadataService.class);
 
     public ScientificMetadataService(EsFileRepository repository, StandardNamesFacade standardNamesFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
 
@@ -27,6 +31,8 @@ public class ScientificMetadataService {
         String filePath = esScientificMetadataTaskIdentifier.getPath().toString();
         String mediaType = esScientificMetadataTaskIdentifier.getMediaType();
         String id = esScientificMetadataTaskIdentifier.getId();
+
+        LOG.debug("Scientific Metadata calculation id: {}", id);
 
         try {
 
