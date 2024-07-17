@@ -40,20 +40,9 @@ public class EsFileRepositoryImpl implements EsFileRepository {
     @Override
     public List<Hit<EsMediaTypeTaskIdentifier>> getFilesWithoutMediaType() {
 
-        Query byError = MatchQuery.of(m -> m
-                .field("error")
-                .query(false)
-        )._toQuery();
-
-        Query byDirectory = MatchQuery.of(ma -> ma
-                .field("directory")
-                .query(false)
-        )._toQuery();
-
-        Query byMissing = MatchQuery.of(mat -> mat
-                .field("missing")
-                .query(false)
-        )._toQuery();
+        Query byError = booleanMatchquery("error",false);
+        Query byDirectory = booleanMatchquery("directory",false);
+        Query byMissing = booleanMatchquery("missing",false);
 
         Query mediaTypeExists = ExistsQuery.of(q -> q
                 .field("mediaType"))._toQuery();
@@ -91,25 +80,14 @@ public class EsFileRepositoryImpl implements EsFileRepository {
     @Override
     public List<Hit<EsScientificMetadataTaskIdentifier>> getFilesWithoutScientificMetadata() {
 
-        Query byError = MatchQuery.of(m -> m
-                .field("error")
-                .query(false)
-        )._toQuery();
-
-        Query byDirectory = MatchQuery.of(ma -> ma
-                .field("directory")
-                .query(false)
-        )._toQuery();
-
-        Query byMissing = MatchQuery.of(mat -> mat
-                .field("missing")
-                .query(false)
-        )._toQuery();
+        Query byError = booleanMatchquery("error",false);
+        Query byDirectory = booleanMatchquery("directory",false);
+        Query byMissing = booleanMatchquery("missing",false);
 
         Query shouldBeMediaType = shouldQuery(
-                matchQuery("mediaType", "application/x-netcdf"),
-                matchQuery("mediaType", "application/x-hdf"),
-                matchQuery("mediaType", "application/x-grib")
+                stringMatchquery("mediaType", "application/x-netcdf"),
+                stringMatchquery("mediaType", "application/x-hdf"),
+                stringMatchquery("mediaType", "application/x-grib")
         );
 
         Query scientificMetadataExists = ExistsQuery.of(q -> q
@@ -146,7 +124,15 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         return response.hits().hits();
     }
 
-    private Query matchQuery(String field, String value) {
+    private Query stringMatchquery(String field, String value) {
+
+        return MatchQuery.of(ma -> ma
+                .field(field)
+                .query(value)
+        )._toQuery();
+    }
+
+    private Query booleanMatchquery(String field, Boolean value) {
 
         return MatchQuery.of(ma -> ma
                 .field(field)
@@ -200,4 +186,3 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                         .action(a -> a.doc(esFileMissing))));
     }
 }
-

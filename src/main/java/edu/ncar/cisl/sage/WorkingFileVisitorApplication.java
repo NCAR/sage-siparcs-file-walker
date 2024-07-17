@@ -10,6 +10,7 @@ import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
 import edu.ncar.cisl.sage.metadata.*;
 import edu.ncar.cisl.sage.metadata.impl.MediaTypeWithPoolMediaTypeStrategyImpl;
+import edu.ncar.cisl.sage.metadata.impl.ParserFactoryImpl;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.impl.EsDirectoryStateRepositoryImpl;
@@ -152,9 +153,15 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public ScientificFilesMetadataFacade createScientificFilesMetadataFacade() {
+    public ParserFactory createParserFactory() {
 
-        return new ScientificFilesMetadataFacade();
+        return new ParserFactoryImpl();
+    }
+
+    @Bean
+    public ScientificFilesMetadataFacade createScientificFilesMetadataFacade(ParserFactory parserFactory) {
+
+        return new ScientificFilesMetadataFacade(parserFactory);
     }
 
     @Bean
