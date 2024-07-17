@@ -1,8 +1,8 @@
 package edu.ncar.cisl.sage.mediator;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.metadata.MediaTypeGateway;
-import edu.ncar.cisl.sage.metadata.MediaTypeQueueEmptyEvent;
+import edu.ncar.cisl.sage.metadata.mediaType.MediaTypeGateway;
+import edu.ncar.cisl.sage.metadata.mediaType.MediaTypeQueueEmptyEvent;
 import edu.ncar.cisl.sage.model.EsMediaTypeTaskIdentifier;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;

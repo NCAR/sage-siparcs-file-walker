@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.metadata;
+package edu.ncar.cisl.sage.metadata.mediaType;
 
 import edu.ncar.cisl.sage.model.EsFileMissing;
 import edu.ncar.cisl.sage.model.EsMediaTypeTaskIdentifier;

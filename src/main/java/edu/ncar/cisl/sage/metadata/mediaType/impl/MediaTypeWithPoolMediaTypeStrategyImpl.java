@@ -1,6 +1,6 @@
-package edu.ncar.cisl.sage.metadata.impl;
+package edu.ncar.cisl.sage.metadata.mediaType.impl;
 
-import edu.ncar.cisl.sage.metadata.MediaTypeStrategy;
+import edu.ncar.cisl.sage.metadata.mediaType.MediaTypeStrategy;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.tika.Tika;
 import org.apache.tika.mime.MediaType;

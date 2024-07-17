@@ -1,6 +1,6 @@
-package edu.ncar.cisl.sage.metadata.impl;
+package edu.ncar.cisl.sage.metadata.scientificMetadata.impl;
 
-import edu.ncar.cisl.sage.metadata.ParserFactory;
+import edu.ncar.cisl.sage.metadata.scientificMetadata.ParserFactory;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;

@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.metadata;
+package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
 import edu.ncar.cisl.sage.model.*;
 import edu.ncar.cisl.sage.repository.EsFileRepository;

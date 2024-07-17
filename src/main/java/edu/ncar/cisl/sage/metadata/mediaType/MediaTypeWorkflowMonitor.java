@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.metadata;
+package edu.ncar.cisl.sage.metadata.mediaType;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;

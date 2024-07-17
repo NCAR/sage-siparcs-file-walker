@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.metadata;
+package edu.ncar.cisl.sage.metadata.mediaType;
 
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;

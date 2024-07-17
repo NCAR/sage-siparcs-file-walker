@@ -1,8 +1,8 @@
 package edu.ncar.cisl.sage.mediator;
 
 import co.elastic.clients.elasticsearch.core.search.Hit;
-import edu.ncar.cisl.sage.metadata.ScientificMetadataGateway;
-import edu.ncar.cisl.sage.metadata.ScientificMetadataQueueEmptyEvent;
+import edu.ncar.cisl.sage.metadata.scientificMetadata.ScientificMetadataGateway;
+import edu.ncar.cisl.sage.metadata.scientificMetadata.ScientificMetadataQueueEmptyEvent;
 import edu.ncar.cisl.sage.model.EsScientificMetadataTaskIdentifier;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;

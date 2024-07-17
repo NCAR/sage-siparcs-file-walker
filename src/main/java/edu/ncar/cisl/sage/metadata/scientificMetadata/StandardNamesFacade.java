@@ -1,6 +1,5 @@
-package edu.ncar.cisl.sage.metadata;
+package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
-import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;

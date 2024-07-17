@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.metadata;
+package edu.ncar.cisl.sage.metadata.mediaType;
 
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.EvictionConfig;
