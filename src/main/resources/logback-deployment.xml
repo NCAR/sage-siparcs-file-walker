@@ -52,9 +52,9 @@
 
     <!-- Needs to be last. -->
     <!-- Adding additivity="false" to above loggers will stop them from also being added to the root logger. -->
-    <root level="INFO">
+<!--    <root level="INFO">-->
 <!--        <appender-ref ref="CONSOLE" />-->
-        <appender-ref ref="fw-default" />
-    </root>
+<!--        <appender-ref ref="fw-default" />-->
+<!--    </root>-->
 
 </configuration>
