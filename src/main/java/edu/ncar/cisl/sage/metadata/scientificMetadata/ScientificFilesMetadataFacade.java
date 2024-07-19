@@ -39,6 +39,11 @@ public class ScientificFilesMetadataFacade {
             throw new RuntimeException(e);
         }
 
+        for(String name : metadata.names()) {
+
+            System.out.println(name + ": " + metadata.get(name));
+        }
+
         return metadata.get(field);
     }
 }

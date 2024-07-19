@@ -20,6 +20,8 @@ public class StandardNamesFacade {
             ncFile.getVariables().stream()
                     .forEach( var -> {
 
+                        System.out.println(var);
+
                         Attribute standardName = var.findAttribute("standard_name");
                         if (standardName != null) {
 
