@@ -35,9 +35,9 @@ public class ScientificFilesMetadataFacade {
 
             if (SM_LOG.isDebugEnabled()) {
 
-                SM_LOG.debug(String.format("%s metadata: %s", filePath, String.join("/n", Arrays.stream(metadata.names())
+                SM_LOG.debug(String.format("%s metadata: %s", filePath, Arrays.stream(metadata.names())
                         .map(name -> String.format("%s: %s", name, metadata.get(name)))
-                        .collect(Collectors.toSet()))));
+                        .collect(Collectors.joining("/n"))));
             }
 
         } catch (NoSuchFileException e) {
