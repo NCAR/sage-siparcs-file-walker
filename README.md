@@ -57,6 +57,44 @@ the maxConcurrentRequests seemed to help the most at one point, but seemed to re
 
 Changed the number of items queried when filling the queues (media-type and scientific metadata).
 
+# Expected File Counts Per Directory
+
+We expect a total of 645,672,296 files.  If the file walkers ever complete that number will be higher because it will
+include directories as well.
+
+```
+find /glade/campaign/cisl -type f | wc -l > cisl.txt 2>&1 &
+96,993,056
+
+# Includes SMYLE
+find /glade/campaign/cesm -type f | wc -l > cesm.txt 2>&1 &
+35,193,042
+
+find /glade/campaign/cesm/development/espwg/SMYLE/archive -type f | wc -l 
+7,587,046
+
+find /glade/campaign/collections -type f | wc -l > collections.txt 2>&1 & 
+129,340,385
+
+find /glade/campaign/mmm -type f | wc -l > mmm.txt 2>&1 &
+222,088,509
+
+find /glade/campaign/ral -type f | wc -l > ral.txt 2>&1 &
+46,546,716
+
+find /glade/campaign/acom -type f | wc -l > acom.txt 2>&1 &
+109,700,379
+
+find /glade/campaign/eol -type f | wc -l > eol.txt 2>&1 &
+3,929,974
+
+find /glade/campaign/hao -type f | wc -l > hao.txt 2>&1 &
+1,135,065
+
+find /glade/campaign/asp -type f | wc -l > asp.txt 2>&1 &
+745,170
+```
+
 # Future Considerations/Ideas
 
 Consider building a workflow prior to initially inserting the data into elasticsearch.  You are thinking that updates are
