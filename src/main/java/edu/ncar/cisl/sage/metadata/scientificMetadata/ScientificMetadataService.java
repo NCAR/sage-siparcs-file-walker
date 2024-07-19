@@ -11,16 +11,16 @@ import java.util.List;
 
 public class ScientificMetadataService {
 
-    EsFileRepository repository;
-    StandardNamesFacade standardNamesFacade;
-    ScientificFilesMetadataFacade scientificFilesMetadataFacade;
+    private final EsFileRepository repository;
+    private final StandardNameFacade standardNameFacade;
+    private final ScientificFilesMetadataFacade scientificFilesMetadataFacade;
 
     private static final Logger LOG = LoggerFactory.getLogger(ScientificMetadataService.class);
 
-    public ScientificMetadataService(EsFileRepository repository, StandardNamesFacade standardNamesFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
+    public ScientificMetadataService(EsFileRepository repository, StandardNameFacade standardNameFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
 
         this.repository = repository;
-        this.standardNamesFacade = standardNamesFacade;
+        this.standardNameFacade = standardNameFacade;
         this.scientificFilesMetadataFacade = scientificFilesMetadataFacade;
     }
 
@@ -39,7 +39,7 @@ public class ScientificMetadataService {
             // create and populate ScientificMetadata
             ScientificMetadata scientificMetadata = new ScientificMetadata();
 
-            List<String> standardNames = standardNamesFacade.getStandardNames(filePath);
+            List<String> standardNames = standardNameFacade.getStandardNames(filePath);
             scientificMetadata.setStandard_name(standardNames);
 
             scientificMetadata.setContact(scientificFilesMetadataFacade.getMetadata(filePath,mediaType,"contact"));

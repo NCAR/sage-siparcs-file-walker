@@ -1,5 +1,7 @@
 package edu.ncar.cisl.sage.filewalker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
@@ -18,6 +20,8 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
 
     private ApplicationEventPublisher applicationEventPublisher;
 
+    private static final Logger LOG = LoggerFactory.getLogger(FileEventsFileVisitor.class);
+
     public FileEventsFileVisitor() {}
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
@@ -31,7 +35,7 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
         return CONTINUE;
     }
 
-    private void fireFileFoundEvent(Path path, BasicFileAttributes attr) throws IOException {
+    private void fireFileFoundEvent(Path path, BasicFileAttributes attr) {
 
         try {
             //Create and Populate FileFoundEvent
@@ -51,7 +55,8 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
             this.applicationEventPublisher.publishEvent(fileFoundEvent);
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -90,7 +95,6 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
 
         //Publishes DirectoryFoundEvent
         this.applicationEventPublisher.publishEvent(directoryFoundEvent);
-
     }
 
     public void fireFileErrorEvent(Path path, IOException e) {

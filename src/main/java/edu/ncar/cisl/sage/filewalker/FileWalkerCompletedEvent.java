@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationEvent;
 
 public class FileWalkerCompletedEvent extends ApplicationEvent {
 
-    String id;
+    private String id;
 
     public FileWalkerCompletedEvent(Object source) {
         super(source);

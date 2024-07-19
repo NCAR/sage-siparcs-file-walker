@@ -142,15 +142,15 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public ScientificMetadataService createScientificMetadataService(EsFileRepository esFileRepository, StandardNamesFacade standardNamesFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
+    public ScientificMetadataService createScientificMetadataService(EsFileRepository esFileRepository, StandardNameFacade standardNameFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
 
-        return new ScientificMetadataService(esFileRepository, standardNamesFacade, scientificFilesMetadataFacade);
+        return new ScientificMetadataService(esFileRepository, standardNameFacade, scientificFilesMetadataFacade);
     }
 
     @Bean
-    public StandardNamesFacade createStandardNamesFacade() {
+    public StandardNameFacade createStandardNamesFacade() {
 
-        return new StandardNamesFacade();
+        return new StandardNameFacade();
     }
 
     @Bean

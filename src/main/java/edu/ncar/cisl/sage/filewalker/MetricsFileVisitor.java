@@ -1,5 +1,8 @@
 package edu.ncar.cisl.sage.filewalker;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -21,6 +24,8 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
 
     private final List<String> ignoredPaths;
     private final CompositeFileVisitor visitor;
+
+    private static final Logger LOG = LoggerFactory.getLogger(MetricsFileVisitor.class);
 
     public MetricsFileVisitor(CompositeFileVisitor compositeFileVisitor, List<String> ignoredPaths) {
 
@@ -71,7 +76,7 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
         }
         else {
             countErrorOther++;
-            System.out.println(e.toString());
+            LOG.error(e.getMessage(), e);
         }
         return visitor.visitFileFailed(path, e);
     }

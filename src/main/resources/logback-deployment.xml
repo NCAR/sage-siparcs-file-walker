@@ -8,7 +8,9 @@
 
     <property name="LOG_DIR" value="/usr/local/file-walker/logs" />
     <property name="FW_LOG" value="file-walker" />
+    <property name="SCIENTIFIC_METADATA_LOG" value="scientific-metadata" />
     <property name="ES_HTTP_LOG" value="elastic-search-http" />
+    <property name="EXCEPTION_LOG" value="exception" />
 
     <appender name="fw-default" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${FW_LOG}.log</file>
@@ -23,11 +25,37 @@
         </encoder>
     </appender>
 
+    <appender name="scientific-metadata" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${SCIENTIFIC_METADATA_LOG}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/${SCIENTIFIC_METADATA_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="elastic-search-http" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/${ES_HTTP_LOG}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
             <fileNamePattern>${LOG_DIR}/${ES_HTTP_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="exception" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${EXCEPTION_LOG}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_DIR}/${EXCEPTION_LOG}.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>

@@ -7,8 +7,8 @@ import java.nio.file.Path;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EsMediaTypeTaskIdentifier {
 
-    String id;
-    Path path;
+    private String id;
+    private Path path;
 
     public EsMediaTypeTaskIdentifier() {}
 

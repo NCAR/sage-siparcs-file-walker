@@ -20,7 +20,6 @@ public class ScientificMetadataIntegrationConfig {
     private final ScientificMetadataService scientificMetadataService;
     private final int threadCount;
 
-
     public ScientificMetadataIntegrationConfig(QueueChannel scientificMetadataChannel, ScientificMetadataService scientificMetadataService, @Value("${scientificMetadataWorkflow.threadCount}") int threadCount) {
 
         this.scientificMetadataChannel = scientificMetadataChannel;
