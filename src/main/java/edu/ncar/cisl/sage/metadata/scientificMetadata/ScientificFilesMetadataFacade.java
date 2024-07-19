@@ -2,6 +2,8 @@ package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -9,7 +11,9 @@ import java.nio.file.NoSuchFileException;
 
 public class ScientificFilesMetadataFacade {
 
-    ParserFactory parserFactory;
+    private final ParserFactory parserFactory;
+
+    private static final Logger LOG = LoggerFactory.getLogger(ScientificFilesMetadataFacade.class);
 
     public ScientificFilesMetadataFacade(ParserFactory parserFactory) {
 
@@ -28,14 +32,12 @@ public class ScientificFilesMetadataFacade {
 
         } catch (NoSuchFileException e) {
 
-            System.out.println("Exception: " + e);
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
             throw e;
 
         } catch (Exception e) {
 
-            System.out.println("Exception: " + e);
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
 

@@ -17,7 +17,7 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
 
     private final FileVisitor<Path> fileEventsFileVisitor;
     private final String walkerId;
-    private EsDirectoryStateRepository repository;
+    private final EsDirectoryStateRepository repository;
 
     private ApplicationEventPublisher applicationEventPublisher;
 

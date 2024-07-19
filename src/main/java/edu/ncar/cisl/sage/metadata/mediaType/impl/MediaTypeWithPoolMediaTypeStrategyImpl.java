@@ -4,6 +4,8 @@ import edu.ncar.cisl.sage.metadata.mediaType.MediaTypeStrategy;
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.tika.Tika;
 import org.apache.tika.mime.MediaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -15,6 +17,8 @@ import java.nio.file.Path;
 public class MediaTypeWithPoolMediaTypeStrategyImpl implements MediaTypeStrategy {
 
     private final ObjectPool<Tika> pool;
+
+    private static final Logger LOG = LoggerFactory.getLogger(MediaTypeWithPoolMediaTypeStrategyImpl.class);
 
     public MediaTypeWithPoolMediaTypeStrategyImpl(ObjectPool<Tika> pool) {
 
@@ -36,27 +40,24 @@ public class MediaTypeWithPoolMediaTypeStrategyImpl implements MediaTypeStrategy
 
                 if (Files.notExists(path)) {
 
-                    System.out.println("Does not exist: " + path);
+                    LOG.debug("Does not exist: {}", path);
                 }
                 value = pooledObject.detect(inputStream, path.getFileName().toString());
 
             } catch (NoSuchFileException e) {
 
-                System.out.println("Exception: " + e);
-                e.printStackTrace();
+                LOG.error(e.getMessage(), e);
 
                 throw e;
 
             } catch (IOException e) {
 
-                System.out.println("Exception: " + e);
-                e.printStackTrace();
+                LOG.error(e.getMessage(), e);
             }
 
         } catch (Exception e) {
 
-            System.out.println("Exception: " + e);
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
             throw new RuntimeException(e);
 
         } finally {

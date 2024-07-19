@@ -6,8 +6,8 @@ import java.nio.file.Path;
 
 public class DirectoryCompletedEvent extends ApplicationEvent {
 
-    String id;
-    Path dir;
+    private String id;
+    private Path dir;
 
     public DirectoryCompletedEvent(Object source) {
         super(source);

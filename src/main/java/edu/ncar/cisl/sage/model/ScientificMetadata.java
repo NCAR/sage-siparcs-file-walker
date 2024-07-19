@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ScientificMetadata {
 
-    List<String> standard_name;
-    String contact;
-    String author;
+    private List<String> standard_name;
+    private String contact;
+    private String author;
 
     public ScientificMetadata() {}
 

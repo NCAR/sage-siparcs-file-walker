@@ -2,8 +2,8 @@ package edu.ncar.cisl.sage.model;
 
 public class EsScientificMetadata {
 
-    String dateScientificMetadataUpdated;
-    ScientificMetadata scientificMetadata;
+    private String dateScientificMetadataUpdated;
+    private ScientificMetadata scientificMetadata;
 
     public String getDateScientificMetadataUpdated() {
         return dateScientificMetadataUpdated;

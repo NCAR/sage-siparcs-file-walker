@@ -12,8 +12,8 @@ import java.time.format.DateTimeFormatter;
 
 public class MediaTypeService {
 
-    EsFileRepository repository;
-    MediaTypeStrategy mediaTypeStrategy;
+    private final EsFileRepository repository;
+    private final MediaTypeStrategy mediaTypeStrategy;
 
     private static final Logger LOG = LoggerFactory.getLogger(MediaTypeService.class);
 

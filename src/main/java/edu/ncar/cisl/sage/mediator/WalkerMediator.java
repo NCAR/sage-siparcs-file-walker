@@ -18,7 +18,6 @@ import java.time.format.DateTimeFormatter;
 public class WalkerMediator {
 
     private final EsFileRepository repository;
-
     private final IdStrategy idStrategy;
 
     @Autowired

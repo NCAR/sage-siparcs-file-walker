@@ -7,9 +7,9 @@ import java.nio.file.Path;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EsScientificMetadataTaskIdentifier {
 
-    String id;
-    Path path;
-    String mediaType;
+    private String id;
+    private Path path;
+    private String mediaType;
 
     public String getId() {
         return id;

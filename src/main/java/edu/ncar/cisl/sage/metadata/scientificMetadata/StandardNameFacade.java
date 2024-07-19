@@ -4,12 +4,16 @@ import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 
-public class StandardNamesFacade {
+public class StandardNameFacade {
 
-    public StandardNamesFacade() {}
+    private static final Logger LOG = LoggerFactory.getLogger(StandardNameFacade.class);
+
+    public StandardNameFacade() {}
 
     public List<String> getStandardNames(String filePath) throws NoSuchFileException {
 
@@ -31,14 +35,12 @@ public class StandardNamesFacade {
 
         } catch (NoSuchFileException e) {
 
-            System.out.println("Exception: " + e);
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
             throw e;
 
         } catch (Exception e) {
 
-            System.out.println("Exception: " + e);
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
             throw new RuntimeException(e);
         }
 
