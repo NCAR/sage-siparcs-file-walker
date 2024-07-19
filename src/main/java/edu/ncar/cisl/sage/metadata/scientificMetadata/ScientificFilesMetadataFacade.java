@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.NoSuchFileException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class ScientificFilesMetadataFacade {
 
@@ -31,6 +33,13 @@ public class ScientificFilesMetadataFacade {
 
             parser.parse(stream, parserFactory.getBodyContentHandler(), metadata, parserFactory.getParseContext());
 
+            if (SM_LOG.isDebugEnabled()) {
+
+                SM_LOG.debug(String.format("%s metadata: %s", filePath, Arrays.stream(metadata.names())
+                        .map(name -> String.format("%s: %s", name, metadata.get(name)))
+                        .collect(Collectors.toSet())));
+            }
+
         } catch (NoSuchFileException e) {
 
             LOG.error(e.getMessage(), e);
@@ -40,12 +49,6 @@ public class ScientificFilesMetadataFacade {
 
             LOG.error(e.getMessage(), e);
             throw new RuntimeException(e);
-        }
-
-        SM_LOG.debug(filePath);
-        for(String name : metadata.names()) {
-
-            SM_LOG.debug(name + ": " + metadata.get(name));
         }
 
         return metadata.get(field);
