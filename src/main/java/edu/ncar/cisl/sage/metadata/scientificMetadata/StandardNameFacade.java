@@ -12,6 +12,7 @@ import ucar.nc2.NetcdfFile;
 public class StandardNameFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(StandardNameFacade.class);
+    private static final Logger SM_LOG = LoggerFactory.getLogger("scientific-metadata");
 
     public StandardNameFacade() {}
 
@@ -21,10 +22,11 @@ public class StandardNameFacade {
 
         try (NetcdfFile ncFile = NetcdfFile.open(filePath)) {
 
+            SM_LOG.debug(filePath);
             ncFile.getVariables().stream()
                     .forEach( var -> {
 
-                        System.out.println(var);
+                        SM_LOG.debug(String.valueOf(var));
 
                         Attribute standardName = var.findAttribute("standard_name");
                         if (standardName != null) {

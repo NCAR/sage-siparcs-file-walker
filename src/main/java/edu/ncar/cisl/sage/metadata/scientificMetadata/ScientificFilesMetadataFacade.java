@@ -14,6 +14,7 @@ public class ScientificFilesMetadataFacade {
     private final ParserFactory parserFactory;
 
     private static final Logger LOG = LoggerFactory.getLogger(ScientificFilesMetadataFacade.class);
+    private static final Logger SM_LOG = LoggerFactory.getLogger("scientific-metadata");
 
     public ScientificFilesMetadataFacade(ParserFactory parserFactory) {
 
@@ -41,9 +42,10 @@ public class ScientificFilesMetadataFacade {
             throw new RuntimeException(e);
         }
 
+        SM_LOG.debug(filePath);
         for(String name : metadata.names()) {
 
-            System.out.println(name + ": " + metadata.get(name));
+            SM_LOG.debug(name + ": " + metadata.get(name));
         }
 
         return metadata.get(field);
