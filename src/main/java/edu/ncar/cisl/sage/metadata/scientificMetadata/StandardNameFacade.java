@@ -2,12 +2,15 @@ package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
 
 public class StandardNameFacade {
 
@@ -20,13 +23,10 @@ public class StandardNameFacade {
 
         List<String> standardNames = new ArrayList<>();
 
-        try (NetcdfFile ncFile = NetcdfFile.open(filePath)) {
+        try (NetcdfFile file = NetcdfFile.open(filePath)) {
 
-            SM_LOG.debug(filePath);
-            ncFile.getVariables().stream()
+            file.getVariables().stream()
                     .forEach( var -> {
-
-                        SM_LOG.debug(String.valueOf(var));
 
                         Attribute standardName = var.findAttribute("standard_name");
                         if (standardName != null) {
@@ -34,6 +34,12 @@ public class StandardNameFacade {
                             standardNames.add(standardName.getStringValue());
                         }
                     });
+
+            if (SM_LOG.isDebugEnabled()) {
+
+                SM_LOG.debug(String.format("%s Variables: %s", filePath, file.getVariables().stream().map(Variable::toString)
+                        .collect(Collectors.toList())));
+            }
 
         } catch (NoSuchFileException e) {
 

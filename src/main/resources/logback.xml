@@ -10,9 +10,9 @@
         <appender-ref ref="CONSOLE" />
     </logger>
 
-<!--    <logger name="scientific-metadata" level="debug" additivity="false">-->
-<!--        <appender-ref ref="CONSOLE"/>-->
-<!--    </logger>-->
+    <logger name="scientific-metadata" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
 
 <!--    <logger name="org.elasticsearch.client.RestClient" level="trace">-->
 <!--        <appender-ref ref="CONSOLE" />-->
