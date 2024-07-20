@@ -41,7 +41,7 @@ esIndex:
 
 ---
 bulkIngester:
-  maxOperations: 1000
+  maxOperations: 200
   flushInterval: 4
   maxConcurrentRequests: 1
 
