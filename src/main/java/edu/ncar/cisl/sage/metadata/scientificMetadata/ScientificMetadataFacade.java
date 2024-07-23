@@ -2,7 +2,6 @@ package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,12 +11,12 @@ import ucar.nc2.Attribute;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
-public class StandardNameFacade {
+public class ScientificMetadataFacade {
 
-    private static final Logger LOG = LoggerFactory.getLogger(StandardNameFacade.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ScientificMetadataFacade.class);
     private static final Logger SM_LOG = LoggerFactory.getLogger("scientific-metadata");
 
-    public StandardNameFacade() {}
+    public ScientificMetadataFacade() {}
 
     public List<String> getStandardNames(String filePath) throws NoSuchFileException {
 
@@ -53,5 +52,40 @@ public class StandardNameFacade {
         }
 
         return standardNames;
+    }
+
+    public String getGlobalAttributes(String filePath, String field) throws NoSuchFileException {
+
+        final String[] fieldValue = new String[1];
+
+        try (NetcdfFile file = NetcdfFile.open(filePath)) {
+
+            file.getGlobalAttributes().stream()
+                    .forEach( attr -> {
+
+                        if(attr.getFullName().equalsIgnoreCase(field)) {
+
+                            fieldValue[0] = attr.getStringValue();
+                        }
+                    });
+
+            if (SM_LOG.isDebugEnabled()) {
+
+                SM_LOG.debug(String.format("%s Global attributes: %s", filePath, file.getGlobalAttributes().stream().map(Attribute::toString)
+                        .collect(Collectors.toList())));
+            }
+
+        } catch (NoSuchFileException e) {
+
+            LOG.error(e.getMessage(), e);
+            throw e;
+
+        } catch (Exception e) {
+
+            LOG.error(e.getMessage(), e);
+            throw new RuntimeException(e);
+        }
+
+        return fieldValue[0];
     }
 }

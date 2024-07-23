@@ -9,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import edu.ncar.cisl.sage.identification.IdStrategy;
 import edu.ncar.cisl.sage.identification.Md5Calculator;
 import edu.ncar.cisl.sage.metadata.mediaType.impl.MediaTypeWithPoolMediaTypeStrategyImpl;
-import edu.ncar.cisl.sage.metadata.scientificMetadata.impl.ParserFactoryImpl;
 import edu.ncar.cisl.sage.metadata.mediaType.*;
 import edu.ncar.cisl.sage.metadata.scientificMetadata.*;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
@@ -142,27 +141,15 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public ScientificMetadataService createScientificMetadataService(EsFileRepository esFileRepository, StandardNameFacade standardNameFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
+    public ScientificMetadataService createScientificMetadataService(EsFileRepository esFileRepository, ScientificMetadataFacade scientificMetadataFacade) {
 
-        return new ScientificMetadataService(esFileRepository, standardNameFacade, scientificFilesMetadataFacade);
+        return new ScientificMetadataService(esFileRepository, scientificMetadataFacade);
     }
 
     @Bean
-    public StandardNameFacade createStandardNamesFacade() {
+    public ScientificMetadataFacade createScientificMetadataFacade() {
 
-        return new StandardNameFacade();
-    }
-
-    @Bean
-    public ParserFactory createParserFactory() {
-
-        return new ParserFactoryImpl();
-    }
-
-    @Bean
-    public ScientificFilesMetadataFacade createScientificFilesMetadataFacade(ParserFactory parserFactory) {
-
-        return new ScientificFilesMetadataFacade(parserFactory);
+        return new ScientificMetadataFacade();
     }
 
     @Bean

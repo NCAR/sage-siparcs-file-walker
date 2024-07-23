@@ -12,16 +12,14 @@ import java.util.List;
 public class ScientificMetadataService {
 
     private final EsFileRepository repository;
-    private final StandardNameFacade standardNameFacade;
-    private final ScientificFilesMetadataFacade scientificFilesMetadataFacade;
+    private final ScientificMetadataFacade scientificMetadataFacade;
 
     private static final Logger LOG = LoggerFactory.getLogger(ScientificMetadataService.class);
 
-    public ScientificMetadataService(EsFileRepository repository, StandardNameFacade standardNameFacade, ScientificFilesMetadataFacade scientificFilesMetadataFacade) {
+    public ScientificMetadataService(EsFileRepository repository, ScientificMetadataFacade scientificMetadataFacade) {
 
         this.repository = repository;
-        this.standardNameFacade = standardNameFacade;
-        this.scientificFilesMetadataFacade = scientificFilesMetadataFacade;
+        this.scientificMetadataFacade = scientificMetadataFacade;
     }
 
     public void updateScientificMetadata(EsScientificMetadataTaskIdentifier esScientificMetadataTaskIdentifier) {
@@ -29,7 +27,6 @@ public class ScientificMetadataService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
 
         String filePath = esScientificMetadataTaskIdentifier.getPath().toString();
-        String mediaType = esScientificMetadataTaskIdentifier.getMediaType();
         String id = esScientificMetadataTaskIdentifier.getId();
 
         LOG.debug("Scientific Metadata calculation id: {}", id);
@@ -39,11 +36,11 @@ public class ScientificMetadataService {
             // create and populate ScientificMetadata
             ScientificMetadata scientificMetadata = new ScientificMetadata();
 
-            List<String> standardNames = standardNameFacade.getStandardNames(filePath);
+            List<String> standardNames = scientificMetadataFacade.getStandardNames(filePath);
             scientificMetadata.setStandard_name(standardNames);
 
-            scientificMetadata.setContact(scientificFilesMetadataFacade.getMetadata(filePath,mediaType,"contact"));
-            scientificMetadata.setAuthor(scientificFilesMetadataFacade.getMetadata(filePath,mediaType,"author"));
+            scientificMetadata.setContact(scientificMetadataFacade.getGlobalAttributes(filePath,"contact"));
+            scientificMetadata.setAuthor(scientificMetadataFacade.getGlobalAttributes(filePath,"author"));
 
             // Elasticsearch update
             EsScientificMetadata esScientificMetadata = new EsScientificMetadata();
