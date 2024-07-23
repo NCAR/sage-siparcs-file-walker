@@ -9,7 +9,6 @@ public class ExpirationEvictionPolicy<Tika> implements EvictionPolicy<Tika> {
     @Override
     public boolean evict(EvictionConfig evictionConfig, PooledObject<Tika> tika, int i) {
 
-        long creationTime = tika.getFullDuration().toSeconds();
-        return creationTime > 60;
+        return tika.getFullDuration().toSeconds() > 60;
     }
 }

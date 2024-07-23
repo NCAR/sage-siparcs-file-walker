@@ -9,7 +9,6 @@ public class EsScientificMetadataTaskIdentifier {
 
     private String id;
     private Path path;
-    private String mediaType;
 
     public String getId() {
         return id;
@@ -25,13 +24,5 @@ public class EsScientificMetadataTaskIdentifier {
 
     public void setPath(Path path) {
         this.path = path;
-    }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
     }
 }
