@@ -9,10 +9,8 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.List;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 public class MetricsFileVisitor implements FileVisitor<Path> {
 
@@ -22,35 +20,23 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
     private long countErrorFile = 0;
     private long countErrorDirectory = 0;
 
-    private final List<String> ignoredPaths;
-    private final CompositeFileVisitor visitor;
+    private final FileVisitor<Path> visitor;
 
     private static final Logger LOG = LoggerFactory.getLogger(MetricsFileVisitor.class);
 
-    public MetricsFileVisitor(CompositeFileVisitor compositeFileVisitor, List<String> ignoredPaths) {
+    public MetricsFileVisitor(FileVisitor<Path> visitor) {
 
-        this.visitor = compositeFileVisitor;
-        this.ignoredPaths = ignoredPaths;
+        this.visitor = visitor;
     }
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 
-        FileVisitResult result = visitor.preVisitDirectory(dir, attrs);
-        if(Files.isSymbolicLink(dir)){
-            result = SKIP_SUBTREE;
-        }
-        boolean ignored = ignoredPaths.stream()
-                .filter(path -> dir.toString().contains(path))
-                .anyMatch(m -> true);
-        if(ignored){
-            result = SKIP_SUBTREE;
-        }
-        return result;
+        return this.visitor.preVisitDirectory(dir, attrs);
     }
 
     public FileVisitResult visitFile(Path path, BasicFileAttributes attr) throws IOException {
 
-        FileVisitResult result = visitor.visitFile(path, attr);
+        FileVisitResult result = this.visitor.visitFile(path, attr);
         if (Files.isRegularFile(path) && result == CONTINUE) {
             countFile++;
         }
@@ -59,7 +45,7 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
 
     public FileVisitResult postVisitDirectory(Path dir, IOException e) throws IOException {
 
-        FileVisitResult result = visitor.postVisitDirectory(dir, e);
+        FileVisitResult result = this.visitor.postVisitDirectory(dir, e);
         if (Files.isDirectory(dir) && result == CONTINUE) {
             countDirectory++;
         }
@@ -107,9 +93,5 @@ public class MetricsFileVisitor implements FileVisitor<Path> {
 
     public long getCountErrorDirectory() {
         return countErrorDirectory;
-    }
-
-    public List<String> getIgnoredPaths() {
-        return ignoredPaths;
     }
 }

@@ -13,7 +13,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
-public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEventPublisherAware {
+public class CompletedFileVisitor implements FileVisitor<Path>, ApplicationEventPublisherAware {
 
     private final FileVisitor<Path> fileEventsFileVisitor;
     private final String walkerId;
@@ -21,7 +21,7 @@ public class CompositeFileVisitor implements FileVisitor<Path>, ApplicationEvent
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public CompositeFileVisitor(FileVisitor<Path> fileEventsFileVisitor, EsDirectoryStateRepository repository, String walkerId){
+    public CompletedFileVisitor(FileVisitor<Path> fileEventsFileVisitor, EsDirectoryStateRepository repository, String walkerId){
 
         this.fileEventsFileVisitor = fileEventsFileVisitor;
         this.repository = repository;

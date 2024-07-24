@@ -1,7 +1,6 @@
 package edu.ncar.cisl.sage.config;
 
 import edu.ncar.cisl.sage.filewalker.*;
-import edu.ncar.cisl.sage.mediator.WalkerMediator;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.FileWalkerRepository;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -47,12 +46,13 @@ public class FileWalkerRepositoryConfig implements ApplicationEventPublisherAwar
     private FileWalker createFileWalker(FileWalkerDto dto) {
 
         FileEventsFileVisitor fileEventsFileVisitor = new FileEventsFileVisitor();
-        CompositeFileVisitor compositeFileVisitor = new CompositeFileVisitor(fileEventsFileVisitor, esDirectoryStateRepository,dto.getId());
-        MetricsFileVisitor metricsFileVisitor = new MetricsFileVisitor(compositeFileVisitor,dto.getIgnoredPaths());
-        FileWalker fileWalker = new FileWalker(Paths.get(dto.getStartPath()), metricsFileVisitor, Clock.systemDefaultZone(), dto.getId());
+        CompletedFileVisitor completedFileVisitor = new CompletedFileVisitor(fileEventsFileVisitor, esDirectoryStateRepository, dto.getId());
+        MetricsFileVisitor metricsFileVisitor = new MetricsFileVisitor(completedFileVisitor);
+        IgnorableFileVisitor ignorableFileVisitor = new IgnorableFileVisitor(metricsFileVisitor, dto.getIgnoredPaths());
+        FileWalker fileWalker = new FileWalker(Paths.get(dto.getStartPath()), ignorableFileVisitor, metricsFileVisitor, Clock.systemDefaultZone(), dto.getId());
 
         fileEventsFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
-        compositeFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
+        completedFileVisitor.setApplicationEventPublisher(this.applicationEventPublisher);
         fileWalker.setApplicationEventPublisher(this.applicationEventPublisher);
 
         return fileWalker;

@@ -4,16 +4,17 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 
 import java.io.IOException;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Clock;
 import java.util.Date;
-import java.util.List;
 
 public class FileWalker implements ApplicationEventPublisherAware {
 
     private final Path path;
-    private final MetricsFileVisitor fileVisitor;
+    private final FileVisitor<Path> fileVisitor;
+    private final MetricsFileVisitor metricsFileVisitor;
     private final Clock clock;
     private final String walkerId;
 
@@ -29,10 +30,11 @@ public class FileWalker implements ApplicationEventPublisherAware {
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    public FileWalker(Path path, MetricsFileVisitor fileVisitor, Clock clock, String walkerId) {
+    public FileWalker(Path path, FileVisitor<Path> fileVisitor, MetricsFileVisitor metricsFileVisitor, Clock clock, String walkerId) {
 
         this.path = path;
         this.fileVisitor = fileVisitor;
+        this.metricsFileVisitor = metricsFileVisitor;
         this.clock = clock;
         this.walkerId = walkerId;
     }
@@ -41,7 +43,7 @@ public class FileWalker implements ApplicationEventPublisherAware {
 
         this.Running = true;
         this.isFinished = false;
-        this.fileVisitor.reset();
+        this.metricsFileVisitor.reset();
 
         try {
 
@@ -68,23 +70,23 @@ public class FileWalker implements ApplicationEventPublisherAware {
     }
 
     public long getFileCount() {
-        return this.fileVisitor.getCountFile();
+        return this.metricsFileVisitor.getCountFile();
     }
 
     public long getDirectoryCount() {
-        return this.fileVisitor.getCountDirectory();
+        return this.metricsFileVisitor.getCountDirectory();
     }
 
     public long getDirectoryErrorCount() {
-        return this.fileVisitor.getCountErrorDirectory();
+        return this.metricsFileVisitor.getCountErrorDirectory();
     }
 
     public long getOtherErrorCount() {
-        return this.fileVisitor.getCountErrorOther();
+        return this.metricsFileVisitor.getCountErrorOther();
     }
 
     public long getFileErrorCount() {
-        return this.fileVisitor.getCountErrorFile();
+        return this.metricsFileVisitor.getCountErrorFile();
     }
 
     public long getDuration() {
@@ -101,10 +103,6 @@ public class FileWalker implements ApplicationEventPublisherAware {
 
     public Path getStartingPath() {
         return path;
-    }
-
-    public List<String> getIgnoredPaths(){
-        return this.fileVisitor.getIgnoredPaths();
     }
 
     public boolean isRunning() {

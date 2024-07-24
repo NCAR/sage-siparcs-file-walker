@@ -26,7 +26,7 @@ public class FileEventsFileVisitor implements FileVisitor<Path>, ApplicationEven
 
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
 
-        return  CONTINUE;
+        return CONTINUE;
     }
 
     public FileVisitResult visitFile(Path path, BasicFileAttributes attr) throws IOException {

@@ -19,7 +19,6 @@
     <thead>
         <tr>
             <th>Start Directory</th>
-            <th>Ignored Directories</th>
             <th>Start Time</th>
             <th>Total Time (ms)</th>
             <th>Files</th>
@@ -33,7 +32,6 @@
     <tbody>
         <tr th:each="fileWalker : ${fileWalkers}">
             <td th:text="${fileWalker.getStartingPath()}"></td>
-            <td th:text="${fileWalker.getIgnoredPaths()}"></td>
             <td th:text="${fileWalker.getLastAccess()}"></td>
             <td align="right" th:text="${fileWalker.getDuration()}"></td>
             <td align="right" th:text="${#numbers.formatInteger(fileWalker.getFileCount(), 0, 'COMMA')}"></td>
