@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import edu.ncar.cisl.sage.model.ScientificMetadataVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ucar.nc2.Attribute;
@@ -18,20 +19,24 @@ public class ScientificMetadataFacade {
 
     public ScientificMetadataFacade() {}
 
-    public List<String> getStandardNames(String filePath) throws NoSuchFileException {
+    public List<ScientificMetadataVariable> getVariables(String filePath) throws NoSuchFileException {
 
-        List<String> standardNames = new ArrayList<>();
+        List<ScientificMetadataVariable> variables = new ArrayList<>();
 
         try (NetcdfFile file = NetcdfFile.open(filePath)) {
 
             file.getVariables().stream()
                     .forEach( var -> {
 
-                        Attribute standardName = var.findAttribute("standard_name");
-                        if (standardName != null) {
+                        ScientificMetadataVariable variable = new ScientificMetadataVariable();
 
-                            standardNames.add(standardName.getStringValue());
-                        }
+                        variable.setName(var.getFullName());
+
+                        variable.setStandard_name(getVariableAttribute(var,"standard_name"));
+                        variable.setLong_name(getVariableAttribute(var,"long_name"));
+                        variable.setShort_name(getVariableAttribute(var,"short_name"));
+
+                        variables.add(variable);
                     });
 
             if (SM_LOG.isDebugEnabled()) {
@@ -51,7 +56,18 @@ public class ScientificMetadataFacade {
             throw new RuntimeException(e);
         }
 
-        return standardNames;
+        return variables;
+    }
+
+    private String getVariableAttribute(Variable var, String attribute) {
+
+        String value = "";
+        Attribute attr = var.findAttribute(attribute);
+        if (attr != null) {
+
+            value = attr.getStringValue();
+        }
+        return value;
     }
 
     public String getGlobalAttributes(String filePath, String field) throws NoSuchFileException {

@@ -36,8 +36,10 @@ public class ScientificMetadataService {
             // create and populate ScientificMetadata
             ScientificMetadata scientificMetadata = new ScientificMetadata();
 
-            List<String> standardNames = scientificMetadataFacade.getStandardNames(filePath);
-            scientificMetadata.setStandard_name(standardNames);
+//            List<String> standardNames = scientificMetadataFacade.getStandardNames(filePath);
+//            scientificMetadata.setStandard_name(standardNames);
+
+            scientificMetadata.setVariables(scientificMetadataFacade.getVariables(filePath));
 
             scientificMetadata.setContact(scientificMetadataFacade.getGlobalAttributes(filePath,"contact"));
             scientificMetadata.setAuthor(scientificMetadataFacade.getGlobalAttributes(filePath,"author"));

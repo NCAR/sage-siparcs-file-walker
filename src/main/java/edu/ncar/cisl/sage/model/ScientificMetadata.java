@@ -4,18 +4,18 @@ import java.util.List;
 
 public class ScientificMetadata {
 
-    private List<String> standard_name;
+    private List<ScientificMetadataVariable> variables;
     private String contact;
     private String author;
 
     public ScientificMetadata() {}
 
-    public List<String> getStandard_name() {
-        return standard_name;
+    public List<ScientificMetadataVariable> getVariables() {
+        return variables;
     }
 
-    public void setStandard_name(List<String> standard_name) {
-        this.standard_name = standard_name;
+    public void setVariables(List<ScientificMetadataVariable> variables) {
+        this.variables = variables;
     }
 
     public String getContact() {
