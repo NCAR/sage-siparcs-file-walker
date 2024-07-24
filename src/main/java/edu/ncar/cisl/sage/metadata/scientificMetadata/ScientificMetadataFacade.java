@@ -32,9 +32,22 @@ public class ScientificMetadataFacade {
 
                         variable.setName(var.getFullName());
 
-                        variable.setStandard_name(getVariableAttribute(var,"standard_name"));
-                        variable.setLong_name(getVariableAttribute(var,"long_name"));
-                        variable.setShort_name(getVariableAttribute(var,"short_name"));
+                        String standard_name = getVariableAttribute(var,"standard_name");
+                        if(!standard_name.isEmpty()) {
+                            variable.setStandard_name(standard_name);
+                        }
+
+                        String long_name = getVariableAttribute(var,"long_name");
+                        if(!long_name.isEmpty()) {
+
+                            variable.setLong_name(long_name);
+                        }
+
+                        String short_name = getVariableAttribute(var,"short_name");
+                        if(!short_name.isEmpty()) {
+
+                            variable.setShort_name(short_name);
+                        }
 
                         variables.add(variable);
                     });
