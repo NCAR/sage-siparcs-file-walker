@@ -29,7 +29,7 @@ public class ScientificMetadataService {
         String filePath = esScientificMetadataTaskIdentifier.getPath().toString();
         String id = esScientificMetadataTaskIdentifier.getId();
 
-        LOG.debug("Scientific Metadata calculation id: {}", id);
+        //LOG.debug("Scientific Metadata calculation id: {}", id);
 
         try {
 
