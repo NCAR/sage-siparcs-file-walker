@@ -48,7 +48,7 @@ bulkIngester:
 ---
 mediaTypeWorkflow:
   enabled: false
-  scheduledTaskFixedRate: 120000
+  scheduledTaskDelayRate: 120000
   esQuerySize: 1000
   threadCount: 3
   tikaPoolSize: 3
@@ -56,7 +56,7 @@ mediaTypeWorkflow:
 ---
 scientificMetadataWorkflow:
   enabled: false
-  scheduledTaskFixedRate: 120000
+  scheduledTaskDelayRate: 120000
   esQuerySize: 1000
   threadCount: 3
 

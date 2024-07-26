@@ -18,7 +18,7 @@ public class ScientificMetadataWorkflowMonitor implements ApplicationEventPublis
         this.enabled = enabled;
     }
 
-    @Scheduled(initialDelay = 3000, fixedRateString = "${scientificMetadataWorkflow.scheduledTaskFixedRate}")
+    @Scheduled(initialDelay = 3000, fixedDelayString = "${scientificMetadataWorkflow.scheduledTaskDelayRate}")
     public void checkQueueChannel() {
 
         if (enabled && scientificMetadataChannel.getQueueSize() == 0) {
