@@ -1,7 +1,6 @@
 package edu.ncar.cisl.sage.repository.impl;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch._helpers.bulk.BulkIngester;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.model.EsDirectoryState;
@@ -9,25 +8,28 @@ import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
 
 import java.nio.file.Path;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepository {
 
-    private final Map<String, DirectoryState> directoryStateMap;
-    private String dateCreated;
+    private final Map<String, Set<Path>> directoryStateMap;
     private final ElasticsearchClient esClient;
-    private final BulkIngester<Void> bulkIngester;
+
     private static final String INDEX = "file-walker-dir-state";
 
-    public EsDirectoryStateRepositoryImpl(ElasticsearchClient esClient, BulkIngester<Void> bulkIngester) {
+    public EsDirectoryStateRepositoryImpl(ElasticsearchClient esClient) {
 
         this.directoryStateMap = new HashMap<>();
-        this.dateCreated = reformatDate(ZonedDateTime.now(ZoneId.systemDefault()));
         this.esClient = esClient;
-        this.bulkIngester = bulkIngester;
+    }
+
+    @Override
+    public synchronized Map<String, Set<Path>> getAllAsClone() {
+
+        return this.directoryStateMap.entrySet()
+                .stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> Set.copyOf(e.getValue())));
     }
 
     private Set<Path> esGetDirectoryState(String id) {
@@ -49,7 +51,6 @@ public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepositor
             if(!hitList.isEmpty()) {
                 EsDirectoryState esDirectoryState = hitList.get(0).source();
                 completed = esDirectoryState.getCompleted();
-                dateCreated = esDirectoryState.getDateCreated();
             }
         } catch( Exception e ) {
             throw new RepositoryException(e);
@@ -58,51 +59,20 @@ public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepositor
         return completed;
     }
 
-    private void esUpdateDirectoryState(String id) throws RuntimeException {
+    @Override
+    public synchronized void removeDirectoryState(String id) {
 
-        EsDirectoryState esDirectoryState = createEsDirState(id);
-
-        bulkIngester.add(op -> op
-                .index(idx -> idx
-                        .index(INDEX)
-                        .document(esDirectoryState)
-                        .id(id)
-                )
-        );
+        directoryStateMap.get(id).clear();
     }
 
     @Override
-    public void removeDirectoryState(String id) {
+    public synchronized boolean isDirectoryCompleted(String id, Path dir) {
 
-        directoryStateMap.remove(id);
-        bulkIngester.add(op -> op
-                .delete(d -> d
-                        .index(INDEX)
-                        .id(id)
-                )
-        );
-    }
-
-    public EsDirectoryState createEsDirState(String id) {
-
-        EsDirectoryState esDirectoryState = new EsDirectoryState();
-
-        esDirectoryState.setId(id);
-        esDirectoryState.setCompleted(this.directoryStateMap.get(id).completed);
-        esDirectoryState.setDateCreated(dateCreated);
-        esDirectoryState.setDateUpdated(reformatDate(ZonedDateTime.now(ZoneId.systemDefault())));
-
-        return esDirectoryState;
-    }
-
-    @Override
-    public boolean isDirectoryCompleted(String id, Path dir) {
-
-        this.directoryStateMap.computeIfAbsent(id, k -> new DirectoryState());
-        Set<Path> completed = this.directoryStateMap.get(id).completed;
+        this.directoryStateMap.computeIfAbsent(id, k -> new HashSet<Path>());
+        Set<Path> completed = this.directoryStateMap.get(id);
 
         // query Elasticsearch if completed set is not in memory
-        if(completed.isEmpty()) {
+        if (completed.isEmpty()) {
             completed = esGetDirectoryState(id);
         }
 
@@ -110,29 +80,10 @@ public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepositor
     }
 
     @Override
-    public void directoryCompleted(String id, Path dir) {
+    public synchronized void directoryCompleted(String id, Path dir) {
 
-        DirectoryState directoryState = this.directoryStateMap.get(id);
-        directoryState.completed.add(dir);
-        directoryState.completed.removeIf(path -> path.startsWith(dir) && !dir.equals(path));
-
-        esUpdateDirectoryState(id);
-    }
-
-    private String reformatDate(ZonedDateTime zonedDateTime) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
-
-        return (zonedDateTime.format((formatter)));
-    }
-
-    private static class DirectoryState {
-
-        Set<Path> completed;
-
-        private DirectoryState(){
-
-            completed = new HashSet<>();
-        }
+        Set<Path> directoryState = this.directoryStateMap.get(id);
+        directoryState.add(dir);
+        directoryState.removeIf(path -> path.startsWith(dir) && !dir.equals(path));
     }
 }

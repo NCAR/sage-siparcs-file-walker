@@ -61,6 +61,10 @@ scientificMetadataWorkflow:
   threadCount: 3
 
 ---
+directoryStateMonitor:
+  scheduledTaskFixedDelay: 30000
+
+---
 # spring pool size must be larger than the total number of threads being used inside the application
 spring:
   task:

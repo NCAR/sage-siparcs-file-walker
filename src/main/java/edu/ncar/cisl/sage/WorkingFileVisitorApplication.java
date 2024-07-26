@@ -13,6 +13,7 @@ import edu.ncar.cisl.sage.metadata.mediaType.*;
 import edu.ncar.cisl.sage.metadata.scientificMetadata.*;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
+import edu.ncar.cisl.sage.repository.impl.DirectoryStateMonitor;
 import edu.ncar.cisl.sage.repository.impl.EsDirectoryStateRepositoryImpl;
 import edu.ncar.cisl.sage.repository.impl.EsFileRepositoryImpl;
 import org.apache.commons.pool2.ObjectPool;
@@ -121,6 +122,12 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
+    public DirectoryStateMonitor createDirectoryStateMonitor(EsDirectoryStateRepository directoryStateRepository, BulkIngester<Void> bulkIngester) {
+
+        return new DirectoryStateMonitor(directoryStateRepository, bulkIngester);
+    }
+
+    @Bean
     public BulkIngester<Void> createBulkIngester(ElasticsearchClient esClient,
                                                  @Value("${bulkIngester.maxOperations}") int maxOperations,
                                                  @Value("${bulkIngester.flushInterval}") int flushInterval,
@@ -190,8 +197,8 @@ public class WorkingFileVisitorApplication{
     }
 
     @Bean
-    public EsDirectoryStateRepository createEsDirStateRepository(ElasticsearchClient esClient, BulkIngester<Void> ingester) {
+    public EsDirectoryStateRepository createEsDirStateRepository(ElasticsearchClient esClient) {
 
-        return new EsDirectoryStateRepositoryImpl(esClient, ingester);
+        return new EsDirectoryStateRepositoryImpl(esClient);
     }
 }
