@@ -7,6 +7,7 @@ import co.elastic.clients.elasticsearch._types.SortOrder;
 import co.elastic.clients.elasticsearch._types.query_dsl.*;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
+import co.elastic.clients.json.JsonData;
 import edu.ncar.cisl.sage.model.*;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import edu.ncar.cisl.sage.repository.RepositoryException;
@@ -93,6 +94,8 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         Query scientificMetadataExists = ExistsQuery.of(q -> q
                 .field("dateScientificMetadataUpdated"))._toQuery();
 
+        Query fileSizeGreaterThanZero = RangeQuery.of(q -> q.field("size").gt(JsonData.of("0")))._toQuery();
+
         SearchResponse<EsScientificMetadataTaskIdentifier> response;
 
         try {
@@ -105,6 +108,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                             .must(byMissing)
                                             .mustNot(scientificMetadataExists)
                                             .must(shouldBeMediaType)
+                                            .must(fileSizeGreaterThanZero)
                                     )
                             )
                             .from(0)
