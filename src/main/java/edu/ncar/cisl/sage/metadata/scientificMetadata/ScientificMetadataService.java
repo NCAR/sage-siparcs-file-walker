@@ -22,12 +22,12 @@ public class ScientificMetadataService {
         this.scientificMetadataFacade = scientificMetadataFacade;
     }
 
-    public void updateScientificMetadata(EsScientificMetadataTaskIdentifier esScientificMetadataTaskIdentifier) {
+    public void updateScientificMetadata(EsTaskIdentifier esTaskIdentifier) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
 
-        String filePath = esScientificMetadataTaskIdentifier.getPath().toString();
-        String id = esScientificMetadataTaskIdentifier.getId();
+        String filePath = esTaskIdentifier.getPath().toString();
+        String id = esTaskIdentifier.getId();
 
         //LOG.debug("Scientific Metadata calculation id: {}", id);
 
@@ -36,11 +36,7 @@ public class ScientificMetadataService {
             // create and populate ScientificMetadata
             ScientificMetadata scientificMetadata = new ScientificMetadata();
 
-//            List<String> standardNames = scientificMetadataFacade.getStandardNames(filePath);
-//            scientificMetadata.setStandard_name(standardNames);
-
             scientificMetadata.setVariables(scientificMetadataFacade.getVariables(filePath));
-
             scientificMetadata.setContact(scientificMetadataFacade.getGlobalAttributes(filePath,"contact"));
             scientificMetadata.setAuthor(scientificMetadataFacade.getGlobalAttributes(filePath,"author"));
 

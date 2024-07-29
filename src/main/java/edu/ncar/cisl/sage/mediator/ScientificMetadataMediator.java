@@ -3,7 +3,7 @@ package edu.ncar.cisl.sage.mediator;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import edu.ncar.cisl.sage.metadata.scientificMetadata.ScientificMetadataGateway;
 import edu.ncar.cisl.sage.metadata.scientificMetadata.ScientificMetadataQueueEmptyEvent;
-import edu.ncar.cisl.sage.model.EsScientificMetadataTaskIdentifier;
+import edu.ncar.cisl.sage.model.EsTaskIdentifier;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
@@ -28,7 +28,7 @@ public class ScientificMetadataMediator {
     @EventListener
     public void handleQueueRefillNeededEvent(ScientificMetadataQueueEmptyEvent event) {
 
-        List<Hit<EsScientificMetadataTaskIdentifier>> hitList = this.repository.getFilesWithoutScientificMetadata();
+        List<Hit<EsTaskIdentifier>> hitList = this.repository.getFilesWithoutScientificMetadata();
 
         if(hitList.isEmpty()) {
 
@@ -39,9 +39,9 @@ public class ScientificMetadataMediator {
             hitList.stream()
                     .forEach(hit -> {
 
-                        EsScientificMetadataTaskIdentifier esScientificMetadataTaskIdentifier = hit.source();
-                        esScientificMetadataTaskIdentifier.setId(hit.id());
-                        scientificMetadataGateway.sendToIntegration(esScientificMetadataTaskIdentifier);
+                        EsTaskIdentifier esTaskIdentifier = hit.source();
+                        esTaskIdentifier.setId(hit.id());
+                        scientificMetadataGateway.sendToIntegration(esTaskIdentifier);
                     });
         }
     }

@@ -39,7 +39,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
     }
 
     @Override
-    public List<Hit<EsMediaTypeTaskIdentifier>> getFilesWithoutMediaType() {
+    public List<Hit<EsTaskIdentifier>> getFilesWithoutMediaType() {
 
         Query byError = booleanMatchquery("error",false);
         Query byDirectory = booleanMatchquery("directory",false);
@@ -48,7 +48,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
         Query mediaTypeExists = ExistsQuery.of(q -> q
                 .field("mediaType"))._toQuery();
 
-        SearchResponse<EsMediaTypeTaskIdentifier> response;
+        SearchResponse<EsTaskIdentifier> response;
 
         try {
             response = esClient.search(s -> s
@@ -67,7 +67,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                     .field(FieldSort.of(f -> f
                                             .field("dateLastIndexed")
                                             .order(SortOrder.Asc)))),
-                    EsMediaTypeTaskIdentifier.class
+                    EsTaskIdentifier.class
             );
 
         } catch (IOException e) {
@@ -79,7 +79,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
     }
 
     @Override
-    public List<Hit<EsScientificMetadataTaskIdentifier>> getFilesWithoutScientificMetadata() {
+    public List<Hit<EsTaskIdentifier>> getFilesWithoutScientificMetadata() {
 
         Query byError = booleanMatchquery("error",false);
         Query byDirectory = booleanMatchquery("directory",false);
@@ -96,7 +96,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
 
         Query fileSizeGreaterThanZero = RangeQuery.of(q -> q.field("size").gt(JsonData.of("0")))._toQuery();
 
-        SearchResponse<EsScientificMetadataTaskIdentifier> response;
+        SearchResponse<EsTaskIdentifier> response;
 
         try {
             response = esClient.search(s -> s
@@ -117,7 +117,7 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                                     .field(FieldSort.of(f -> f
                                             .field("dateLastIndexed")
                                             .order(SortOrder.Asc)))),
-                    EsScientificMetadataTaskIdentifier.class
+                    EsTaskIdentifier.class
             );
 
         } catch (IOException e) {

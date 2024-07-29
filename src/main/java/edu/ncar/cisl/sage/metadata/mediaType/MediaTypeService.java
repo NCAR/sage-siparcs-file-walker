@@ -1,7 +1,7 @@
 package edu.ncar.cisl.sage.metadata.mediaType;
 
 import edu.ncar.cisl.sage.model.EsFileMissing;
-import edu.ncar.cisl.sage.model.EsMediaTypeTaskIdentifier;
+import edu.ncar.cisl.sage.model.EsTaskIdentifier;
 import edu.ncar.cisl.sage.model.MediaType;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.slf4j.Logger;
@@ -23,19 +23,19 @@ public class MediaTypeService {
         this.mediaTypeStrategy = mediaTypeStrategy;
     }
 
-    public void updateMediaType(EsMediaTypeTaskIdentifier esMediaTypeTaskIdentifier) {
+    public void updateMediaType(EsTaskIdentifier esTaskIdentifier) {
 
-        //LOG.debug("Media type calculation id: {}", esMediaTypeTaskIdentifier.getId());
+        //LOG.debug("Media type calculation id: {}", esTaskIdentifier.getId());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss.SSSZ");
 
         try {
 
             MediaType mediaType = new MediaType();
-            String value = this.mediaTypeStrategy.calculateMetadata(esMediaTypeTaskIdentifier.getPath());
+            String value = this.mediaTypeStrategy.calculateMetadata(esTaskIdentifier.getPath());
             mediaType.setMediaType(value);
             mediaType.setDateMediaTypeUpdated(ZonedDateTime.now().format((formatter)));
 
-            this.repository.updateMediaType(esMediaTypeTaskIdentifier.getId(), mediaType);
+            this.repository.updateMediaType(esTaskIdentifier.getId(), mediaType);
 
         } catch (Exception e) {
 
@@ -43,7 +43,7 @@ public class MediaTypeService {
             esFileMissing.setMissing(true);
             esFileMissing.setDateMissing(ZonedDateTime.now().format((formatter)));
 
-            this.repository.setFileMissing(esMediaTypeTaskIdentifier.getId(), esFileMissing);
+            this.repository.setFileMissing(esTaskIdentifier.getId(), esFileMissing);
         }
     }
 }

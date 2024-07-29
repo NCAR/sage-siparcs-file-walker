@@ -1,6 +1,6 @@
 package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
-import edu.ncar.cisl.sage.model.EsScientificMetadataTaskIdentifier;
+import edu.ncar.cisl.sage.model.EsTaskIdentifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class ScientificMetadataIntegrationConfig {
 
     private void updateScientificMetadata(org.springframework.messaging.Message<?> message) {
 
-        EsScientificMetadataTaskIdentifier esScientificMetadataTaskIdentifier = (EsScientificMetadataTaskIdentifier) message.getPayload();
-        scientificMetadataService.updateScientificMetadata(esScientificMetadataTaskIdentifier);
+        EsTaskIdentifier esTaskIdentifier = (EsTaskIdentifier) message.getPayload();
+        scientificMetadataService.updateScientificMetadata(esTaskIdentifier);
     }
 }

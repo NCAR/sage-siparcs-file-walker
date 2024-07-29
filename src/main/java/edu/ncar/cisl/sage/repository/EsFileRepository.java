@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface EsFileRepository {
 
-    List<Hit<EsMediaTypeTaskIdentifier>> getFilesWithoutMediaType();
+    List<Hit<EsTaskIdentifier>> getFilesWithoutMediaType();
 
-    List<Hit<EsScientificMetadataTaskIdentifier>> getFilesWithoutScientificMetadata();
+    List<Hit<EsTaskIdentifier>> getFilesWithoutScientificMetadata();
 
     void addFile(String id, EsFile esFile);
 

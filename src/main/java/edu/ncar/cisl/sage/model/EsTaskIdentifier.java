@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.nio.file.Path;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EsMediaTypeTaskIdentifier {
+public class EsTaskIdentifier {
 
     private String id;
     private Path path;
 
-    public EsMediaTypeTaskIdentifier() {}
+    public EsTaskIdentifier() {}
 
     public String getId() { return id; }
 

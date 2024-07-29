@@ -1,6 +1,6 @@
 package edu.ncar.cisl.sage.metadata.mediaType;
 
-import edu.ncar.cisl.sage.model.EsMediaTypeTaskIdentifier;
+import edu.ncar.cisl.sage.model.EsTaskIdentifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class MediaTypeIntegrationConfig {
 
     private void updateMediaType(org.springframework.messaging.Message<?> message) {
 
-          EsMediaTypeTaskIdentifier esMediaTypeTaskIdentifier = (EsMediaTypeTaskIdentifier) message.getPayload();
-          mediaTypeService.updateMediaType(esMediaTypeTaskIdentifier);
+          EsTaskIdentifier esTaskIdentifier = (EsTaskIdentifier) message.getPayload();
+          mediaTypeService.updateMediaType(esTaskIdentifier);
     }
 }
