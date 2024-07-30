@@ -32,6 +32,27 @@ public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepositor
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> Set.copyOf(e.getValue())));
     }
 
+    @Override
+    public synchronized void removeDirectoryState(String id) {
+
+        this.directoryStateMap.get(id).clear();
+    }
+
+    @Override
+    public synchronized boolean isDirectoryCompleted(String id, Path dir) {
+
+        this.directoryStateMap.computeIfAbsent(id, k -> new HashSet<>());
+        Set<Path> completed = this.directoryStateMap.get(id);
+
+        // query Elasticsearch if completed set is not in memory
+        if (completed.isEmpty()) {
+            completed = esGetDirectoryState(id);
+            this.directoryStateMap.put(id, completed);
+        }
+
+        return completed.contains(dir);
+    }
+
     private Set<Path> esGetDirectoryState(String id) {
 
         Set<Path> completed = new HashSet<>();
@@ -57,26 +78,6 @@ public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepositor
         }
 
         return completed;
-    }
-
-    @Override
-    public synchronized void removeDirectoryState(String id) {
-
-        directoryStateMap.get(id).clear();
-    }
-
-    @Override
-    public synchronized boolean isDirectoryCompleted(String id, Path dir) {
-
-        this.directoryStateMap.computeIfAbsent(id, k -> new HashSet<>());
-        Set<Path> completed = this.directoryStateMap.get(id);
-
-        // query Elasticsearch if completed set is not in memory
-        if (completed.isEmpty()) {
-            completed = esGetDirectoryState(id);
-        }
-
-        return completed.contains(dir);
     }
 
     @Override
