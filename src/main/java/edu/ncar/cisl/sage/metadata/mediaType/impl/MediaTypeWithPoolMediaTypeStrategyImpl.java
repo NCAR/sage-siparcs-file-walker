@@ -52,7 +52,7 @@ public class MediaTypeWithPoolMediaTypeStrategyImpl implements MediaTypeStrategy
 
             } catch (IOException e) {
 
-                LOG.error(e.getMessage(), e);
+                LOG.error(e.getMessage(), e, path);
             }
 
         } catch (Exception e) {

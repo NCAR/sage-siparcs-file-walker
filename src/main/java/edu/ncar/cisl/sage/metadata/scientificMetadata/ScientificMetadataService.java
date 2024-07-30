@@ -1,13 +1,15 @@
 package edu.ncar.cisl.sage.metadata.scientificMetadata;
 
-import edu.ncar.cisl.sage.model.*;
+import edu.ncar.cisl.sage.model.EsFileMissing;
+import edu.ncar.cisl.sage.model.EsScientificMetadata;
+import edu.ncar.cisl.sage.model.EsTaskIdentifier;
+import edu.ncar.cisl.sage.model.ScientificMetadata;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 public class ScientificMetadataService {
 

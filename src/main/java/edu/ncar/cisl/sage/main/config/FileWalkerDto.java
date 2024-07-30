@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.config;
+package edu.ncar.cisl.sage.main.config;
 
 import java.util.List;
 

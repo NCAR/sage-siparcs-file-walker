@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.config;
+package edu.ncar.cisl.sage.main.config;
 
 import edu.ncar.cisl.sage.filewalker.*;
 import edu.ncar.cisl.sage.repository.EsDirectoryStateRepository;
@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Configuration;
 
 import java.nio.file.Paths;
 import java.time.Clock;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ConfigurationProperties(prefix = "file-walker-list")
 @Configuration

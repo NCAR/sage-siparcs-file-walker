@@ -1,5 +1,6 @@
-package edu.ncar.cisl.sage.metadata.mediaType;
+package edu.ncar.cisl.sage.main.config;
 
+import edu.ncar.cisl.sage.metadata.mediaType.MediaTypeService;
 import edu.ncar.cisl.sage.model.EsTaskIdentifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

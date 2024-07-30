@@ -2,7 +2,7 @@ package edu.ncar.cisl.sage.metadata.mediaType;
 
 import edu.ncar.cisl.sage.model.EsFileMissing;
 import edu.ncar.cisl.sage.model.EsTaskIdentifier;
-import edu.ncar.cisl.sage.model.MediaType;
+import edu.ncar.cisl.sage.model.EsMediaType;
 import edu.ncar.cisl.sage.repository.EsFileRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +30,12 @@ public class MediaTypeService {
 
         try {
 
-            MediaType mediaType = new MediaType();
+            EsMediaType esMediaType = new EsMediaType();
             String value = this.mediaTypeStrategy.calculateMetadata(esTaskIdentifier.getPath());
-            mediaType.setMediaType(value);
-            mediaType.setDateMediaTypeUpdated(ZonedDateTime.now().format((formatter)));
+            esMediaType.setMediaType(value);
+            esMediaType.setDateMediaTypeUpdated(ZonedDateTime.now().format((formatter)));
 
-            this.repository.updateMediaType(esTaskIdentifier.getId(), mediaType);
+            this.repository.updateMediaType(esTaskIdentifier.getId(), esMediaType);
 
         } catch (Exception e) {
 

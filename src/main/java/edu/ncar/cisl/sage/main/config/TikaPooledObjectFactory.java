@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.metadata.mediaType;
+package edu.ncar.cisl.sage.main.config;
 
 import org.apache.commons.pool2.DestroyMode;
 import org.apache.commons.pool2.PooledObject;

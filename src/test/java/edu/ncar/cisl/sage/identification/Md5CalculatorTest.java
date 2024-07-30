@@ -1,6 +1,8 @@
 package edu.ncar.cisl.sage.identification;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Md5CalculatorTest {
 

@@ -1,4 +1,4 @@
-package edu.ncar.cisl.sage.indexing;
+package edu.ncar.cisl.sage.main;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.mapping.Property;
@@ -12,20 +12,18 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
 
-import static co.elastic.clients.elasticsearch.ingest.Processor.Kind.Set;
 import static edu.ncar.cisl.sage.WorkingFileVisitorApplication.esDirStateIndex;
 import static edu.ncar.cisl.sage.WorkingFileVisitorApplication.esIndex;
 
 @Component
-public class CheckIndex {
+public class IndexStateVerification {
 
     private final ElasticsearchClient esClient;
 
     @Autowired
-    public CheckIndex(ElasticsearchClient esClient) {
+    public IndexStateVerification(ElasticsearchClient esClient) {
         this.esClient = esClient;
     }
 

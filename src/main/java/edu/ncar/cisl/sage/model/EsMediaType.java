@@ -1,11 +1,11 @@
 package edu.ncar.cisl.sage.model;
 
-public class MediaType {
+public class EsMediaType {
 
     private String mediaType;
     private String dateMediaTypeUpdated;
 
-    public MediaType(){}
+    public EsMediaType(){}
 
     public String getMediaType() { return mediaType; }
 

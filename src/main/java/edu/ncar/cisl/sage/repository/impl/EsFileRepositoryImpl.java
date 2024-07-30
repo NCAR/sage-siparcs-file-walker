@@ -161,13 +161,13 @@ public class EsFileRepositoryImpl implements EsFileRepository {
                 ));
     }
 
-    public void updateMediaType(String id, MediaType mediaType) {
+    public void updateMediaType(String id, EsMediaType esMediaType) {
 
         bulkIngester.add(op -> op
                 .update(idx -> idx
                         .index(INDEX)
                         .id(id)
-                        .action(a -> a.doc(mediaType))));
+                        .action(a -> a.doc(esMediaType))));
     }
 
     @Override

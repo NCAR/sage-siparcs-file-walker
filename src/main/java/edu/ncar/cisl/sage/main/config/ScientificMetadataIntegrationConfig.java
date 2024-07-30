@@ -1,5 +1,6 @@
-package edu.ncar.cisl.sage.metadata.scientificMetadata;
+package edu.ncar.cisl.sage.main.config;
 
+import edu.ncar.cisl.sage.metadata.scientificMetadata.ScientificMetadataService;
 import edu.ncar.cisl.sage.model.EsTaskIdentifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -13,7 +13,7 @@ public interface EsFileRepository {
 
     void addFile(String id, EsFile esFile);
 
-    void updateMediaType(String id, MediaType mediaType);
+    void updateMediaType(String id, EsMediaType esMediaType);
 
     void updateScientificMetadata(String id, EsScientificMetadata esScientificMetadata);
 
