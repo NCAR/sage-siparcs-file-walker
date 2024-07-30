@@ -68,7 +68,7 @@ public class EsDirectoryStateRepositoryImpl implements EsDirectoryStateRepositor
     @Override
     public synchronized boolean isDirectoryCompleted(String id, Path dir) {
 
-        this.directoryStateMap.computeIfAbsent(id, k -> new HashSet<Path>());
+        this.directoryStateMap.computeIfAbsent(id, k -> new HashSet<>());
         Set<Path> completed = this.directoryStateMap.get(id);
 
         // query Elasticsearch if completed set is not in memory
