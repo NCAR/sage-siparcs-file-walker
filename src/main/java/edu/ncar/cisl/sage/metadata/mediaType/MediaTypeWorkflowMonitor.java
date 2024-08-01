@@ -1,5 +1,7 @@
 package edu.ncar.cisl.sage.metadata.mediaType;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.integration.channel.QueueChannel;
@@ -12,6 +14,8 @@ public class MediaTypeWorkflowMonitor implements ApplicationEventPublisherAware 
 
     private ApplicationEventPublisher applicationEventPublisher;
 
+    private static final Logger SI_LOG = LoggerFactory.getLogger("spring-integration");
+
     public MediaTypeWorkflowMonitor(QueueChannel mediaTypeChannel, boolean enabled) {
 
         this.mediaTypeChannel = mediaTypeChannel;
@@ -20,6 +24,8 @@ public class MediaTypeWorkflowMonitor implements ApplicationEventPublisherAware 
 
     @Scheduled(initialDelay = 3000, fixedDelayString = "${mediaTypeWorkflow.scheduledTaskDelayRate}")
     public void checkQueueChannel() {
+
+        SI_LOG.debug("Monitor: {}", mediaTypeChannel.hashCode());
 
         if (enabled && mediaTypeChannel.getQueueSize() == 0) {
 

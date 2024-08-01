@@ -9,6 +9,7 @@
     <property name="LOG_DIR" value="/usr/local/file-walker/logs" />
     <property name="FW_LOG" value="file-walker" />
     <property name="SCIENTIFIC_METADATA_LOG" value="scientific-metadata" />
+    <porperty name="SPRING_INTEGRATION_LOG" value="spring-integration" />
     <property name="ES_HTTP_LOG" value="elastic-search-http" />
     <property name="EXCEPTION_LOG" value="exception" />
 
@@ -29,6 +30,19 @@
         <file>${LOG_DIR}/${SCIENTIFIC_METADATA_LOG}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOG_DIR}/${SCIENTIFIC_METADATA_LOG}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="spring-integration" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${SPRING_INTEGRATION_LOG}.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/${SPRING_INTEGRATION_LOG}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <maxFileSize>50MB</maxFileSize>
             <maxHistory>30</maxHistory>
             <totalSizeCap>2GB</totalSizeCap>
@@ -71,6 +85,10 @@
 
     <logger name="scientific-metadata" level="debug" additivity="false">
         <appender-ref ref="scientific-metadata"/>
+    </logger>
+
+    <logger name="spring-integration" level="debug" additivity="false">
+        <appender-ref ref="spring-integration"/>
     </logger>
 
     <!-- Elasticsearch HTTP loggers -->

@@ -2,6 +2,8 @@ package edu.ncar.cisl.sage.main.config;
 
 import edu.ncar.cisl.sage.metadata.mediaType.MediaTypeService;
 import edu.ncar.cisl.sage.model.EsTaskIdentifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,8 @@ public class MediaTypeIntegrationConfig {
     private final MediaTypeService mediaTypeService;
     private final int threadCount;
 
+    private static final Logger SI_LOG = LoggerFactory.getLogger("spring-integration");
+
     public MediaTypeIntegrationConfig(QueueChannel mediaTypeChannel, MediaTypeService mediaTypeService, @Value("${mediaTypeWorkflow.threadCount}") int threadCount) {
 
         this.mediaTypeChannel = mediaTypeChannel;
@@ -30,6 +34,8 @@ public class MediaTypeIntegrationConfig {
 
     @Bean
     public IntegrationFlow mediaTypeFlow() {
+
+        SI_LOG.debug("Integration config: {}", mediaTypeChannel.hashCode());
 
         ExecutorService exec = Executors.newFixedThreadPool(threadCount);
         return IntegrationFlows.fromSupplier(() -> mediaTypeChannel.receive(), c -> c.poller(Pollers
@@ -42,7 +48,7 @@ public class MediaTypeIntegrationConfig {
 
     private void updateMediaType(org.springframework.messaging.Message<?> message) {
 
-          EsTaskIdentifier esTaskIdentifier = (EsTaskIdentifier) message.getPayload();
-          mediaTypeService.updateMediaType(esTaskIdentifier);
+        EsTaskIdentifier esTaskIdentifier = (EsTaskIdentifier) message.getPayload();
+        mediaTypeService.updateMediaType(esTaskIdentifier);
     }
 }

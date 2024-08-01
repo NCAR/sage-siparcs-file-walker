@@ -30,6 +30,8 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.tika.Tika;
 import org.elasticsearch.client.RestClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -53,6 +55,8 @@ public class WorkingFileVisitorApplication{
 
     public static final String esIndex = "file-walker-files";
     public static final String esDirStateIndex = "file-walker-dir-state";
+
+    private static final Logger SI_LOG = LoggerFactory.getLogger("spring-integration");
 
     public static void main(String[] args) {
             SpringApplication.run(WorkingFileVisitorApplication.class, args);
@@ -97,7 +101,9 @@ public class WorkingFileVisitorApplication{
     @Bean
     public QueueChannel mediaTypeChannel() {
 
-        return new QueueChannel();
+        QueueChannel queueChannel = new QueueChannel();
+        SI_LOG.debug("Constructor: {}", queueChannel.toString());
+        return queueChannel;
     }
 
     @Bean
