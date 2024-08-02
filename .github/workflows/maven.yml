@@ -37,4 +37,4 @@ jobs:
       - name: Publish package
         run: mvn --batch-mode deploy
         env:
-          GITHUB_TOKEN: ${{ FILE_WALKER_PACKAGES_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.FILE_WALKER_PACKAGES_TOKEN }}
