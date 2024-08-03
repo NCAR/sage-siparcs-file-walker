@@ -102,7 +102,8 @@ public class WorkingFileVisitorApplication{
     public QueueChannel mediaTypeChannel() {
 
         QueueChannel queueChannel = new QueueChannel();
-        SI_LOG.debug("Constructor: {}", queueChannel.toString());
+        SI_LOG.debug("WorkingFileVisitorApplication.mediaTypeChannel(): {}", queueChannel.toString());
+        SI_LOG.debug("WorkingFileVisitorApplication.mediaTypeChannel(): {}", queueChannel.getClass().getName()+"@"+Integer.toHexString(queueChannel.hashCode()));
         return queueChannel;
     }
 

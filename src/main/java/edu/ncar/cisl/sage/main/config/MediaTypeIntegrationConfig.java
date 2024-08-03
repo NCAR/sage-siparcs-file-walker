@@ -35,7 +35,7 @@ public class MediaTypeIntegrationConfig {
     @Bean
     public IntegrationFlow mediaTypeFlow() {
 
-        SI_LOG.debug("Integration config: {}", mediaTypeChannel.hashCode());
+        SI_LOG.debug("Integration config: {}", this.mediaTypeChannel.getClass().getName()+"@"+Integer.toHexString(this.mediaTypeChannel.hashCode()));
 
         ExecutorService exec = Executors.newFixedThreadPool(threadCount);
         return IntegrationFlows.fromSupplier(() -> mediaTypeChannel.receive(), c -> c.poller(Pollers

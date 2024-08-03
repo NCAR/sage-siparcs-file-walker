@@ -25,12 +25,12 @@ public class MediaTypeWorkflowMonitor implements ApplicationEventPublisherAware 
     @Scheduled(initialDelay = 3000, fixedDelayString = "${mediaTypeWorkflow.scheduledTaskDelayRate}")
     public void checkQueueChannel() {
 
-        SI_LOG.debug("Monitor: {}", mediaTypeChannel.hashCode());
+        SI_LOG.debug("Monitor: {}", this.mediaTypeChannel.getClass().getName()+"@"+Integer.toHexString(this.mediaTypeChannel.hashCode()));
 
-        if (enabled && mediaTypeChannel.getQueueSize() == 0) {
+        if (enabled && this.mediaTypeChannel.getQueueSize() == 0) {
 
             MediaTypeQueueEmptyEvent event = new MediaTypeQueueEmptyEvent(this);
-            applicationEventPublisher.publishEvent(event);
+            this.applicationEventPublisher.publishEvent(event);
         }
     }
 

@@ -9,7 +9,7 @@
     <property name="LOG_DIR" value="/usr/local/file-walker/logs" />
     <property name="FW_LOG" value="file-walker" />
     <property name="SCIENTIFIC_METADATA_LOG" value="scientific-metadata" />
-    <porperty name="SPRING_INTEGRATION_LOG" value="spring-integration" />
+    <property name="SPRING_INTEGRATION_LOG" value="spring-integration" />
     <property name="ES_HTTP_LOG" value="elastic-search-http" />
     <property name="EXCEPTION_LOG" value="exception" />
 
