@@ -101,3 +101,10 @@ Consider building a workflow prior to initially inserting the data into elastics
 generally slow and while calculating media-type and scientific metadata really seems to slowdown the insert process, it
 might be quicker/better overall to just calculate everything we can from a file prior to inserting it into the index since
 it seems as though updates are painfully slow with elasticsearch.
+
+# Github Actions
+
+Github actions have been enabled and run on every push to Github.
+
+Artifacts (jar files) can be found on Github Packages:
+https://github.com/NCAR/sage-package/packages/2219549
