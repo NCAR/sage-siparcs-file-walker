@@ -45,3 +45,5 @@ jobs:
     # https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/configuring-the-dependency-graph
       - name: Update dependency graph
         uses: advanced-security/maven-dependency-submission-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.FILE_WALKER_PACKAGES_TOKEN }}
