@@ -27,19 +27,12 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
-      # - name: Upload JAR file
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: my-app-artifact
-      #     path: target/*.jar
-      - name: Publish package
+      - name: Deploy Package
         run: mvn --batch-mode deploy
         env:
           GITHUB_TOKEN: ${{ secrets.PACKAGE_TOKEN }}
 
-    # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
+    # Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # More information:
     # https://github.com/marketplace/actions/maven-dependency-tree-dependency-submission
     # https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/configuring-the-dependency-graph
